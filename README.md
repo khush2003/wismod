@@ -33,9 +33,10 @@ The WisMod app is built using the following technology stack:
 To install and help build the WisMod app, follow these steps:
 
 1. Clone the repository to your local machine.
-2. Open the project in Android Studio or VSCode.
-3. Run flutter pub get to install the required dependencies.
-4. Start coding!!
+2. Switch to development branch
+3. Open the project in Android Studio or VSCode.
+4. Run flutter pub get to install the required dependencies.
+5. Start coding!!
 
 ## Getting Started
 To use the WisMod app, simply download it from the Google Play Store or Apple App Store, create an account, and start browsing events. For event organizers, simply sign in to your account and start creating and managing events. If you encounter any issues or have feedback, please contact our support team at support@wismod.com.

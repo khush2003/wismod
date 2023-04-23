@@ -5,7 +5,7 @@ import 'package:wismod/firebase_options.dart';
 import 'package:wismod/routes/routes.dart';
 
 void  main() async {
-  // Initializing Firebase
+  // Initializing Firebase 
   WidgetsFlutterBinding.ensureInitialized();
   await Firebase.initializeApp(options: DefaultFirebaseOptions.currentPlatform);
   runApp(const Application());

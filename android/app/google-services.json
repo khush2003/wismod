@@ -1,0 +1,39 @@
+{
+  "project_info": {
+    "project_number": "736649773651",
+    "project_id": "wismod-5464e",
+    "storage_bucket": "wismod-5464e.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:736649773651:android:a92d18d3d915bfb12e3ca6",
+        "android_client_info": {
+          "package_name": "com.example.wismod"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "736649773651-2hv1jkaq67dqugkjijnpedl2nkpp2he2.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyApc1UH8GWZ4aaB1VY5jRFeKgzV2xKCCc0"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "736649773651-2hv1jkaq67dqugkjijnpedl2nkpp2he2.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

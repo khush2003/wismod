@@ -8,10 +8,12 @@ abstract class Routes {
   static const String home = '/home';
   static const String onboarding = '/onboarding';
   static const String login = '/login';
+  // Add page string (route) here
 }
 
 final getPages = [
   GetPage(name: Routes.home, page: () => const HomeView()),
   GetPage(name: Routes.onboarding, page: () => const OnboardingView()),
   GetPage(name: Routes.login, page: () => const LogInView())
+  // Initialize route here
 ];

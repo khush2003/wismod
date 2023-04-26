@@ -2,32 +2,54 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
 import '../../../routes/routes.dart';
+import '../../../theme/global_widgets.dart';
 
 class OnboardingView extends StatelessWidget {
-  const OnboardingView({super.key});
+  OnboardingView({super.key});
+  final thc = Get.put(ThemedSwitchController());
 
- @override
+  @override
   Widget build(BuildContext context) {
     return Scaffold(
-      body: Column(
-        mainAxisAlignment: MainAxisAlignment.center,
-        crossAxisAlignment: CrossAxisAlignment.stretch,
+      body: Wrap(
+        spacing: 10,
         children: [
-          const Text(
+          Text(
             'Welcome to the Event App!',
             textAlign: TextAlign.center,
-            style: TextStyle(fontSize: 24.0),
+            style: Theme.of(context).textTheme.displayLarge,
           ),
-          ElevatedButton(
-            onPressed: () => Get.toNamed(Routes.login), 
+          PrimaryButtonMedium(
+            onPressed: () => Get.toNamed(Routes.login),
             child: const Text('Sign In'),
           ),
-          ElevatedButton(
-            onPressed: () => Get.toNamed(Routes.login), //TODO: Change to register
+          PrimaryButtonLarge(
+            onPressed: () =>
+                Get.toNamed(Routes.allPagesNav), //TODO: Change to register
             child: const Text('Register'),
           ),
+          SecondaryButtonMedium(
+            onPressed: () => Get.toNamed(Routes.allPagesNav),
+            child: const Text('Sign In'),
+          ),
+          SecondaryButtonLarge(
+            onPressed: () => Get.toNamed(Routes.login),
+            child: const Text('Sign In'),
+          ),
+          OutlineButtonMedium(
+            onPressed: () => Get.toNamed(Routes.login),
+            child: const Text('Sign In'),
+          ),
+          OutlineButtonLarge(
+            onPressed: () => Get.toNamed(Routes.login),
+            child: const Text('Sign In'),
+          ),
+          const TextFormFeildThemed(hintText: "Hello"),
+          const TextAreaThemed(hintText: "Type Here"),
+          ThemedSwitch(),
+          Obx(() => Text(thc.isOn.value.toString()))
         ],
       ),
     );
   }
-  }
+}

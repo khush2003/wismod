@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:wismod/utils/app_utils.dart';
 
 import '../../../routes/routes.dart';
 import '../../../theme/global_widgets.dart';
@@ -28,12 +27,13 @@ class OnboardingView extends StatelessWidget {
               ),
             ],
           ),
-          Row(
+          Column(
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
               Image.asset(
                 'assets/images/WisModLonger.png',
-                height: 200,
+                height: 175,
+                fit: BoxFit.fill,
               ),
             ],
           ),

@@ -19,7 +19,7 @@ class OnboardingView extends StatelessWidget {
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
               Padding(
-                padding: const EdgeInsets.fromLTRB(0.0, 60.0, 0.0, 40.0),
+                padding: const EdgeInsets.fromLTRB(0.0, 60.0, 0.0, 25.0),
                 child: Text(
                   'Welcome to',
                   textAlign: TextAlign.center,
@@ -31,15 +31,15 @@ class OnboardingView extends StatelessWidget {
           Row(
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
-              Image.network(
-                'https://drive.google.com/file/d/1iVtDq_M5nygA6tqZxDR9yrBMWX1noPff/view',
+              Image.asset(
+                'assets/images/WisModLonger.png',
                 height: 200,
               ),
             ],
           ),
           const SizedBox(height: 50),
           const Padding(
-            padding: EdgeInsets.fromLTRB(8.0, 90.0, 8.0, 90.0),
+            padding: EdgeInsets.fromLTRB(8.0, 70.0, 8.0, 110.0),
             child: Text(
               'Join the community of KMUTT changemakers with WisMod',
               textAlign: TextAlign.center,

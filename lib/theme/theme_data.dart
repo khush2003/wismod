@@ -1,9 +1,10 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 
 // To use Text theme in widgets or colors in widgets you can use it like this
 // Text("..", style: Theme.of(context).textTheme.displayLarge) DisplayLarge or any other of your choice defined below
 // To get primary color of app or any color in the colorScheme: Theme.of(context).colorScheme.primary
-// Predefined Compoenets in global_widgets.dart 
+// Predefined Compoenets in global_widgets.dart
 class AppThemeData {
   static ThemeData themedata = ThemeData(
     // Scaffold Background Color
@@ -73,6 +74,8 @@ class AppThemeData {
       backgroundColor: Colors.white,
       elevation: 0,
       shadowColor: Colors.white,
+      foregroundColor: Colors.black,
+      iconTheme: IconThemeData(weight: 900, size: 34, grade: 900),
       titleTextStyle: TextStyle(
           fontFamily: "Gotham",
           fontWeight: FontWeight.bold,

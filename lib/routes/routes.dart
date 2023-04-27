@@ -18,8 +18,8 @@ abstract class Routes {
 final getPages = [
   GetPage(name: Routes.allPagesNav, page: () => AllPagesNav()),
   GetPage(name: Routes.onboarding, page: () => OnboardingView()),
-  GetPage(name: Routes.login, page: () => const LogInView()),
+  GetPage(name: Routes.login, page: () => LogInView()),
   GetPage(name: Routes.signup, page: () => SignUpView()),
-  GetPage(name: Routes.verifyemail, page: () => VerifyEmailView()),
+  GetPage(name: Routes.verifyemail, page: () => const VerifyEmailView()),
   // Initialize route here
 ];

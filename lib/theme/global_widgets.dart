@@ -18,14 +18,22 @@ import 'package:get/get.dart';
 class PrimaryButtonMedium extends StatelessWidget {
   final VoidCallback onPressed;
   final Widget child;
+  final Size? size;
+  final Size? maxSize;
   const PrimaryButtonMedium(
-      {super.key, required this.child, required this.onPressed});
+      {super.key,
+      required this.child,
+      required this.onPressed,
+      this.size,
+      this.maxSize});
 
   @override
   Widget build(BuildContext context) {
     return ElevatedButton(
       onPressed: onPressed,
       style: ElevatedButton.styleFrom(
+          fixedSize: size,
+          maximumSize: maxSize,
           padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 20),
           minimumSize: Size.zero,
           textStyle: const TextStyle(
@@ -38,14 +46,22 @@ class PrimaryButtonMedium extends StatelessWidget {
 class PrimaryButtonLarge extends StatelessWidget {
   final VoidCallback onPressed;
   final Widget child;
+  final Size? size;
+  final Size? maxSize;
   const PrimaryButtonLarge(
-      {super.key, required this.child, required this.onPressed});
+      {super.key,
+      required this.child,
+      required this.onPressed,
+      this.size,
+      this.maxSize});
 
   @override
   Widget build(BuildContext context) {
     return ElevatedButton(
       onPressed: onPressed,
       style: ElevatedButton.styleFrom(
+          fixedSize: size,
+          maximumSize: maxSize,
           padding: const EdgeInsets.symmetric(horizontal: 28, vertical: 24),
           minimumSize: Size.zero,
           textStyle: const TextStyle(
@@ -58,14 +74,22 @@ class PrimaryButtonLarge extends StatelessWidget {
 class OutlineButtonMedium extends StatelessWidget {
   final VoidCallback onPressed;
   final Widget child;
+  final Size? size;
+  final Size? maxSize;
   const OutlineButtonMedium(
-      {super.key, required this.child, required this.onPressed});
+      {super.key,
+      required this.child,
+      required this.onPressed,
+      this.size,
+      this.maxSize});
 
   @override
   Widget build(BuildContext context) {
     return OutlinedButton(
       onPressed: onPressed,
       style: OutlinedButton.styleFrom(
+          fixedSize: size,
+          maximumSize: maxSize,
           padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 20),
           minimumSize: Size.zero,
           side: BorderSide(
@@ -113,6 +137,8 @@ class TextFormFeildThemed extends StatelessWidget {
   final FormFieldValidator<String>? validator;
   final FormFieldSetter<String>? onSaved;
   final ValueChanged<String>? onChanged;
+  final String? errorText;
+  final Widget? suffixIcon;
 
   const TextFormFeildThemed(
       {super.key,
@@ -123,7 +149,9 @@ class TextFormFeildThemed extends StatelessWidget {
       this.enableSuggestions,
       this.validator,
       this.onSaved,
-      this.onChanged});
+      this.onChanged,
+      this.errorText,
+      this.suffixIcon});
 
   @override
   Widget build(BuildContext context) {
@@ -133,7 +161,14 @@ class TextFormFeildThemed extends StatelessWidget {
       autocorrect: autocorrect ?? true,
       enableSuggestions: enableSuggestions ?? true,
       decoration: InputDecoration(
+          suffixIcon: suffixIcon,
+          errorText: errorText,
           hintText: hintText,
+          hintStyle: TextStyle(
+              fontFamily: "Gotham",
+              fontSize: 16,
+              fontWeight: FontWeight.w400,
+              color: Colors.grey[600]),
           enabledBorder: OutlineInputBorder(
               borderRadius: BorderRadius.circular(5),
               borderSide: const BorderSide(color: Colors.black)),
@@ -141,7 +176,6 @@ class TextFormFeildThemed extends StatelessWidget {
               borderRadius: BorderRadius.circular(5),
               borderSide:
                   BorderSide(color: Theme.of(context).colorScheme.primary))),
-      enabled: null,
       obscureText: obscureText ?? false,
       validator: validator,
       onSaved: onSaved,
@@ -193,7 +227,6 @@ class TextAreaThemed extends StatelessWidget {
               borderRadius: BorderRadius.circular(5),
               borderSide:
                   BorderSide(color: Theme.of(context).colorScheme.primary))),
-      enabled: null,
       obscureText: obscureText ?? false,
       validator: validator,
       onSaved: onSaved,
@@ -208,8 +241,14 @@ class TextAreaThemed extends StatelessWidget {
 class OutlineButtonLarge extends StatelessWidget {
   final VoidCallback onPressed;
   final Widget child;
+  final Size? size;
+  final Size? maxSize;
   const OutlineButtonLarge(
-      {super.key, required this.child, required this.onPressed});
+      {super.key,
+      required this.child,
+      required this.onPressed,
+      this.size,
+      this.maxSize});
 
   @override
   Widget build(BuildContext context) {
@@ -218,6 +257,8 @@ class OutlineButtonLarge extends StatelessWidget {
       style: OutlinedButton.styleFrom(
         padding: const EdgeInsets.symmetric(horizontal: 28, vertical: 24),
         minimumSize: Size.zero,
+        fixedSize: size,
+        maximumSize: maxSize,
         side: BorderSide(
           width: 1,
           color: Theme.of(context).colorScheme.primary,
@@ -233,8 +274,14 @@ class OutlineButtonLarge extends StatelessWidget {
 class SecondaryButtonMedium extends StatelessWidget {
   final VoidCallback onPressed;
   final Widget child;
+  final Size? size;
+  final Size? maxSize;
   const SecondaryButtonMedium(
-      {super.key, required this.child, required this.onPressed});
+      {super.key,
+      required this.child,
+      required this.onPressed,
+      this.size,
+      this.maxSize});
 
   @override
   Widget build(BuildContext context) {
@@ -244,6 +291,8 @@ class SecondaryButtonMedium extends StatelessWidget {
           backgroundColor: Theme.of(context).colorScheme.secondary,
           padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 20),
           minimumSize: Size.zero,
+          fixedSize: size,
+          maximumSize: maxSize,
           textStyle: const TextStyle(
               fontFamily: "Gotham", fontSize: 16, fontWeight: FontWeight.bold)),
       child: child,

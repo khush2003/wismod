@@ -218,7 +218,7 @@ class SignUpView extends StatelessWidget {
               SizedBox(height: 16),
               OutlineButtonMedium(
                 onPressed: () => Get.toNamed(Routes.login),
-                child: const Text('Lof In'),
+                child: const Text('Log In'),
               ),
             ],
           ),

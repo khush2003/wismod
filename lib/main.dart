@@ -21,7 +21,8 @@ class Application extends StatelessWidget {
       title: 'WisMod',
       theme: AppThemeData.themedata,
       //TODO: Implement Function to route user to login screen if it is not his first time on the app.
-      initialRoute: Routes.onboarding, // Goes to Onboarding Page Initially (We will be using named routes, routes stored in routes.dart)
+      initialRoute: Routes
+          .onboarding, // Goes to Onboarding Page Initially (We will be using named routes, routes stored in routes.dart)
       getPages: getPages,
     );
   }

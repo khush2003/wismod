@@ -3,6 +3,7 @@ import 'package:get/get.dart';
 import 'package:wismod/modules/auth/controllers/log_in_controller.dart';
 import 'package:wismod/theme/global_widgets.dart';
 import 'package:wismod/utils/app_utils.dart';
+import '../../../routes/routes.dart';
 
 class LogInView extends StatelessWidget {
   LogInView({super.key});
@@ -57,7 +58,7 @@ class LogInView extends StatelessWidget {
                 addVerticalSpace(20),
                 Center(
                   child: PrimaryButtonMedium(
-                    onPressed: () {},
+                    onPressed: () => Get.toNamed(Routes.home),
                     size: const Size(170, 40),
                     child: const Text("Login"),
                   ),
@@ -67,7 +68,7 @@ class LogInView extends StatelessWidget {
                     child: OutlineButtonMedium(
                   size: const Size(170, 40),
                   child: const Text("Register"),
-                  onPressed: () {},
+                  onPressed: () => Get.toNamed(Routes.signup),
                 ))
               ],
             ))));

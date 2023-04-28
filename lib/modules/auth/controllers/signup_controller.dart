@@ -3,8 +3,10 @@ import 'package:get/get.dart';
 
 import '../../../routes/routes.dart';
 import '../../../theme/global_widgets.dart';
+import 'auth_controller.dart';
 
 class SignUpController extends GetxController {
+  static SignUpController get instance => Get.find();
   final firstNameController = TextEditingController();
   final lastNameController = TextEditingController();
   final yearController = TextEditingController();
@@ -37,6 +39,57 @@ class SignUpController extends GetxController {
   final emailError = RxString('');
   final passwordError = RxString('');
   final confirmPasswordError = RxString('');
+
+  bool validateInputs() {
+    String? firstNameError = validateFirstName(firstNameController.text);
+    String? lastNameError = validateLastName(lastNameController.text);
+    String? yearError = validateYear(yearController.text);
+    String? emailError = validateEmail(emailController.text);
+    String? passwordError = validatePassword(passwordController.text);
+    String? confirmPasswordError =
+        validateConfirmPassword(confirmPasswordController.text);
+
+    if (firstNameController.text.isEmpty ||
+        lastNameController.text.isEmpty ||
+        yearController.text.isEmpty ||
+        selectedDepartment.value == 'Department' ||
+        emailController.text.isEmpty ||
+        passwordController.text.isEmpty ||
+        confirmPasswordController.text.isEmpty ||
+        firstNameError != null ||
+        lastNameError != null ||
+        yearError != null ||
+        emailError != null ||
+        passwordError != null ||
+        confirmPasswordError != null) {
+      return false;
+    }
+
+    return true;
+  }
+
+  Future<void>? registerUser() async {
+    final email = emailController.text.trim();
+    final password = passwordController.text;
+    if (validateInputs()) {
+      String? error = await AuthController.instance.createUser(email, password);
+      if (error != null) {
+        Get.showSnackbar(GetSnackBar(
+          message: error.toString(),
+          snackPosition: SnackPosition.BOTTOM,
+          backgroundColor: Colors.red,
+        ));
+      }
+    } else {
+      Get.snackbar(
+        'Error',
+        'Please fill in all the fields correctly to create an account.',
+        snackPosition: SnackPosition.BOTTOM,
+        backgroundColor: Colors.red,
+        colorText: Colors.white,
+      );
+    }
+  }
 
   String? validateFirstName(String? value) {
     if (value == null || value.isEmpty) {

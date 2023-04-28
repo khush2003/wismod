@@ -1,3 +1,5 @@
+import 'dart:math';
+
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:wismod/modules/auth/controllers/log_in_controller.dart';
@@ -27,8 +29,9 @@ class LogInView extends StatelessWidget {
               addVerticalSpace(),
               Row(
                 children: [
-                  const Expanded(
+                  Expanded(
                       child: TextFormFeildThemed(
+                          controller: logInController.emailController,
                           hintText: "Enter your email (first part)")),
                   addHorizontalSpace(),
                   Text("@kmutt.ac.th", style: tt.displayLarge)
@@ -44,6 +47,7 @@ class LogInView extends StatelessWidget {
               Obx(
                 () => SizedBox(
                   child: TextFormFeildThemed(
+                      controller: logInController.passwordController,
                       hintText: "Enter your password",
                       enableSuggestions: false,
                       autocorrect: false,
@@ -61,7 +65,7 @@ class LogInView extends StatelessWidget {
               Center(
                 child: SizedBox(
                   child: PrimaryButtonMedium(
-                    onPressed: () => Get.offAllNamed(Routes.home),
+                    onPressed:  () async => await logInController.loginUser(),
                     child: const Text("Log In"),
                   ),
                 ),
@@ -71,7 +75,9 @@ class LogInView extends StatelessWidget {
                 child: SizedBox(
                   child: OutlineButtonMedium(
                     child: const Text("Register"),
-                    onPressed: () => Get.offNamed(Routes.signup),
+                    onPressed: () {
+                      Get.offNamed(Routes.signup);
+                    },
                   ),
                 ),
               ),

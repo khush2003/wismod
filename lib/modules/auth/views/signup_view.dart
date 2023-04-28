@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:get/get.dart';
+import 'package:wismod/utils/app_utils.dart';
 
 import '../../../routes/routes.dart';
 import '../../../theme/global_widgets.dart';
@@ -8,59 +9,9 @@ import '../controllers/signup_controller.dart';
 
 class SignUpView extends StatelessWidget {
   final SignUpController signUpController = Get.put(SignUpController());
-
-  final List<String> departmentOptions = [
-    'Department',
-    'Department of Electrical Engineering',
-    'Department of Computer Engineering',
-    'Department of Electronic and Telecommunication Engineering',
-    'Department of Control System and Instrumentation Engineering',
-    'Department of Mechanical Engineering',
-    'Department of Civil Engineering',
-    'Department of Environmental Engineering',
-    'Department of Practical Lead Production Engineering',
-    'Department of Tool and Material Engineering',
-    'Department of Chemical Engineering',
-    'Department of Food Engineering',
-    'Department of Biological Engineering',
-    'Department of Aquaculture Engineering'
-  ];
-
   final RxString selectedDepartment = RxString('Department');
 
   SignUpView({super.key});
-  bool _validateInputs() {
-    String? firstNameError = signUpController
-        .validateFirstName(signUpController.firstNameController.text);
-    String? lastNameError = signUpController
-        .validateLastName(signUpController.lastNameController.text);
-    String? yearError =
-        signUpController.validateYear(signUpController.yearController.text);
-    String? emailError =
-        signUpController.validateEmail(signUpController.emailController.text);
-    String? passwordError = signUpController
-        .validatePassword(signUpController.passwordController.text);
-    String? confirmPasswordError = signUpController.validateConfirmPassword(
-        signUpController.confirmPasswordController.text);
-
-    if (signUpController.firstNameController.text.isEmpty ||
-        signUpController.lastNameController.text.isEmpty ||
-        signUpController.yearController.text.isEmpty ||
-        signUpController.selectedDepartment.value == 'Department' ||
-        signUpController.emailController.text.isEmpty ||
-        signUpController.passwordController.text.isEmpty ||
-        signUpController.confirmPasswordController.text.isEmpty ||
-        firstNameError != null ||
-        lastNameError != null ||
-        yearError != null ||
-        emailError != null ||
-        passwordError != null ||
-        confirmPasswordError != null) {
-      return false;
-    }
-
-    return true;
-  }
 
   @override
   Widget build(BuildContext context) {
@@ -75,7 +26,7 @@ class SignUpView extends StatelessWidget {
       ),
       body: SingleChildScrollView(
         child: Padding(
-          padding: const EdgeInsets.all(16.0),
+          padding: const EdgeInsets.all(sideWidth),
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
@@ -128,7 +79,8 @@ class SignUpView extends StatelessWidget {
                 child: Form(
                   autovalidateMode: AutovalidateMode.always,
                   child: TextFormFeildThemed(
-                    keyboardType: TextInputType.number, //Open numeric keyboard on mobile
+                    keyboardType:
+                        TextInputType.number, //Open numeric keyboard on mobile
                     inputFormatters: <TextInputFormatter>[
                       FilteringTextInputFormatter.digitsOnly
                     ], //Force input to be numbers only
@@ -153,7 +105,8 @@ class SignUpView extends StatelessWidget {
                     width: MediaQuery.of(context).size.width * 0.5,
                     child: DropdownButtonFormField<String>(
                       value: signUpController.selectedDepartment.value,
-                      items: departmentOptions.map((department) {
+                      items:
+                          signUpController.departmentOptions.map((department) {
                         return DropdownMenuItem(
                           value: department,
                           child: Container(
@@ -295,18 +248,8 @@ class SignUpView extends StatelessWidget {
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
                     PrimaryButtonMedium(
-                      onPressed: () {
-                        if (_validateInputs()) {
-                          Get.toNamed(Routes.verifyemail);
-                        } else {
-                          Get.snackbar(
-                            'Error',
-                            'Please fill in all the fields correctly to create an account.',
-                            snackPosition: SnackPosition.BOTTOM,
-                            backgroundColor: Colors.red,
-                            colorText: Colors.white,
-                          );
-                        }
+                      onPressed: () async {
+                        await signUpController.registerUser();
                       },
                       child: const Text('Create Account'),
                     ),

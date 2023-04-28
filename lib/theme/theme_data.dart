@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
 
 // To use Text theme in widgets or colors in widgets you can use it like this
 // Text("..", style: Theme.of(context).textTheme.displayLarge) DisplayLarge or any other of your choice defined below

@@ -1,8 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
-import '../../../routes/routes.dart';
-import '../../../theme/global_widgets.dart';
 import '../../../utils/app_utils.dart';
 import 'auth_controller.dart';
 

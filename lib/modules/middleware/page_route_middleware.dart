@@ -14,7 +14,7 @@ class AuthManager extends GetMiddleware {
       if (user.emailVerified) {
         return const RouteSettings(name: Routes.allPagesNav);
       } else {
-        return const RouteSettings(name: Routes.login);
+        return const RouteSettings(name: Routes.verifyemail);
       }
     }
 

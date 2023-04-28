@@ -23,9 +23,12 @@ class AuthController extends GetxController {
       await _auth.createUserWithEmailAndPassword(
           email: email, password: password);
       // If account created sucessfully then redirect to verify email page
-      firebaseUser.value != null
-          ? Get.offAllNamed(Routes.verifyemail)
-          : Get.offAllNamed(Routes.onboarding);
+      if (firebaseUser.value != null) {
+        await sendEmailVerification();
+        Get.offAllNamed(Routes.verifyemail);
+      } else {
+        Get.offAllNamed(Routes.onboarding);
+      }
       Get.snackbar("Sucess", "Account Created Sucessfully!",
           snackPosition: SnackPosition.BOTTOM,
           backgroundColor: Colors.green,
@@ -46,7 +49,11 @@ class AuthController extends GetxController {
           snackPosition: SnackPosition.BOTTOM,
           backgroundColor: Colors.green,
           colorText: Colors.white);
-      Get.offAllNamed(Routes.allPagesNav);
+      if (!_auth.currentUser!.emailVerified) {
+        Get.offAllNamed(Routes.verifyemail);
+      } else {
+        Get.offAllNamed(Routes.allPagesNav);
+      }
     } on FirebaseAuthException catch (e) {
       return getAuthErrorMessage(e.code);
     } catch (_) {
@@ -60,6 +67,12 @@ class AuthController extends GetxController {
     Get.offAllNamed(Routes.onboarding);
   }
 
+  Future<void> sendEmailVerification() async {
+    await firebaseUser.value?.sendEmailVerification();
+    Get.snackbar("Sucess", "Email Verification Sent! Please Check your Email",
+        backgroundColor: Colors.green, colorText: Colors.white);
+  }
+
   Future<bool> hasAccount() async {
     return firebaseUser.value != null;
   }
@@ -71,5 +84,15 @@ class AuthController extends GetxController {
       return user.emailVerified;
     }
     return false;
+  }
+
+  Future<void> checkEmailVerified() async {
+    firebaseUser.refresh();
+    await firebaseUser.value?.reload();
+    if (firebaseUser.value != null && firebaseUser.value!.emailVerified) {
+      Get.offAllNamed(Routes.allPagesNav);
+    }
+    Get.snackbar("Incomplete!", "Email has not yet been verified!",
+        snackPosition: SnackPosition.BOTTOM);
   }
 }

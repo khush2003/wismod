@@ -40,6 +40,29 @@ class SignUpController extends GetxController {
   final passwordError = RxString('');
   final confirmPasswordError = RxString('');
 
+Future<void>? registerUser() async {
+    final email = emailController.text.trim();
+    final password = passwordController.text;
+    if (validateInputs()) {
+      String? error = await AuthController.instance.createUser(email, password);
+      if (error != null) {
+        Get.showSnackbar(GetSnackBar(
+          message: error.toString(),
+          snackPosition: SnackPosition.BOTTOM,
+          backgroundColor: Colors.red,
+        ));
+      }
+    } else {
+      Get.snackbar(
+        'Error',
+        'Please fill in all the fields correctly to create an account.',
+        snackPosition: SnackPosition.BOTTOM,
+        backgroundColor: Colors.red,
+        colorText: Colors.white,
+      );
+    }
+  }
+  
   bool validateInputs() {
     String? firstNameError = validateFirstName(firstNameController.text);
     String? lastNameError = validateLastName(lastNameController.text);
@@ -68,28 +91,6 @@ class SignUpController extends GetxController {
     return true;
   }
 
-  Future<void>? registerUser() async {
-    final email = emailController.text.trim();
-    final password = passwordController.text;
-    if (validateInputs()) {
-      String? error = await AuthController.instance.createUser(email, password);
-      if (error != null) {
-        Get.showSnackbar(GetSnackBar(
-          message: error.toString(),
-          snackPosition: SnackPosition.BOTTOM,
-          backgroundColor: Colors.red,
-        ));
-      }
-    } else {
-      Get.snackbar(
-        'Error',
-        'Please fill in all the fields correctly to create an account.',
-        snackPosition: SnackPosition.BOTTOM,
-        backgroundColor: Colors.red,
-        colorText: Colors.white,
-      );
-    }
-  }
 
   String? validateFirstName(String? value) {
     if (value == null || value.isEmpty) {

@@ -1,5 +1,6 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:get/get.dart';
 
 // PrimaryButtonMedium = Button with primary color medium size
@@ -139,6 +140,8 @@ class TextFormFeildThemed extends StatelessWidget {
   final ValueChanged<String>? onChanged;
   final String? errorText;
   final Widget? suffixIcon;
+  final TextInputType? keyboardType;
+  final List<TextInputFormatter>? inputFormatters;
 
   const TextFormFeildThemed(
       {super.key,
@@ -151,7 +154,9 @@ class TextFormFeildThemed extends StatelessWidget {
       this.onSaved,
       this.onChanged,
       this.errorText,
-      this.suffixIcon});
+      this.suffixIcon,
+      this.keyboardType,
+      this.inputFormatters});
 
   @override
   Widget build(BuildContext context) {
@@ -160,6 +165,8 @@ class TextFormFeildThemed extends StatelessWidget {
       key: key,
       autocorrect: autocorrect ?? true,
       enableSuggestions: enableSuggestions ?? true,
+      keyboardType: keyboardType,
+      inputFormatters: inputFormatters,
       decoration: InputDecoration(
           suffixIcon: suffixIcon,
           errorText: errorText,
@@ -197,6 +204,8 @@ class TextAreaThemed extends StatelessWidget {
   final ValueChanged<String>? onChanged;
   final int? minLines;
   final int? maxLines;
+  final TextInputType? keyboardType;
+  final List<TextInputFormatter>? inputFormatters;
 
   const TextAreaThemed(
       {super.key,
@@ -209,7 +218,9 @@ class TextAreaThemed extends StatelessWidget {
       this.validator,
       this.onSaved,
       this.onChanged,
-      this.maxLines});
+      this.maxLines,
+      this.keyboardType,
+      this.inputFormatters});
 
   @override
   Widget build(BuildContext context) {
@@ -218,6 +229,8 @@ class TextAreaThemed extends StatelessWidget {
       key: key,
       autocorrect: autocorrect ?? true,
       enableSuggestions: enableSuggestions ?? true,
+      keyboardType: keyboardType,
+      inputFormatters: inputFormatters,
       decoration: InputDecoration(
           hintText: hintText,
           enabledBorder: OutlineInputBorder(

@@ -61,7 +61,7 @@ class LogInView extends StatelessWidget {
               Center(
                 child: SizedBox(
                   child: PrimaryButtonMedium(
-                    onPressed: () => Get.toNamed(Routes.home),
+                    onPressed: () => Get.offAllNamed(Routes.home),
                     child: const Text("Log In"),
                   ),
                 ),
@@ -71,7 +71,7 @@ class LogInView extends StatelessWidget {
                 child: SizedBox(
                   child: OutlineButtonMedium(
                     child: const Text("Register"),
-                    onPressed: () => Get.toNamed(Routes.signup),
+                    onPressed: () => Get.offNamed(Routes.signup),
                   ),
                 ),
               ),

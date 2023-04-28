@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:get/get.dart';
 
 import '../../../routes/routes.dart';
@@ -64,12 +65,9 @@ class SignUpView extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      // I removed the ios style arrow to go back because we need design to be consistant throughout the app. If you want to make it Ios type arrow, pleease change App Bar theme in theme_data.dart
+      // Also avoid putting a leading back button in AppBar, because flutter automatically adds a leading button (if we come from where we do not allo a back then there will be a problem)
       appBar: AppBar(
-        leading: IconButton(
-          icon: const Icon(Icons.arrow_back_ios),
-          onPressed: () => Get.back(),
-          color: Colors.black,
-        ),
         title: Text(
           "Register",
           style: Theme.of(context).textTheme.titleMedium,
@@ -130,6 +128,10 @@ class SignUpView extends StatelessWidget {
                 child: Form(
                   autovalidateMode: AutovalidateMode.always,
                   child: TextFormFeildThemed(
+                    keyboardType: TextInputType.number, //Open numeric keyboard on mobile
+                    inputFormatters: <TextInputFormatter>[
+                      FilteringTextInputFormatter.digitsOnly
+                    ], //Force input to be numbers only
                     hintText: "Enter your current year of study at KMUTT",
                     controller: signUpController.yearController,
                     validator: signUpController.validateYear,

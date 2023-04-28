@@ -1,6 +1,7 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:wismod/utils/app_utils.dart';
 
 import '../../../routes/routes.dart';
 
@@ -25,15 +26,14 @@ class AuthController extends GetxController {
       firebaseUser.value != null
           ? Get.offAllNamed(Routes.verifyemail)
           : Get.offAllNamed(Routes.onboarding);
-      Get.showSnackbar(const GetSnackBar(
-        message: "Account Created Sucessfully",
-        snackPosition: SnackPosition.BOTTOM,
-        backgroundColor: Colors.green,
-      ));
+      Get.snackbar("Sucess", "Account Created Sucessfully!",
+          snackPosition: SnackPosition.BOTTOM,
+          backgroundColor: Colors.green,
+          colorText: Colors.white);
     } on FirebaseAuthException catch (e) {
-      return e.code;
+      return getAuthErrorMessage(e.code);
     } catch (_) {
-      return "Failure";
+      return "An error occured. Please try again later";
     }
     return null;
   }
@@ -42,14 +42,13 @@ class AuthController extends GetxController {
       String email, String password) async {
     try {
       await _auth.signInWithEmailAndPassword(email: email, password: password);
-      Get.showSnackbar(const GetSnackBar(
-        message: "Login Sucessful",
-        snackPosition: SnackPosition.BOTTOM,
-        backgroundColor: Colors.green,
-      ));
+      Get.snackbar("Sucess", "Login Sucessful",
+          snackPosition: SnackPosition.BOTTOM,
+          backgroundColor: Colors.green,
+          colorText: Colors.white);
       Get.offAllNamed(Routes.allPagesNav);
     } on FirebaseAuthException catch (e) {
-      return e.code;
+      return getAuthErrorMessage(e.code);
     } catch (_) {
       return "Failure";
     }
@@ -60,8 +59,8 @@ class AuthController extends GetxController {
     await _auth.signOut();
     Get.offAllNamed(Routes.onboarding);
   }
-  
-    Future<bool> hasAccount() async {
+
+  Future<bool> hasAccount() async {
     return firebaseUser.value != null;
   }
 

@@ -3,6 +3,7 @@ import 'package:get/get.dart';
 
 import '../../../routes/routes.dart';
 import '../../../theme/global_widgets.dart';
+import '../../../utils/app_utils.dart';
 import 'auth_controller.dart';
 
 class SignUpController extends GetxController {
@@ -40,17 +41,19 @@ class SignUpController extends GetxController {
   final passwordError = RxString('');
   final confirmPasswordError = RxString('');
 
-Future<void>? registerUser() async {
-    final email = emailController.text.trim();
+  Future<void>? registerUser() async {
+    final email = getCorrectEmail(emailController.text.trim());
     final password = passwordController.text;
     if (validateInputs()) {
       String? error = await AuthController.instance.createUser(email, password);
       if (error != null) {
-        Get.showSnackbar(GetSnackBar(
-          message: error.toString(),
+        Get.snackbar(
+          'Error',
+          error.toString(),
           snackPosition: SnackPosition.BOTTOM,
           backgroundColor: Colors.red,
-        ));
+          colorText: Colors.white
+        );
       }
     } else {
       Get.snackbar(
@@ -62,7 +65,7 @@ Future<void>? registerUser() async {
       );
     }
   }
-  
+
   bool validateInputs() {
     String? firstNameError = validateFirstName(firstNameController.text);
     String? lastNameError = validateLastName(lastNameController.text);
@@ -90,7 +93,6 @@ Future<void>? registerUser() async {
 
     return true;
   }
-
 
   String? validateFirstName(String? value) {
     if (value == null || value.isEmpty) {
@@ -136,16 +138,12 @@ Future<void>? registerUser() async {
   }
 
   String? validateEmail(String? value) {
-    final emailPattern =
-        RegExp(r'^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$');
     if (value == null || value.isEmpty) {
       return 'Please enter your email';
-    } else if (!value.endsWith('@kmutt.ac.th')) {
-      return 'Email must end with @kmutt.ac.th';
-    } else if (!emailPattern.hasMatch(value)) {
-      return 'Please enter a valid email address';
     }
-    return null;
+    return checkEmail(emailController.text.trim())
+        ? null
+        : "Please enter a vaild email";
   }
 
   String? validatePassword(String? value) {

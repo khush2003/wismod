@@ -4,7 +4,7 @@ import 'package:wismod/modules/auth/controllers/log_in_controller.dart';
 import 'package:wismod/theme/global_widgets.dart';
 import 'package:wismod/utils/app_utils.dart';
 import '../../../routes/routes.dart';
-
+ //TODO:error code to meaningful text
 class LogInView extends StatelessWidget {
   LogInView({super.key});
   final logInController = Get.put(LogInController());

@@ -15,14 +15,39 @@ class LogInController extends GetxController {
   }
 
   Future<void> loginUser() async {
-    final email = getCorrectEmail(emailController.text.trim());
-    final password = passwordController.text;
-    String? error = await AuthController.instance
-        .loginWithEmailAndPassword(email, password);
-    if (error != null) {
-      Get.showSnackbar(GetSnackBar(
-        message: error.toString(),
-      ));
+    bool vaildEmail = checkEmail(emailController.text.trim());
+    if (vaildEmail) {
+      if (passwordController.text != "") {
+        final email = getCorrectEmail(emailController.text.trim());
+        final password = passwordController.text;
+        String? error = await AuthController.instance
+            .loginWithEmailAndPassword(email, password);
+        if (error != null) {
+          Get.snackbar(
+            "Error!",
+            error.toString(),
+            snackPosition: SnackPosition.BOTTOM,
+            backgroundColor: Colors.red,
+colorText: Colors.white,
+          );
+        }
+      } else {
+        Get.snackbar(
+          "Error!",
+          "Please enter a password",
+          snackPosition: SnackPosition.BOTTOM,
+          backgroundColor: Colors.red,
+colorText: Colors.white,
+        );
+      }
+    } else {
+      Get.snackbar(
+        "Error",
+        "Please enter a vaild Email",
+        snackPosition: SnackPosition.BOTTOM,
+        backgroundColor: Colors.red,
+colorText: Colors.white,
+      );
     }
   }
 }

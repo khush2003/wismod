@@ -60,4 +60,17 @@ class AuthController extends GetxController {
     await _auth.signOut();
     Get.offAllNamed(Routes.onboarding);
   }
+  
+    Future<bool> hasAccount() async {
+    return firebaseUser.value != null;
+  }
+
+  Future<bool> isEmailVerified() async {
+    final user = firebaseUser.value;
+    if (user != null) {
+      await user.reload();
+      return user.emailVerified;
+    }
+    return false;
+  }
 }

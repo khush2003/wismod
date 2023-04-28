@@ -7,6 +7,7 @@ import 'package:image_picker/image_picker.dart';
 
 import '../../../routes/routes.dart';
 import '../../../theme/global_widgets.dart';
+import '../controller/all_pages_nav_controller.dart';
 
 class CreateEventView extends StatefulWidget {
   const CreateEventView({super.key});
@@ -228,12 +229,8 @@ class _CreateEventView extends State<CreateEventView> {
                 child: SizedBox(
                   width: double.infinity,
                   child: PrimaryButtonMedium(
-                    onPressed: () => Get.toNamed(Routes.home),
-                    /*style: ElevatedButton.styleFrom(
-                                  side: const BorderSide(
-                                color: Colors.black, //Set border color
-                                width: 1, //Set border width
-                              )),*/
+                    onPressed: () => Get.offAllNamed(Routes.allPagesNav,
+                        arguments: {'page': Pages.homePage}),
                     child: const Text('Create Event'),
                   ),
                 ),

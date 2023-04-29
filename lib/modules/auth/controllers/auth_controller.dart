@@ -8,27 +8,31 @@ import '../../../routes/routes.dart';
 class AuthController extends GetxController {
   static AuthController get instance => Get.find();
   final FirebaseAuth _auth = FirebaseAuth.instance;
+
+  /// A reactive variable that holds the currently signed-in user
   late Rx<User?> firebaseUser;
 
   @override
   void onInit() {
     super.onInit();
+
+    /// Bind the [firebaseUser] variable to the user changes stream of [_auth]
     firebaseUser = _auth.currentUser.obs;
     firebaseUser.bindStream(_auth.userChanges());
   }
 
+  /// Creates a new user account with the given email and password.
+  ///
+  /// @param email The email address of the new user.
+  /// @param password The password of the new user.
+  /// @return A [Future] that resolves to null if the account was created successfully,
+  /// or a string containing an error message if an error occurred.
   Future<String?> createUser(String email, String password) async {
     try {
       // Authenticate user (Create account)
       await _auth.createUserWithEmailAndPassword(
           email: email, password: password);
-      // If account created sucessfully then redirect to verify email page
-      if (_auth.currentUser != null) {
-        await sendEmailVerification();
-        Get.offAllNamed(Routes.verifyemail);
-      } else {
-        Get.offAllNamed(Routes.onboarding);
-      }
+      Get.offAllNamed(Routes.allPagesNav);
       Get.snackbar("Sucess", "Account Created Sucessfully!",
           snackPosition: SnackPosition.BOTTOM,
           backgroundColor: Colors.green,
@@ -41,6 +45,12 @@ class AuthController extends GetxController {
     return null;
   }
 
+  /// Signs in a user with the given [email] and [password]
+  ///
+  /// @param email The email address of the existing user.
+  /// @param password The password of the existing user.
+  /// @return A [Future] that resolves to null if the login was successful,
+  /// or a string containing an error message if an error occurred.
   Future<String?> loginWithEmailAndPassword(
       String email, String password) async {
     try {
@@ -49,11 +59,7 @@ class AuthController extends GetxController {
           snackPosition: SnackPosition.BOTTOM,
           backgroundColor: Colors.green,
           colorText: Colors.white);
-      if (!_auth.currentUser!.emailVerified) {
-        Get.offAllNamed(Routes.verifyemail);
-      } else {
-        Get.offAllNamed(Routes.allPagesNav);
-      }
+      Get.offAllNamed(Routes.allPagesNav);
     } on FirebaseAuthException catch (e) {
       return getAuthErrorMessage(e.code);
     } catch (_) {
@@ -62,6 +68,9 @@ class AuthController extends GetxController {
     return null;
   }
 
+  /// Logs out the current user.
+  ///
+  /// @return A [Future] that resolves when the user is logged out.
   Future<void> logout() async {
     await _auth.signOut();
     Get.offAllNamed(Routes.onboarding);
@@ -73,25 +82,8 @@ class AuthController extends GetxController {
         backgroundColor: Colors.green, colorText: Colors.white);
   }
 
+  /// Checks whether there is a currently signed-in user
   Future<bool> hasAccount() async {
     return _auth.currentUser != null;
-  }
-
-  Future<bool> isEmailVerified() async {
-    final user = _auth.currentUser;
-    if (user != null) {
-      await user.reload();
-      return user.emailVerified;
-    }
-    return false;
-  }
-
-  Future<void> checkEmailVerified() async {
-    await _auth.currentUser?.reload();
-    if (_auth.currentUser != null && _auth.currentUser!.emailVerified) {
-      Get.offAllNamed(Routes.allPagesNav);
-    }
-    Get.snackbar("Incomplete!", "Email has not yet been verified!",
-        snackPosition: SnackPosition.BOTTOM);
   }
 }

@@ -12,7 +12,7 @@ import 'package:get/get.dart';
 // TextAreaThemed = Multiline TextFormFeild in App style
 // ThemedSwitch, ThemedSwitchController = Switch toggle
 // How to use ThemedSwitch?
-// final thc = Get.put(ThemedSwitchController()); outside build function but inside Class, best to write after super({key}); statement
+// final thc = Get.put(ThemedSwitchController());
 // Column( children: [ThemedSwitch(),
 // Obx(() => Text(thc.isOn.value.toString()))]) in Scaffold body (This line shows the value)
 
@@ -105,8 +105,6 @@ class OutlineButtonMedium extends StatelessWidget {
   }
 }
 
-// TODO: DropdownMenuThemed
-
 class ThemedSwitch extends StatelessWidget {
   ThemedSwitch({super.key});
   final themedSwtichController = Get.put(ThemedSwitchController());
@@ -119,6 +117,10 @@ class ThemedSwitch extends StatelessWidget {
           themedSwtichController.toggleSwitch();
         },
         value: themedSwtichController.isOn.value));
+  }
+
+  bool getSwitchValue() {
+    return themedSwtichController.isOn.value;
   }
 }
 

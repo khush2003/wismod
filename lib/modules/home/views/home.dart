@@ -1,13 +1,14 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:wismod/modules/home/controller/home_controller.dart';
 import 'package:wismod/utils/app_utils.dart';
 
 import '../../../routes/routes.dart';
 import '../../../theme/global_widgets.dart';
 
 class HomeView extends StatelessWidget {
-  const HomeView({super.key});
-
+  HomeView({super.key}); 
+  final homeController = Get.put(HomeController());
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -31,7 +32,11 @@ class HomeView extends StatelessWidget {
                   child: const Text('Create Event'),
                 ),
               ),
-            )
+            ),
+            addVerticalSpace(),
+            PrimaryButtonMedium(
+                child: const Text("Log Out (Checking)"),
+                onPressed: () => homeController.logOut())
           ],
         ),
       ),

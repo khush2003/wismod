@@ -16,11 +16,11 @@ class AllPagesNav extends StatelessWidget {
         body: SafeArea(
             child: Obx(() => IndexedStack(
                   index: k.tabIndex.value,
-                  children: const [
+                  children: [
                     HomeView(),
-                    ChatRoomView(),
-                    DashboardView(),
-                    SettingsView()
+                    const ChatRoomView(),
+                    const DashboardView(),
+                    const SettingsView()
                   ],
                 ))),
         bottomNavigationBar: Obx(

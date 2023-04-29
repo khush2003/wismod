@@ -1,48 +1,18 @@
-import 'dart:io';
-
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:get/get.dart';
-import 'package:image_picker/image_picker.dart';
+import 'package:wismod/modules/home/controller/create_event_controller.dart';
 // import 'package:image_picker_windows/image_picker_windows.dart';
 
 import '../../../routes/routes.dart';
 import '../../../theme/global_widgets.dart';
 import '../controller/all_pages_nav_controller.dart';
 
-class CreateEventView extends StatefulWidget {
-  const CreateEventView({super.key});
-
-  @override
-  State<CreateEventView> createState() => _CreateEventView();
-}
-
-class _CreateEventView extends State<CreateEventView> {
-  File? image;
-
-  Future pickImage() async {
-    // ImagePicker For Phone
-    final image = await ImagePicker().pickImage(source: ImageSource.gallery);
-
-    // ImagePicker For Windows
-    /*final image =
-        await ImagePickerWindows().pickImage(source: ImageSource.gallery);*/
-
-    if (image == null) return;
-
-    final imageTemporary = File(image.path);
-    setState(() => this.image = imageTemporary);
-  }
-
-  final TextEditingController eventNameController = TextEditingController();
-  final TextEditingController eventDetailController = TextEditingController();
-  final TextEditingController eventAmountOfNumberController =
-      TextEditingController();
-  final TextEditingController eventLocationController = TextEditingController();
-  final TextEditingController eventTagsController = TextEditingController();
-
-  DateTime dateTime = DateTime(2023, 1, 1);
-
-  bool autoJoin = true;
+class CreateEventView extends StatelessWidget {
+  CreateEventView({super.key});
+  final createViewController = Get.put(CreateEventController());
+  final themedSwitch = ThemedSwitch();
+  // To get the value of the switch use themedSwitch.getSwitchValue()
 
   @override
   Widget build(BuildContext context) {
@@ -67,7 +37,8 @@ class _CreateEventView extends State<CreateEventView> {
               Padding(
                 padding: const EdgeInsets.fromLTRB(14.0, 0.0, 14.0, 16.0),
                 child: TextFormFeildThemed(
-                    hintText: "Event's Name", controller: eventNameController),
+                    hintText: "Event's Name",
+                    controller: createViewController.eventNameController),
               ),
               // Image Picker (WIP)
               Padding(
@@ -76,20 +47,21 @@ class _CreateEventView extends State<CreateEventView> {
                   width: double.infinity,
                   // Button Height Change Here
                   height: 250,
-                  child: OutlinedButton.icon(
-                    icon: image != null
-                        ? Image.file(
-                            image!,
-                            fit: BoxFit.cover,
-                          )
-                        : const Icon(Icons.image_outlined),
-                    //icon: const Icon(Icons.image_outlined),
-                    onPressed: () => pickImage(),
-                    label: const Text(''),
-                    style: ElevatedButton.styleFrom(
-                      side: const BorderSide(
-                        color: Colors.black, //Set border color
-                        width: 1, //Set border width
+                  child: Obx(
+                    () => OutlinedButton.icon(
+                      icon: createViewController.imageUrl.value == ''
+                          ? const Icon(Icons.image_outlined)
+                          : Image.network(
+                              createViewController.imageUrl.value,
+                              fit: BoxFit.cover,
+                            ),
+                      onPressed: () => createViewController.uploadImage(),
+                      label: const Text(''),
+                      style: ElevatedButton.styleFrom(
+                        side: const BorderSide(
+                          color: Colors.black, //Set border color
+                          width: 1, //Set border width
+                        ),
                       ),
                     ),
                   ),
@@ -106,9 +78,9 @@ class _CreateEventView extends State<CreateEventView> {
               // Change BoxSize (WIP) later
               Padding(
                 padding: const EdgeInsets.fromLTRB(14.0, 0.0, 14.0, 16.0),
-                child: TextFormFeildThemed(
+                child: TextAreaThemed(
                   hintText: "Event's Detail",
-                  controller: eventDetailController,
+                  controller: createViewController.eventDetailController,
                 ),
               ),
               Padding(
@@ -121,8 +93,13 @@ class _CreateEventView extends State<CreateEventView> {
               Padding(
                 padding: const EdgeInsets.fromLTRB(14.0, 0.0, 14.0, 16.0),
                 child: TextFormFeildThemed(
+                  keyboardType: TextInputType.number,
+                  inputFormatters: <TextInputFormatter>[
+                    FilteringTextInputFormatter.digitsOnly
+                  ],
                   hintText: "2 - 500",
-                  controller: eventAmountOfNumberController,
+                  controller:
+                      createViewController.eventAmountOfNumberController,
                 ),
               ),
               Padding(
@@ -136,13 +113,13 @@ class _CreateEventView extends State<CreateEventView> {
                 padding: const EdgeInsets.fromLTRB(14.0, 0.0, 14.0, 16.0),
                 child: TextFormFeildThemed(
                   hintText: "Location",
-                  controller: eventLocationController,
+                  controller: createViewController.eventLocationController,
                 ),
               ),
               Padding(
                 padding: const EdgeInsets.fromLTRB(14.0, 0.0, 14.0, 8.0),
                 child: Text(
-                  'Date',
+                  'Date of event',
                   style: Theme.of(context).textTheme.displayLarge,
                 ),
               ),
@@ -154,10 +131,7 @@ class _CreateEventView extends State<CreateEventView> {
                   height: 47,
                   child: OutlinedButton(
                     onPressed: () async {
-                      final date = await pickDate();
-                      if (date == null) return;
-
-                      setState(() => dateTime = date);
+                      createViewController.pickDate(context);
                     },
                     style: ElevatedButton.styleFrom(
                       side: const BorderSide(
@@ -165,9 +139,11 @@ class _CreateEventView extends State<CreateEventView> {
                         width: 1, //Set border width
                       ),
                     ),
-                    child: Text(
-                      '${dateTime.day} / ${dateTime.month} / ${dateTime.year}',
-                      style: Theme.of(context).textTheme.displayLarge,
+                    child: Obx(
+                      () => Text(
+                        '${createViewController.dateTime.value.day} / ${createViewController.dateTime.value.month} / ${createViewController.dateTime.value.year}',
+                        style: Theme.of(context).textTheme.displayLarge,
+                      ),
                     ),
                   ),
                 ),
@@ -204,7 +180,7 @@ class _CreateEventView extends State<CreateEventView> {
                 padding: const EdgeInsets.fromLTRB(14.0, 0.0, 14.0, 16.0),
                 child: TextFormFeildThemed(
                   hintText: "Add a Tags",
-                  controller: eventTagsController,
+                  controller: createViewController.eventTagsController,
                 ),
               ),
               // AutoJoin Switch (WIP)later
@@ -214,7 +190,7 @@ class _CreateEventView extends State<CreateEventView> {
                 child: Row(
                   crossAxisAlignment: CrossAxisAlignment.center,
                   children: [
-                    buildSwitch(),
+                    themedSwitch,
                     Text(
                       'Allow Automatic Join',
                       style: Theme.of(context).textTheme.displayLarge,
@@ -241,16 +217,4 @@ class _CreateEventView extends State<CreateEventView> {
       ),
     );
   }
-
-  Widget buildSwitch() => Switch.adaptive(
-        value: autoJoin,
-        onChanged: (autoJoin) => setState(() => this.autoJoin = autoJoin),
-      );
-
-  Future<DateTime?> pickDate() => showDatePicker(
-        context: context,
-        initialDate: dateTime,
-        firstDate: DateTime(2023),
-        lastDate: DateTime(2099),
-      );
 }

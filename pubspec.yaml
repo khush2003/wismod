@@ -41,6 +41,7 @@ dependencies:
   firebase_ui_auth: ^1.2.2
   image_picker: ^0.8.7+4
   image_picker_windows: ^0.1.0+6
+  firebase_storage: ^11.1.1
 
 dev_dependencies:
   flutter_test:

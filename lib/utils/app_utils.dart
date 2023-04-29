@@ -2,20 +2,30 @@ import 'package:flutter/material.dart';
 
 const double sideWidth = 20;
 
+/// Returns a SizedBox widget with a specified height [gap].
+/// By default, [gap] is set to 10.
 SizedBox addVerticalSpace([double gap = 10]) {
   return SizedBox(height: gap);
 }
 
+/// Returns a SizedBox widget with a specified width [gap].
+/// By default, [gap] is set to 10.
 SizedBox addHorizontalSpace([double gap = 10]) {
   return SizedBox(width: gap);
 }
 
+/// Checks if a given email [input] is valid (is ending with @kmutt.ac.th or does not have a @....).
+/// Returns a boolean indicating whether the email is valid or not.
 bool checkEmail(String input) {
   RegExp regex =
       RegExp(r'^[a-zA-Z0-9._%+-]+(@kmutt\.ac\.th)?$', caseSensitive: false);
   return regex.hasMatch(input);
 }
 
+/// Returns the correct email address by appending '@kmutt.ac.th'
+/// Does not check if email is correct (for that use checkEmail method)
+/// if the input email [input] does not already contain '@'.
+/// Otherwise, it returns the input email as is.
 String getCorrectEmail(String input) {
   if (!input.contains('@')) {
     return '$input@kmutt.ac.th';
@@ -23,6 +33,9 @@ String getCorrectEmail(String input) {
     return input;
   }
 }
+
+/// Returns an error message corresponding to the given [errorCode].
+/// This function is specifically designed to handle Firebase authentication errors.
 String getAuthErrorMessage(String errorCode) {
   switch (errorCode) {
     // Sign in errors

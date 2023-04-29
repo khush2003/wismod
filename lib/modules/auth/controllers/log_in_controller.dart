@@ -41,7 +41,7 @@ class LogInController extends GetxController {
     } else {
       Get.snackbar(
         "Error",
-        "Please enter a vaild Email",
+        "Please enter a vaild Email without a domain (no @...) or with @kmutt.ac.th",
         snackPosition: SnackPosition.BOTTOM,
         backgroundColor: Colors.red,
         colorText: Colors.white,

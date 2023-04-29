@@ -8,7 +8,7 @@ class LogInController extends GetxController {
 
   final emailController = TextEditingController();
   final passwordController = TextEditingController();
-
+  final _auth = AuthController.instance;
   void toogleVisible() {
     isvisible(!isvisible.value);
   }
@@ -19,15 +19,14 @@ class LogInController extends GetxController {
       if (passwordController.text != "") {
         final email = getCorrectEmail(emailController.text.trim());
         final password = passwordController.text;
-        String? error = await AuthController.instance
-            .loginWithEmailAndPassword(email, password);
+        String? error = await _auth.loginWithEmailAndPassword(email, password);
         if (error != null) {
           Get.snackbar(
             "Error!",
             error.toString(),
             snackPosition: SnackPosition.BOTTOM,
             backgroundColor: Colors.red,
-colorText: Colors.white,
+            colorText: Colors.white,
           );
         }
       } else {
@@ -36,7 +35,7 @@ colorText: Colors.white,
           "Please enter a password",
           snackPosition: SnackPosition.BOTTOM,
           backgroundColor: Colors.red,
-colorText: Colors.white,
+          colorText: Colors.white,
         );
       }
     } else {
@@ -45,7 +44,7 @@ colorText: Colors.white,
         "Please enter a vaild Email",
         snackPosition: SnackPosition.BOTTOM,
         backgroundColor: Colors.red,
-colorText: Colors.white,
+        colorText: Colors.white,
       );
     }
   }

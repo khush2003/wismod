@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:get/get_navigation/src/root/get_material_app.dart';
 import 'package:wismod/firebase_options.dart';
 import 'package:wismod/initial_bindings.dart';
+import 'package:wismod/modules/auth/controllers/auth_controller.dart';
 import 'package:wismod/routes/routes.dart';
 import 'package:wismod/theme/theme_data.dart';
 import 'package:get/get.dart';
@@ -11,6 +12,7 @@ void main() async {
   // Initializing Firebase
   WidgetsFlutterBinding.ensureInitialized();
   await Firebase.initializeApp(options: DefaultFirebaseOptions.currentPlatform);
+  Get.put(AuthController());
   runApp(const Application());
 }
 

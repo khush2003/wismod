@@ -11,8 +11,8 @@ class AuthController extends GetxController {
   late Rx<User?> firebaseUser;
 
   @override
-  void onReady() {
-    super.onReady();
+  void onInit() {
+    super.onInit();
     firebaseUser = _auth.currentUser.obs;
     firebaseUser.bindStream(_auth.userChanges());
   }
@@ -23,7 +23,7 @@ class AuthController extends GetxController {
       await _auth.createUserWithEmailAndPassword(
           email: email, password: password);
       // If account created sucessfully then redirect to verify email page
-      if (firebaseUser.value != null) {
+      if (_auth.currentUser != null) {
         await sendEmailVerification();
         Get.offAllNamed(Routes.verifyemail);
       } else {
@@ -68,17 +68,17 @@ class AuthController extends GetxController {
   }
 
   Future<void> sendEmailVerification() async {
-    await firebaseUser.value?.sendEmailVerification();
+    await _auth.currentUser?.sendEmailVerification();
     Get.snackbar("Sucess", "Email Verification Sent! Please Check your Email",
         backgroundColor: Colors.green, colorText: Colors.white);
   }
 
   Future<bool> hasAccount() async {
-    return firebaseUser.value != null;
+    return _auth.currentUser != null;
   }
 
   Future<bool> isEmailVerified() async {
-    final user = firebaseUser.value;
+    final user = _auth.currentUser;
     if (user != null) {
       await user.reload();
       return user.emailVerified;
@@ -87,9 +87,8 @@ class AuthController extends GetxController {
   }
 
   Future<void> checkEmailVerified() async {
-    firebaseUser.refresh();
-    await firebaseUser.value?.reload();
-    if (firebaseUser.value != null && firebaseUser.value!.emailVerified) {
+    await _auth.currentUser?.reload();
+    if (_auth.currentUser != null && _auth.currentUser!.emailVerified) {
       Get.offAllNamed(Routes.allPagesNav);
     }
     Get.snackbar("Incomplete!", "Email has not yet been verified!",

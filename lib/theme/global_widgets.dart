@@ -37,6 +37,7 @@ class PrimaryButtonMedium extends StatelessWidget {
           maximumSize: maxSize,
           padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 20),
           minimumSize: Size.zero,
+          disabledBackgroundColor: Colors.grey,
           textStyle: const TextStyle(
               fontFamily: "Gotham", fontSize: 16, fontWeight: FontWeight.bold)),
       child: child,

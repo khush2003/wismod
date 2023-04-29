@@ -38,20 +38,18 @@ class SignUpController extends GetxController {
   final emailError = RxString('');
   final passwordError = RxString('');
   final confirmPasswordError = RxString('');
+  final _auth = AuthController.instance;
 
   Future<void>? registerUser() async {
     final email = getCorrectEmail(emailController.text.trim());
     final password = passwordController.text;
     if (validateInputs()) {
-      String? error = await AuthController.instance.createUser(email, password);
+      String? error = await _auth.createUser(email, password);
       if (error != null) {
-        Get.snackbar(
-          'Error',
-          error.toString(),
-          snackPosition: SnackPosition.BOTTOM,
-          backgroundColor: Colors.red,
-          colorText: Colors.white
-        );
+        Get.snackbar('Error', error.toString(),
+            snackPosition: SnackPosition.BOTTOM,
+            backgroundColor: Colors.red,
+            colorText: Colors.white);
       }
     } else {
       Get.snackbar(

@@ -25,8 +25,10 @@ class CreateEventController extends GetxController {
     if (image != null) {
       var file = File(image.path);
       //Upload to Firebase
-      var snapshot =
-          await _firebaseStorage.ref().child('images/imageName').putFile(file);
+      var snapshot = await _firebaseStorage
+          .ref()
+          .child('images/${image.name}')
+          .putFile(file);
       var downloadUrl = await snapshot.ref.getDownloadURL();
       imageUrl(downloadUrl);
     } else {

@@ -12,14 +12,18 @@ class SettingsView extends StatelessWidget {
     return Scaffold(
       appBar: AppBar(title: const Text("Settings")),
       body: SingleChildScrollView(
-          child: PrimaryButtonMedium(
+          child: Column(
+            children: [
+              PrimaryButtonMedium(
         child: const Text("Accounts"),
         onPressed: () {
-          // Get.toNamed(Routes.accounts);
-          // Get.offAllNamed(Routes.accounts);
-          // Get.offNamed(Routes.accounts);
+              // Get.toNamed(Routes.accounts);
+              // Get.offAllNamed(Routes.accounts);
+              // Get.offNamed(Routes.accounts);
         },
-      )),
+      ),
+            ],
+          )),
     );
   }
 }

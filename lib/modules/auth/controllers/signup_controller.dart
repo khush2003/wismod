@@ -14,8 +14,8 @@ class SignUpController extends GetxController {
   final confirmPasswordController = TextEditingController();
 
   final departmentOptions = [
-    'School of Information Technology',
     'Department',
+    'School of Information Technology',
     'Department of Electrical Engineering',
     'Department of Computer Engineering',
     'Department of Electronic and Telecommunication Engineering',

@@ -65,9 +65,13 @@ class AppThemeData {
             shape: const RoundedRectangleBorder(
                 borderRadius: BorderRadius.all(Radius.circular(5))))),
     // Bottom Nav Theme
-    bottomNavigationBarTheme: const BottomNavigationBarThemeData(
-        backgroundColor: Color.fromARGB(255, 236, 228, 252),
-        selectedItemColor: Color.fromRGBO(123, 56, 255, 1)),
+    navigationBarTheme: const NavigationBarThemeData(
+        backgroundColor: Color.fromRGBO(236, 228, 252, 1),
+        indicatorColor: Color.fromARGB(255, 254, 163, 196),
+        height: 90,
+        labelTextStyle: MaterialStatePropertyAll(TextStyle(
+            fontFamily: "Gotham", fontSize: 10, fontWeight: FontWeight.bold))),
+
     // AppBar Theme (Make it Transparent)
     appBarTheme: const AppBarTheme(
       backgroundColor: Colors.white,

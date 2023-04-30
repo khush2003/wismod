@@ -24,20 +24,16 @@ class AllPagesNav extends StatelessWidget {
                   ],
                 ))),
         bottomNavigationBar: Obx(
-          () => BottomNavigationBar(
-              unselectedItemColor: Colors.black,
-              onTap: k.changeTabIndex,
-              currentIndex: k.tabIndex.value,
-              showSelectedLabels: true,
-              showUnselectedLabels: true,
-              elevation: 0,
-              items: const [
-                BottomNavigationBarItem(icon: Icon(Icons.home), label: "Home"),
-                BottomNavigationBarItem(
+          () => NavigationBar(
+              onDestinationSelected: k.changeTabIndex,
+              selectedIndex: k.tabIndex.value,
+              destinations: const [
+                NavigationDestination(icon: Icon(Icons.home), label: "Home"),
+                NavigationDestination(
                     icon: Icon(Icons.chat_rounded), label: "Chat"),
-                BottomNavigationBarItem(
+                NavigationDestination(
                     icon: Icon(Icons.dashboard), label: "Dashboard"),
-                BottomNavigationBarItem(
+                NavigationDestination(
                     icon: Icon(Icons.settings), label: "Settings")
               ]),
         ));

@@ -79,13 +79,14 @@ class OutlineButtonMedium extends StatelessWidget {
   final Size? size;
   final Size? maxSize;
   final TextStyle? textStyle;
-  const OutlineButtonMedium(
-      {super.key,
-      required this.child,
-      required this.onPressed,
-      this.size,
-      this.maxSize,
-      this.textStyle});
+  const OutlineButtonMedium({
+    super.key,
+    required this.child,
+    required this.onPressed,
+    this.size,
+    this.maxSize,
+    this.textStyle,
+  });
 
   @override
   Widget build(BuildContext context) {

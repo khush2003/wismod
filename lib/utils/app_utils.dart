@@ -3,15 +3,63 @@ import 'package:flutter/material.dart';
 const double sideWidth = 20;
 
 /// Returns a SizedBox widget with a specified height [gap].
-/// By default, [gap] is set to 10.
-SizedBox addVerticalSpace([double gap = 10]) {
+/// By default, [gap] is set to 8.
+SizedBox addVerticalSpace([double gap = 8]) {
   return SizedBox(height: gap);
 }
 
 /// Returns a SizedBox widget with a specified width [gap].
-/// By default, [gap] is set to 10.
-SizedBox addHorizontalSpace([double gap = 10]) {
+/// By default, [gap] is set to 8.
+SizedBox addHorizontalSpace([double gap = 8]) {
   return SizedBox(width: gap);
+}
+
+String formatDate(DateTime date) {
+  String month;
+  switch (date.month) {
+    case 1:
+      month = 'January';
+      break;
+    case 2:
+      month = 'February';
+      break;
+    case 3:
+      month = 'March';
+      break;
+    case 4:
+      month = 'April';
+      break;
+    case 5:
+      month = 'May';
+      break;
+    case 6:
+      month = 'June';
+      break;
+    case 7:
+      month = 'July';
+      break;
+    case 8:
+      month = 'August';
+      break;
+    case 9:
+      month = 'September';
+      break;
+    case 10:
+      month = 'October';
+      break;
+    case 11:
+      month = 'November';
+      break;
+    case 12:
+      month = 'December';
+      break;
+    default:
+      month = 'January';
+      break;
+  }
+  String formattedDate =
+      "${date.day.toString().padLeft(2, '0')}-$month-${date.year}";
+  return formattedDate;
 }
 
 /// Checks if a given email [input] is valid (is ending with @kmutt.ac.th or does not have a @....).

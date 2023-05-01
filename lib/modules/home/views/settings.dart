@@ -16,7 +16,11 @@ class SettingsView extends StatelessWidget {
       appBar: AppBar(
         title: const Text(
           "Settings",
-          style: TextStyle(fontSize: 40, color: Colors.white),
+          style: TextStyle(
+              fontFamily: "Gotham",
+              fontWeight: FontWeight.bold,
+              fontSize: 32,
+              color: Color.fromARGB(255, 255, 255, 255)),
         ),
         centerTitle: true,
         backgroundColor: const Color.fromRGBO(201, 173, 255, 1),
@@ -36,8 +40,12 @@ class SettingsView extends StatelessWidget {
                   child: SizedBox(
                     width: double.infinity,
                     child: OutlineButtonMedium(
-                      child:
-                          const Text("Account", style: TextStyle(fontSize: 24)),
+                      child: const Text("Account",
+                          style: TextStyle(
+                              fontFamily: "Gotham",
+                              fontWeight: FontWeight.w500,
+                              fontSize: 20,
+                              color: Color.fromRGBO(123, 56, 255, 1))),
                       onPressed: () {
                         Get.toNamed(Routes.accounts);
                         // Get.offAllNamed(Routes.accounts);
@@ -52,7 +60,11 @@ class SettingsView extends StatelessWidget {
                     width: double.infinity,
                     child: OutlineButtonMedium(
                       child: const Text("Notification",
-                          style: TextStyle(fontSize: 24)),
+                          style: TextStyle(
+                              fontFamily: "Gotham",
+                              fontWeight: FontWeight.w500,
+                              fontSize: 20,
+                              color: Color.fromRGBO(123, 56, 255, 1))),
                       onPressed: () {
                         // Get.toNamed(Routes.accounts);
                         // Get.offAllNamed(Routes.accounts);
@@ -62,11 +74,16 @@ class SettingsView extends StatelessWidget {
                   ),
                 ),
                 Padding(
-                  padding: const EdgeInsets.fromLTRB(30.0, 0.0, 30.0, 20.0),
+                  padding: const EdgeInsets.fromLTRB(50.0, 0.0, 50.0, 16.0),
                   child: SizedBox(
                     width: double.infinity,
                     child: OutlineButtonMedium(
-                      child: const Text("Help", style: TextStyle(fontSize: 24)),
+                      child: const Text("Help",
+                          style: TextStyle(
+                              fontFamily: "Gotham",
+                              fontWeight: FontWeight.w500,
+                              fontSize: 20,
+                              color: Color.fromRGBO(123, 56, 255, 1))),
                       onPressed: () {
                         // Get.toNamed(Routes.accounts);
                         // Get.offAllNamed(Routes.accounts);
@@ -81,7 +98,11 @@ class SettingsView extends StatelessWidget {
                     width: double.infinity,
                     child: OutlineButtonMedium(
                       child: const Text("Block list",
-                          style: TextStyle(fontSize: 24)),
+                          style: TextStyle(
+                              fontFamily: "Gotham",
+                              fontWeight: FontWeight.w500,
+                              fontSize: 20,
+                              color: Color.fromRGBO(123, 56, 255, 1))),
                       onPressed: () {
                         // Get.toNamed(Routes.accounts);
                         // Get.offAllNamed(Routes.accounts);
@@ -109,37 +130,55 @@ class AlertLogOut extends StatelessWidget {
   Widget build(BuildContext context) {
     return SizedBox(
       width: double.infinity,
-      child: OutlineButtonMedium(
+      child: PrimaryButtonMedium(
         onPressed: () => showDialog(
           context: context,
           builder: (BuildContext context) => AlertDialog(
             // contentPadding: EdgeInsets.all(24.0),
             title: const Text('Do you want to logout?',
-                style: TextStyle(fontSize: 32)),
+                style: TextStyle(
+                    fontFamily: "Gotham",
+                    fontWeight: FontWeight.bold,
+                    fontSize: 32,
+                    color: Colors.black)),
             // content: const Text('AlertDialog description'),
             actions: [
               Row(
                 mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                 children: <Widget>[
                   Padding(
-                      padding: const EdgeInsets.fromLTRB(0.0, 0.0, 0.0, 10.0),
+                      padding: const EdgeInsets.fromLTRB(0.0, 0.0, 0.0, 20.0),
                       child: OutlineButtonMedium(
                         onPressed: () => Navigator.pop(context, 'Cancel'),
-                        child: const Text('No', style: TextStyle(fontSize: 32)),
+                        child: const Text('No',
+                            style: TextStyle(
+                                fontFamily: "Gotham",
+                                fontWeight: FontWeight.bold,
+                                fontSize: 32,
+                                color: Color.fromRGBO(123, 56, 255, 1))),
                       )),
                   Padding(
-                      padding: const EdgeInsets.fromLTRB(0.0, 0.0, 0.0, 10.0),
+                      padding: const EdgeInsets.fromLTRB(0.0, 0.0, 0.0, 20.0),
                       child: OutlineButtonMedium(
                         onPressed: () async => await _auth.logout(),
-                        child:
-                            const Text('Yes', style: TextStyle(fontSize: 32)),
+                        child: const Text('Yes',
+                            style: TextStyle(
+                                fontFamily: "Gotham",
+                                fontWeight: FontWeight.bold,
+                                fontSize: 32,
+                                color: Color.fromRGBO(123, 56, 255, 1))),
                       )),
                 ],
               ),
             ],
           ),
         ),
-        child: const Text("Log out", style: TextStyle(fontSize: 24)),
+        child: const Text("Log out",
+            style: TextStyle(
+                fontFamily: "Gotham",
+                fontWeight: FontWeight.w500,
+                fontSize: 20,
+                color: Color.fromARGB(255, 255, 255, 255))),
       ),
     );
   }

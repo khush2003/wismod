@@ -66,7 +66,7 @@ class SettingsView extends StatelessWidget {
                               fontSize: 20,
                               color: Color.fromRGBO(123, 56, 255, 1))),
                       onPressed: () {
-                        // Get.toNamed(Routes.accounts);
+                        Get.toNamed(Routes.notficaition);
                         // Get.offAllNamed(Routes.accounts);
                         // Get.offNamed(Routes.accounts);
                       },

@@ -1,8 +1,11 @@
+import 'dart:html';
+
 import 'package:get/get.dart';
 import 'package:wismod/modules/auth/views/log_in_view.dart';
 import 'package:wismod/modules/auth/views/signup_view.dart';
 import 'package:wismod/modules/home/views/accounts_view.dart';
 import 'package:wismod/modules/home/views/all_pages_nav.dart';
+import 'package:wismod/modules/home/views/notification_view.dart';
 import 'package:wismod/modules/home/views/password_view.dart';
 import '../modules/home/views/onboarding.dart';
 import '../modules/home/views/create_event.dart';
@@ -17,6 +20,7 @@ abstract class Routes {
   static const String createEvent = '/createEvent';
   static const String accounts = '/accounts';
   static const String password = '/password';
+  static const String notficaition = '/notficaition';
   // Add page string (route) here
 }
 
@@ -31,5 +35,6 @@ final getPages = [
   GetPage(name: Routes.createEvent, page: () => CreateEventView()),
   GetPage(name: Routes.accounts, page: () => const AccountsView()),
   GetPage(name: Routes.password, page: () => const PassWordView()),
+  GetPage(name: Routes.notficaition, page: () => const NotificationView()),
   // Initialize route here
 ];

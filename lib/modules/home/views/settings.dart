@@ -19,7 +19,7 @@ class SettingsView extends StatelessWidget {
           style: TextStyle(fontSize: 40, color: Colors.white),
         ),
         centerTitle: true,
-        backgroundColor: const Color.fromARGB(255, 200, 144, 218),
+        backgroundColor: const Color.fromRGBO(201, 173, 255, 1),
         toolbarHeight: 100,
         shape: const RoundedRectangleBorder(
             borderRadius: BorderRadius.vertical(bottom: Radius.circular(30))),
@@ -32,7 +32,7 @@ class SettingsView extends StatelessWidget {
                 child: Column(
               children: [
                 Padding(
-                  padding: const EdgeInsets.fromLTRB(50.0, 0.0, 50.0, 20.0),
+                  padding: const EdgeInsets.fromLTRB(30.0, 0.0, 30.0, 20.0),
                   child: SizedBox(
                     width: double.infinity,
                     child: OutlineButtonMedium(
@@ -47,7 +47,7 @@ class SettingsView extends StatelessWidget {
                   ),
                 ),
                 Padding(
-                  padding: const EdgeInsets.fromLTRB(50.0, 0.0, 50.0, 20.0),
+                  padding: const EdgeInsets.fromLTRB(30.0, 0.0, 30.0, 20.0),
                   child: SizedBox(
                     width: double.infinity,
                     child: OutlineButtonMedium(
@@ -62,7 +62,7 @@ class SettingsView extends StatelessWidget {
                   ),
                 ),
                 Padding(
-                  padding: const EdgeInsets.fromLTRB(50.0, 0.0, 50.0, 20.0),
+                  padding: const EdgeInsets.fromLTRB(30.0, 0.0, 30.0, 20.0),
                   child: SizedBox(
                     width: double.infinity,
                     child: OutlineButtonMedium(
@@ -76,7 +76,7 @@ class SettingsView extends StatelessWidget {
                   ),
                 ),
                 Padding(
-                  padding: const EdgeInsets.fromLTRB(50.0, 0.0, 50.0, 20.0),
+                  padding: const EdgeInsets.fromLTRB(30.0, 0.0, 30.0, 20.0),
                   child: SizedBox(
                     width: double.infinity,
                     child: OutlineButtonMedium(
@@ -91,7 +91,7 @@ class SettingsView extends StatelessWidget {
                   ),
                 ),
                 Padding(
-                  padding: const EdgeInsets.fromLTRB(50.0, 0.0, 50.0, 20.0),
+                  padding: const EdgeInsets.fromLTRB(30.0, 0.0, 30.0, 20.0),
                   child: AlertLogOut(),
                 ),
               ],

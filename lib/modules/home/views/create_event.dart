@@ -40,7 +40,6 @@ class CreateEventView extends StatelessWidget {
                     hintText: "Event's Name",
                     controller: createViewController.eventNameController),
               ),
-              // Image Picker (WIP)
               Padding(
                 padding: const EdgeInsets.fromLTRB(14.0, 0.0, 14.0, 16.0),
                 child: SizedBox(
@@ -198,7 +197,6 @@ class CreateEventView extends StatelessWidget {
                   ],
                 ),
               ),
-              // Create Event Button (Algo) later
               // Button Style later
               Padding(
                 padding: const EdgeInsets.fromLTRB(14.0, 0.0, 14.0, 20.0),

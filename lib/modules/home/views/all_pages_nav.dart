@@ -19,7 +19,7 @@ class AllPagesNav extends StatelessWidget {
                   children: [
                     HomeView(),
                     const ChatRoomView(),
-                    const DashboardView(),
+                    DashboardView(),
                     const SettingsView()
                   ],
                 ))),

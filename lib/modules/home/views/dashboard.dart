@@ -1,13 +1,15 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:wismod/utils/app_utils.dart';
+import 'package:wismod/modules/home/controller/dashboard_controller.dart';
 
 import '../../../routes/routes.dart';
 import '../../../theme/global_widgets.dart';
+import '../controller/all_pages_nav_controller.dart';
 
 class DashboardView extends StatelessWidget {
-  const DashboardView({super.key});
-
+  DashboardView({Key? key});
+  final profilePictureController = Get.put(ProfilePictureController());
   @override
   Widget build(BuildContext context) {
     final screenWidth = MediaQuery.of(context).size.width;
@@ -57,13 +59,71 @@ class DashboardView extends StatelessWidget {
                         ),
                         addVerticalSpace(),
                         OutlineButtonMedium(
-                          onPressed: () => Get.offNamed(Routes.login),
+                          onPressed: () {
+                            showDialog(
+                              context: context,
+                              builder: (BuildContext context) {
+                                return AlertDialog(
+                                  title: Text("Choose Profile Picture"),
+                                  content: Padding(
+                                    padding: const EdgeInsets.fromLTRB(
+                                        14.0, 0.0, 14.0, 16.0),
+                                    child: SizedBox(
+                                      width: double.infinity,
+                                      // Button Height Change Here
+                                      height: 250,
+                                      child: Obx(
+                                        () => OutlinedButton.icon(
+                                          icon: profilePictureController
+                                                      .imageUrl.value ==
+                                                  ''
+                                              ? const Icon(Icons.image_outlined)
+                                              : Image.network(
+                                                  profilePictureController
+                                                      .imageUrl.value,
+                                                  fit: BoxFit.cover,
+                                                ),
+                                          onPressed: () =>
+                                              profilePictureController
+                                                  .uploadImage(),
+                                          label: const Text(''),
+                                          style: ElevatedButton.styleFrom(
+                                            side: const BorderSide(
+                                              color: Colors
+                                                  .black, //Set border color
+                                              width: 1, //Set border width
+                                            ),
+                                          ),
+                                        ),
+                                      ),
+                                    ),
+                                  ),
+                                  actions: <Widget>[
+                                    OutlineButtonMedium(
+                                        child: Text("Cancel"),
+                                        onPressed: () {
+                                          Navigator.pop(context);
+                                        }),
+                                    SecondaryButtonMedium(
+                                      child: Text("Save"),
+                                      onPressed: () {
+                                        Navigator.pop(context);
+                                      },
+                                    ),
+                                  ],
+                                );
+                                ;
+                              },
+                            );
+                          },
                           child: const Padding(
                             padding: EdgeInsets.symmetric(horizontal: 38.0),
                             child: Text('Change Profile Picture'),
+                            // color: Color(0xFFEAF4F4),
+                            // borderRadius: BorderRadius.circular(10),
                           ),
                         ),
-                        addVerticalSpace(15)
+                        addVerticalSpace(20),
                       ],
                     ),
                   ]),

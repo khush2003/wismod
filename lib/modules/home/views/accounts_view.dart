@@ -63,7 +63,7 @@ class AccountsView extends StatelessWidget {
                 child: Department_sections(
                   label: 'Department',
                   trailingWidget: const Text(
-                    'Change first name',
+                    'Change department',
                     style: TextStyle(
                       fontFamily: "Gotham",
                       fontWeight: FontWeight.w500,
@@ -101,7 +101,7 @@ class AccountsView extends StatelessWidget {
                             fontSize: 20,
                             color: Color.fromRGBO(255, 255, 255, 1))),
                     onPressed: () {
-                      // Get.toNamed(Routes.accounts);
+                      Get.toNamed(Routes.password);
                       // Get.offAllNamed(Routes.accounts);
                       // Get.offNamed(Routes.accounts);
                     },

@@ -1,4 +1,3 @@
-import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:wismod/modules/home/controller/home_controller.dart';
@@ -39,9 +38,6 @@ class HomeView extends StatelessWidget {
                 ),
               ),
               addVerticalSpace(16),
-              PrimaryButtonMedium(
-                  child: const Text("Log Out (Checking)"),
-                  onPressed: () => homeController.logOut()),
               // TODO: ListView for eventcards and mapping them to incoming values and use a builder function instead
               EventCard(
                 description: 'Loreum ipsum dolor sit amet consectetur',

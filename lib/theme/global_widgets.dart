@@ -112,28 +112,23 @@ class OutlineButtonMedium extends StatelessWidget {
 }
 
 class ThemedSwitch extends StatelessWidget {
-  ThemedSwitch({super.key});
-  final themedSwtichController = Get.put(ThemedSwitchController());
+  final ValueChanged<bool>? onChanged;
+  final bool value;
+  const ThemedSwitch({super.key, required this.onChanged, required this.value});
 
   @override
   Widget build(BuildContext context) {
-    return Obx(() => CupertinoSwitch(
+    return CupertinoSwitch(
         activeColor: Theme.of(context).colorScheme.primary,
-        onChanged: (bool value) {
-          themedSwtichController.toggleSwitch();
-        },
-        value: themedSwtichController.isOn.value));
-  }
-
-  bool getSwitchValue() {
-    return themedSwtichController.isOn.value;
+        onChanged: onChanged,
+        value: value);
   }
 }
 
 class ThemedSwitchController extends GetxController {
   final isOn = false.obs;
 
-  toggleSwitch() {
+  toggleSwitch(bool value) {
     isOn(isOn.value == false ? true : false);
   }
 }

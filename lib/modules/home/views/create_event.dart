@@ -11,7 +11,8 @@ import '../controller/all_pages_nav_controller.dart';
 class CreateEventView extends StatelessWidget {
   CreateEventView({super.key});
   final createViewController = Get.put(CreateEventController());
-  final themedSwitch = ThemedSwitch();
+  final themedSwitchController = Get.put(ThemedSwitchController());
+
   // To get the value of the switch use themedSwitch.getSwitchValue()
 
   @override
@@ -189,7 +190,9 @@ class CreateEventView extends StatelessWidget {
                 child: Row(
                   crossAxisAlignment: CrossAxisAlignment.center,
                   children: [
-                    themedSwitch,
+                    Obx(() => ThemedSwitch(
+                        value: themedSwitchController.isOn.value,
+                        onChanged: themedSwitchController.toggleSwitch)),
                     Text(
                       'Allow Automatic Join',
                       style: Theme.of(context).textTheme.displayLarge,

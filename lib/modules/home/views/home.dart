@@ -156,6 +156,7 @@ class EventCard extends StatelessWidget {
                   child: const Text("Read More"),
                   onPressed: () {
                     // Todo: Function to go to event detail page
+                    Get.toNamed(Routes.eventDetials);
                   })
             ],
           ),
@@ -173,10 +174,8 @@ class FilterButton extends StatelessWidget {
     return IconButton(
         padding: const EdgeInsets.all(0),
         onPressed: () {
-          // TODO: Change to Get.toNamed() and create Route
-          Get.to(
-            FilterOptionsView(),
-            transition: Transition.rightToLeft,
+          Get.toNamed(
+            Routes.filterOptions,
           );
         },
         icon: const Icon(

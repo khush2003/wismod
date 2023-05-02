@@ -5,6 +5,7 @@ import 'package:wismod/modules/auth/views/log_in_view.dart';
 import 'package:wismod/modules/auth/views/signup_view.dart';
 import 'package:wismod/modules/home/views/accounts_view.dart';
 import 'package:wismod/modules/home/views/all_pages_nav.dart';
+import 'package:wismod/modules/home/views/blockList_view.dart';
 import 'package:wismod/modules/home/views/notification_view.dart';
 import 'package:wismod/modules/home/views/password_view.dart';
 import '../modules/home/views/onboarding.dart';
@@ -21,6 +22,7 @@ abstract class Routes {
   static const String accounts = '/accounts';
   static const String password = '/password';
   static const String notficaition = '/notficaition';
+  static const String blockList = '/blockList';
   // Add page string (route) here
 }
 
@@ -36,5 +38,6 @@ final getPages = [
   GetPage(name: Routes.accounts, page: () => const AccountsView()),
   GetPage(name: Routes.password, page: () => const PassWordView()),
   GetPage(name: Routes.notficaition, page: () => const NotificationView()),
+  GetPage(name: Routes.blockList, page: () => const BlockListView()),
   // Initialize route here
 ];

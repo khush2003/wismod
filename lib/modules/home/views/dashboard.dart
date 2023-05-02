@@ -3,15 +3,18 @@ import 'package:get/get.dart';
 import 'package:wismod/utils/app_utils.dart';
 import 'package:wismod/modules/home/controller/dashboard_controller.dart';
 
+import '../../../routes/routes.dart';
 import '../../../theme/global_widgets.dart';
+import '../controller/all_pages_nav_controller.dart';
 
 class DashboardView extends StatelessWidget {
-  DashboardView({super.key});
+  DashboardView({Key? key});
   final profilePictureController = Get.put(ProfilePictureController());
+  final dropDownController = Get.put(DropDownController());
   @override
   Widget build(BuildContext context) {
-    // final screenWidth = MediaQuery.of(context).size.width;
-    // String dropdownValue = 'Upcoming Activities';
+    final screenWidth = MediaQuery.of(context).size.width;
+    String dropdownValue = 'Upcoming Activities';
 
     return Center(
       child: Scaffold(
@@ -30,7 +33,14 @@ class DashboardView extends StatelessWidget {
                   mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                   children: [
                     Column(children: [
-                      addVerticalSpace(),
+                      addVerticalSpace(24),
+                      const Text('Profile',
+                          textAlign: TextAlign.center,
+                          style: TextStyle(
+                              fontSize: 32,
+                              color: Color.fromRGBO(123, 56, 255, 1),
+                              fontWeight: FontWeight.bold)),
+                      addVerticalSpace(16),
                       const CircleAvatar(
                         radius: 90,
                         backgroundImage: NetworkImage(
@@ -64,7 +74,7 @@ class DashboardView extends StatelessWidget {
                                 context: context,
                                 builder: (BuildContext context) {
                                   return AlertDialog(
-                                    title: const Text("Choose Profile Picture"),
+                                    title: Text("Choose Profile Picture"),
                                     content: Padding(
                                       padding: const EdgeInsets.fromLTRB(
                                           14.0, 0.0, 14.0, 16.0),
@@ -101,18 +111,19 @@ class DashboardView extends StatelessWidget {
                                     ),
                                     actions: <Widget>[
                                       OutlineButtonMedium(
-                                          child: const Text("Cancel"),
+                                          child: Text("Cancel"),
                                           onPressed: () {
                                             Navigator.pop(context);
                                           }),
                                       SecondaryButtonMedium(
-                                        child: const Text("Save"),
+                                        child: Text("Save"),
                                         onPressed: () {
                                           Navigator.pop(context);
                                         },
                                       ),
                                     ],
                                   );
+                                  ;
                                 },
                               );
                             },
@@ -213,49 +224,22 @@ class DashboardView extends StatelessWidget {
                               color: const Color(0xFFEAF4F4),
                               borderRadius: BorderRadius.circular(10),
                             ),
-                            child: GestureDetector(
-                              onTap: () {},
-                              child: Center(
-                                child: Row(
-                                  mainAxisAlignment: MainAxisAlignment.center,
-                                  children: [
-                                    const Padding(
-                                      padding: EdgeInsets.all(12.0),
-                                      child: Text(
-                                        'Upcoming Activities',
-                                        style: TextStyle(
-                                          fontSize: 17,
-                                          fontWeight: FontWeight.bold,
-                                        ),
-                                      ),
-                                    ),
-                                    Container(
-                                      decoration: BoxDecoration(
-                                        color: const Color(0xFFFF669F),
-                                        borderRadius: BorderRadius.circular(4),
-                                      ),
-                                      child: Padding(
-                                        padding: const EdgeInsets.fromLTRB(
-                                            6, 3, 6, 3),
-                                        child: Text(
-                                          '2',
-                                          style: Theme.of(context)
-                                              .textTheme
-                                              .bodyMedium
-                                              ?.copyWith(
-                                                color: Colors.white,
-                                              ),
-                                        ),
-                                      ),
-                                    ),
-                                    addHorizontalSpace(),
-                                    const Icon(
-                                      Icons.arrow_drop_down,
-                                      size: 40,
-                                    )
-                                  ],
-                                ),
-                              ),
+                            child: SizedBox(
+                              height: 50,
+                              child: Obx(() => DropdownButton(
+                                  isExpanded: true,
+                                  underline: SizedBox(),
+                                  itemHeight: null,
+                                  icon: null,
+                                  iconSize: 0.0,
+                                  value: dropDownController.dropdownState
+                                      .upcomingSelectedValue.value,
+                                  items: dropDownController
+                                      .dropdownState.upcomingDropdownItems,
+                                  onChanged: (newValue) {
+                                    dropDownController.dropdownState
+                                        .onItemSelectedUpcoming(newValue!);
+                                  })),
                             ),
                           ),
                         ),
@@ -272,90 +256,83 @@ class DashboardView extends StatelessWidget {
                             ),
                             child: SizedBox(
                               height: 50,
-                              child: DropdownButton(
-                                isExpanded: true,
-                                value: 'Requested Activities',
-                                onChanged: (dynamic newValue) {},
-                                underline: const SizedBox(),
-                                itemHeight: null,
-                                icon: null,
-                                iconSize: 0.0,
-                                items: [
-                                  DropdownMenuItem(
-                                    value: 'Requested Activities',
-                                    child: SizedBox(
-                                      height: 40,
-                                      child: Padding(
-                                        padding: const EdgeInsets.all(12.0),
-                                        child: SizedBox(
-                                          height: 40,
-                                          child: Center(
-                                            child: Row(
-                                              mainAxisAlignment:
-                                                  MainAxisAlignment.center,
-                                              children: const [
-                                                Text(
-                                                  'Requested Activities',
-                                                  style: TextStyle(
-                                                    fontSize: 17,
-                                                    fontWeight: FontWeight.bold,
-                                                  ),
-                                                ),
-                                                SizedBox(width: 10),
-                                                Text(
-                                                  '2',
-                                                  style: TextStyle(
-                                                    fontSize: 17,
-                                                    fontWeight:
-                                                        FontWeight.normal,
-                                                  ),
-                                                ),
-                                                Icon(
-                                                  Icons.arrow_drop_down,
-                                                  size: 40,
-                                                ),
-                                              ],
-                                            ),
-                                          ),
-                                        ),
-                                      ),
-                                    ),
-                                  ),
-                                  DropdownMenuItem(
-                                    value: 'Activity 1',
-                                    child: SizedBox(
-                                      height: 240,
-                                      child: Padding(
-                                        padding: const EdgeInsets.all(12.0),
-                                        child: _buildActivityBox(
-                                            'KMUTT BioHackathon'),
-                                      ),
-                                    ),
-                                  ),
-                                  DropdownMenuItem(
-                                    value: 'Activity 2',
-                                    child: SizedBox(
-                                      height: 240,
-                                      child: Padding(
-                                        padding: const EdgeInsets.all(12.0),
-                                        child: _buildActivityBox(
-                                            'Boxing Hackathon'),
-                                      ),
-                                    ),
-                                  ),
-                                  DropdownMenuItem(
-                                    value: 'Activity 3',
-                                    child: SizedBox(
-                                      height: 240,
-                                      child: Padding(
-                                        padding: const EdgeInsets.all(12.0),
-                                        child: _buildActivityBox(
-                                            'Robotic Hackathon'),
-                                      ),
-                                    ),
-                                  ),
-                                ],
-                              ),
+                              child: Obx(() => DropdownButton(
+                                    isExpanded: true,
+                                    underline: SizedBox(),
+                                    itemHeight: null,
+                                    icon: null,
+                                    iconSize: 0.0,
+                                    value: dropDownController.dropdownState
+                                        .requestedSelectedValue.value,
+                                    items: dropDownController
+                                        .dropdownState.requestedDropdownItems,
+                                    onChanged: (newValue) {
+                                      dropDownController.dropdownState
+                                          .onItemSelectedRequested(newValue!);
+                                    },
+                                  )),
+                            ),
+                          ),
+                        ),
+                      ],
+                    ),
+                    addVerticalSpace(20),
+                    Row(
+                      children: [
+                        Expanded(
+                          child: Container(
+                            decoration: BoxDecoration(
+                              color: const Color(0xFFEAF4F4),
+                              borderRadius: BorderRadius.circular(10),
+                            ),
+                            child: SizedBox(
+                              height: 50,
+                              child: Obx(() => DropdownButton(
+                                    isExpanded: true,
+                                    underline: SizedBox(),
+                                    itemHeight: null,
+                                    icon: null,
+                                    iconSize: 0.0,
+                                    value: dropDownController.dropdownState
+                                        .bookmarkedSelectedValue.value,
+                                    items: dropDownController
+                                        .dropdownState.bookmarkedDropdownItems,
+                                    onChanged: (newValue) {
+                                      dropDownController.dropdownState
+                                          .onItemSelectedBookmarked(newValue!);
+                                    },
+                                  )),
+                            ),
+                          ),
+                        ),
+                      ],
+                    ),
+                    addVerticalSpace(20),
+                    Row(
+                      children: [
+                        Expanded(
+                          child: Container(
+                            decoration: BoxDecoration(
+                              color: const Color(0xFFEAF4F4),
+                              borderRadius: BorderRadius.circular(10),
+                            ),
+                            child: SizedBox(
+                              height: 50,
+                              child: Obx(() => DropdownButton(
+                                    isExpanded: true,
+                                    underline: SizedBox(),
+                                    itemHeight: null,
+                                    icon: null,
+                                    iconSize: 0.0,
+                                    value: dropDownController
+                                        .dropdownState.ownSelectedValue.value,
+                                    items: dropDownController
+                                        .dropdownState.ownDropdownItems,
+                                    onChanged: (newValue) {
+                                      dropDownController.dropdownState
+                                          .onItemSelectedOwn(newValue!);
+                                    },
+                                  )),
                             ),
                           ),
                         ),
@@ -370,89 +347,4 @@ class DashboardView extends StatelessWidget {
       ),
     );
   }
-}
-
-Widget _buildActivityBox(String activityName) {
-  return Container(
-    decoration: BoxDecoration(
-      color: Colors.white,
-      borderRadius: BorderRadius.circular(5),
-      boxShadow: [
-        BoxShadow(
-          color: Colors.grey.withOpacity(0.5),
-          spreadRadius: 1,
-          blurRadius: 5,
-          offset: const Offset(0, 2),
-        ),
-      ],
-    ),
-    child: Padding(
-      padding: const EdgeInsets.all(sideWidth),
-      child: Column(
-        children: [
-          addVerticalSpace(16),
-          Row(
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-            children: const [
-              Text(
-                '20/04/2023',
-                style: TextStyle(
-                  fontSize: 16,
-                  fontWeight: FontWeight.normal,
-                  color: Color(0xFFFF669F),
-                ),
-              ),
-            ],
-          ),
-          addVerticalSpace(16),
-          Row(
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-            children: [
-              Text(
-                activityName,
-                style: const TextStyle(
-                  fontSize: 24,
-                  fontWeight: FontWeight.normal,
-                ),
-              ),
-            ],
-          ),
-          addVerticalSpace(16),
-          Row(
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-            children: const [
-              Text(
-                'Request from: Jane Vive',
-                style: TextStyle(
-                  fontSize: 16,
-                  fontWeight: FontWeight.normal,
-                  color: Color(0xFFFF669F),
-                ),
-              ),
-            ],
-          ),
-          addVerticalSpace(20),
-          Row(
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-            children: [
-              addHorizontalSpace(15),
-              OutlineButtonMedium(
-                onPressed: () {},
-                child: const Text('Approve'),
-              ),
-              ElevatedButton(
-                onPressed: () {},
-                style: ElevatedButton.styleFrom(
-                  backgroundColor: const Color(0xFFF33D81), // Red
-                  foregroundColor: Colors.white, // Text color
-                ),
-                child: const Text('Deny'),
-              ),
-              addHorizontalSpace(15),
-            ],
-          ),
-        ],
-      ),
-    ),
-  );
 }

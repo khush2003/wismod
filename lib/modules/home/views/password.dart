@@ -1,8 +1,7 @@
 import 'package:flutter/material.dart';
-import 'package:get/get.dart';
 import 'package:wismod/theme/global_widgets.dart';
 
-import '../../../routes/routes.dart';
+import '../../../utils/app_utils.dart';
 
 class PassWordView extends StatelessWidget {
   const PassWordView({super.key});
@@ -24,7 +23,7 @@ class PassWordView extends StatelessWidget {
         child: Align(
             alignment: Alignment.topCenter,
             child: SingleChildScrollView(
-                child: Column(children: [
+                child: Column(children: const [
               Padding(
                 padding: EdgeInsets.fromLTRB(0.0, 0.0, 0.0, 20.0),
                 child: HeadAndTextField(
@@ -47,7 +46,7 @@ class PassWordView extends StatelessWidget {
                 ),
               ),
               Padding(
-                padding: const EdgeInsets.fromLTRB(0.0, 0.0, 0.0, 20.0),
+                padding: EdgeInsets.fromLTRB(0.0, 0.0, 0.0, 20.0),
                 child: SizedBox(
                   width: double.infinity,
                   child: AlertPasswordChange(),
@@ -83,13 +82,13 @@ class HeadAndTextField extends StatelessWidget {
       children: [
         Text(
           label,
-          style: TextStyle(
+          style: const TextStyle(
             fontFamily: "Gotham",
             fontWeight: FontWeight.w500,
             fontSize: 20,
-            color: Color.fromRGBO(123, 56, 255, 1),
           ),
         ),
+        addVerticalSpace(),
         Padding(
           padding: const EdgeInsets.only(bottom: 10.0),
           child: SizedBox(

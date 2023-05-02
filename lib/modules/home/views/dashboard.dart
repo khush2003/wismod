@@ -3,17 +3,15 @@ import 'package:get/get.dart';
 import 'package:wismod/utils/app_utils.dart';
 import 'package:wismod/modules/home/controller/dashboard_controller.dart';
 
-import '../../../routes/routes.dart';
 import '../../../theme/global_widgets.dart';
-import '../controller/all_pages_nav_controller.dart';
 
 class DashboardView extends StatelessWidget {
-  DashboardView({Key? key});
+  DashboardView({super.key});
   final profilePictureController = Get.put(ProfilePictureController());
   @override
   Widget build(BuildContext context) {
-    final screenWidth = MediaQuery.of(context).size.width;
-    String dropdownValue = 'Upcoming Activities';
+    // final screenWidth = MediaQuery.of(context).size.width;
+    // String dropdownValue = 'Upcoming Activities';
 
     return Center(
       child: Scaffold(
@@ -66,7 +64,7 @@ class DashboardView extends StatelessWidget {
                                 context: context,
                                 builder: (BuildContext context) {
                                   return AlertDialog(
-                                    title: Text("Choose Profile Picture"),
+                                    title: const Text("Choose Profile Picture"),
                                     content: Padding(
                                       padding: const EdgeInsets.fromLTRB(
                                           14.0, 0.0, 14.0, 16.0),
@@ -103,19 +101,18 @@ class DashboardView extends StatelessWidget {
                                     ),
                                     actions: <Widget>[
                                       OutlineButtonMedium(
-                                          child: Text("Cancel"),
+                                          child: const Text("Cancel"),
                                           onPressed: () {
                                             Navigator.pop(context);
                                           }),
                                       SecondaryButtonMedium(
-                                        child: Text("Save"),
+                                        child: const Text("Save"),
                                         onPressed: () {
                                           Navigator.pop(context);
                                         },
                                       ),
                                     ],
                                   );
-                                  ;
                                 },
                               );
                             },
@@ -279,7 +276,7 @@ class DashboardView extends StatelessWidget {
                                 isExpanded: true,
                                 value: 'Requested Activities',
                                 onChanged: (dynamic newValue) {},
-                                underline: SizedBox(),
+                                underline: const SizedBox(),
                                 itemHeight: null,
                                 icon: null,
                                 iconSize: 0.0,
@@ -290,7 +287,7 @@ class DashboardView extends StatelessWidget {
                                       height: 40,
                                       child: Padding(
                                         padding: const EdgeInsets.all(12.0),
-                                        child: Container(
+                                        child: SizedBox(
                                           height: 40,
                                           child: Center(
                                             child: Row(
@@ -413,7 +410,7 @@ Widget _buildActivityBox(String activityName) {
             children: [
               Text(
                 activityName,
-                style: TextStyle(
+                style: const TextStyle(
                   fontSize: 24,
                   fontWeight: FontWeight.normal,
                 ),
@@ -446,8 +443,8 @@ Widget _buildActivityBox(String activityName) {
               ElevatedButton(
                 onPressed: () {},
                 style: ElevatedButton.styleFrom(
-                  primary: const Color(0xFFF33D81), // Red
-                  onPrimary: Colors.white, // Text color
+                  backgroundColor: const Color(0xFFF33D81), // Red
+                  foregroundColor: Colors.white, // Text color
                 ),
                 child: const Text('Deny'),
               ),

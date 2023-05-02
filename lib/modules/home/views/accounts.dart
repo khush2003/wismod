@@ -4,7 +4,9 @@ import 'package:wismod/theme/global_widgets.dart';
 import 'package:wismod/modules/auth/controllers/signup_controller.dart';
 
 import '../../../routes/routes.dart';
+import '../../../utils/app_utils.dart';
 
+//TODO: Form validation
 class AccountsView extends StatelessWidget {
   const AccountsView({super.key});
 
@@ -26,12 +28,12 @@ class AccountsView extends StatelessWidget {
             alignment: Alignment.topCenter,
             child: SingleChildScrollView(
                 child: Column(children: [
-              Padding(
+              const Padding(
                 padding: EdgeInsets.fromLTRB(0.0, 0.0, 0.0, 20.0),
-                child: Account_sections(
+                child: AccountSections(
                   label: 'First name',
                   hintText: 'Your first name',
-                  trailingWidget: const Text(
+                  trailingWidget: Text(
                     'Change first name',
                     style: TextStyle(
                       fontFamily: "Gotham",
@@ -42,12 +44,12 @@ class AccountsView extends StatelessWidget {
                   ),
                 ),
               ),
-              Padding(
+              const Padding(
                 padding: EdgeInsets.fromLTRB(0.0, 0.0, 0.0, 20.0),
-                child: Account_sections(
+                child: AccountSections(
                   label: 'Last name',
                   hintText: 'Your last name',
-                  trailingWidget: const Text(
+                  trailingWidget: Text(
                     'Change last name',
                     style: TextStyle(
                       fontFamily: "Gotham",
@@ -59,8 +61,8 @@ class AccountsView extends StatelessWidget {
                 ),
               ),
               Padding(
-                padding: EdgeInsets.fromLTRB(0.0, 0.0, 0.0, 20.0),
-                child: Department_sections(
+                padding: const EdgeInsets.fromLTRB(0.0, 0.0, 0.0, 20.0),
+                child: DepartmentSections(
                   label: 'Department',
                   trailingWidget: const Text(
                     'Change department',
@@ -73,12 +75,12 @@ class AccountsView extends StatelessWidget {
                   ),
                 ),
               ),
-              Padding(
+              const Padding(
                 padding: EdgeInsets.fromLTRB(0.0, 0.0, 0.0, 20.0),
-                child: Account_sections(
+                child: AccountSections(
                   label: 'Year',
                   hintText: 'Your year',
-                  trailingWidget: const Text(
+                  trailingWidget: Text(
                     'Change year',
                     style: TextStyle(
                       fontFamily: "Gotham",
@@ -114,12 +116,12 @@ class AccountsView extends StatelessWidget {
   }
 }
 
-class Account_sections extends StatelessWidget {
+class AccountSections extends StatelessWidget {
   final String label;
   final String hintText;
   final Widget trailingWidget;
 
-  const Account_sections({
+  const AccountSections({
     Key? key,
     required this.label,
     required this.hintText,
@@ -133,13 +135,13 @@ class Account_sections extends StatelessWidget {
       children: [
         Text(
           label,
-          style: TextStyle(
+          style: const TextStyle(
             fontFamily: "Gotham",
             fontWeight: FontWeight.w500,
             fontSize: 20,
-            color: Color.fromRGBO(123, 56, 255, 1),
           ),
         ),
+        addVerticalSpace(),
         Padding(
           padding: const EdgeInsets.only(bottom: 10.0),
           child: SizedBox(
@@ -163,12 +165,13 @@ class Account_sections extends StatelessWidget {
   }
 }
 
-class Department_sections extends StatelessWidget {
+class DepartmentSections extends StatelessWidget {
+  // TODO: Change SignUp controller to accounts controller
   final SignUpController signUpController = Get.put(SignUpController());
   final String label;
   final Widget trailingWidget;
 
-  Department_sections({
+  DepartmentSections({
     Key? key,
     required this.label,
     required this.trailingWidget,
@@ -181,13 +184,13 @@ class Department_sections extends StatelessWidget {
       children: [
         Text(
           label,
-          style: TextStyle(
+          style: const TextStyle(
             fontFamily: "Gotham",
             fontWeight: FontWeight.w500,
             fontSize: 20,
-            color: Color.fromRGBO(123, 56, 255, 1),
           ),
         ),
+        addVerticalSpace(),
         Padding(
             padding: const EdgeInsets.only(bottom: 10.0),
             child: DropDownCustom(signUpController: signUpController)),

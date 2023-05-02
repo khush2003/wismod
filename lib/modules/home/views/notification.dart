@@ -1,12 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:wismod/modules/home/controller/notification_controller.dart';
 import 'package:wismod/theme/global_widgets.dart';
 
-import '../../../routes/routes.dart';
-
 class NotificationView extends StatelessWidget {
-  const NotificationView({super.key});
-
+  NotificationView({super.key});
+  final notificationController = Get.put(NotificationController());
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -26,11 +25,11 @@ class NotificationView extends StatelessWidget {
             child: SingleChildScrollView(
                 child: Column(children: [
               Padding(
-                  padding: EdgeInsets.fromLTRB(0.0, 0.0, 0.0, 20.0),
+                  padding: const EdgeInsets.fromLTRB(0.0, 0.0, 0.0, 20.0),
                   child: Row(
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
-                      Text(
+                      const Text(
                         "Chat notification",
                         style: TextStyle(
                             fontFamily: "Gotham",
@@ -38,15 +37,20 @@ class NotificationView extends StatelessWidget {
                             fontSize: 20,
                             color: Colors.black),
                       ),
-                      ThemedSwitch()
+                      Obx(
+                        () => ThemedSwitch(
+                            value:
+                                notificationController.isChatNotification.value,
+                            onChanged: notificationController.toggleSwitchChat),
+                      )
                     ],
                   )),
               Padding(
-                  padding: EdgeInsets.fromLTRB(0.0, 0.0, 0.0, 20.0),
+                  padding: const EdgeInsets.fromLTRB(0.0, 0.0, 0.0, 20.0),
                   child: Row(
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
-                      Text(
+                      const Text(
                         "Event update notification",
                         style: TextStyle(
                             fontFamily: "Gotham",
@@ -54,7 +58,11 @@ class NotificationView extends StatelessWidget {
                             fontSize: 20,
                             color: Colors.black),
                       ),
-                      ThemedSwitch()
+                      Obx(() => ThemedSwitch(
+                          value:
+                              notificationController.isEventNotification.value,
+                          onChanged:
+                              notificationController.toggleSwitchNotification))
                     ],
                   )),
             ]))),

@@ -3,8 +3,6 @@
 import 'package:flutter/material.dart';
 import 'package:wismod/utils/app_utils.dart';
 
-import '../../../routes/routes.dart';
-import '../../../theme/global_widgets.dart';
 
 class ChatRoomView extends StatelessWidget {
   const ChatRoomView({super.key});

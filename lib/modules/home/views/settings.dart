@@ -23,10 +23,13 @@ class SettingsView extends StatelessWidget {
               color: Color.fromARGB(255, 255, 255, 255)),
         ),
         centerTitle: true,
-        backgroundColor: const Color.fromARGB(255, 200, 144, 218),
+        backgroundColor: const Color.fromRGBO(201, 173, 255, 1),
         toolbarHeight: 100,
         shape: const RoundedRectangleBorder(
-            borderRadius: BorderRadius.vertical(bottom: Radius.circular(30))),
+          borderRadius: BorderRadius.vertical(
+            bottom: Radius.circular(30),
+          ),
+        ),
       ),
       body: Padding(
           padding: const EdgeInsets.fromLTRB(0.0, 20.0, 0.0, 0.0),

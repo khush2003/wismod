@@ -21,7 +21,10 @@ class ChatRoomView extends StatelessWidget {
         backgroundColor: const Color.fromRGBO(201, 173, 255, 1),
         toolbarHeight: 100,
         shape: const RoundedRectangleBorder(
-            borderRadius: BorderRadius.vertical(bottom: Radius.circular(30))),
+          borderRadius: BorderRadius.vertical(
+            bottom: Radius.circular(30),
+          ),
+        ),
       ),
       body: SingleChildScrollView(
         child: Padding(

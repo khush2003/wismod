@@ -17,7 +17,7 @@ class BlockListView extends StatelessWidget {
             color: Colors.black),
       )),
       body: Padding(
-        padding: const EdgeInsets.fromLTRB(50.0, 20.0, 50.0, 0.0),
+        padding: const EdgeInsets.fromLTRB(20.0, 20.0, 20.0, 0.0),
         child: Align(
           alignment: Alignment.topCenter,
           child: SingleChildScrollView(
@@ -147,14 +147,8 @@ class BlockedPerson extends StatelessWidget {
 
 // double _volume = 0.0;
 
-class CancelBlock extends StatefulWidget {
+class CancelBlock extends StatelessWidget {
   const CancelBlock({super.key});
-
-  @override
-  State<CancelBlock> createState() => _CancelBlock();
-}
-
-class _CancelBlock extends State<CancelBlock> {
   @override
   Widget build(BuildContext context) {
     return IconButton(
@@ -163,11 +157,8 @@ class _CancelBlock extends State<CancelBlock> {
       tooltip: 'Remove from block list',
       color: Theme.of(context).colorScheme.secondary,
       onPressed: () {
-        // setState(() {
-        //   _volume += 10;
-        // });
+        // todo
       },
     );
-    // Text('Volume : $_volume'),
   }
 }

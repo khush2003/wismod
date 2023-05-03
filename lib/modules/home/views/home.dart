@@ -9,7 +9,7 @@ import '../../../theme/global_widgets.dart';
 
 class HomeView extends StatelessWidget {
   HomeView({super.key});
-  final homeController = Get.put(HomeController(), permanent: true);
+  final homeController = Get.put(HomeController());
 
   @override
   Widget build(BuildContext context) {
@@ -134,7 +134,7 @@ class EventCard extends StatelessWidget {
                   onPressed: () {
                     // Todo: Function to go to event detail page
                     Get.toNamed(Routes.eventDetials,
-                        parameters: {'id': event.id});
+                        parameters: {'id': event.id!});
                   })
             ],
           ),

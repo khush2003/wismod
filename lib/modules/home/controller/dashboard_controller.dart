@@ -4,7 +4,6 @@ import 'package:get/get.dart';
 import 'dart:io';
 import 'package:firebase_storage/firebase_storage.dart';
 import 'package:image_picker/image_picker.dart';
-import 'package:wismod/shared/services/firebase_firestore_serivce.dart';
 
 import '../../../theme/global_widgets.dart';
 import '../../../utils/app_utils.dart';

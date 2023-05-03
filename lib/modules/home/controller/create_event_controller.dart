@@ -3,9 +3,16 @@ import 'package:firebase_storage/firebase_storage.dart';
 import 'package:get/get.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:flutter/material.dart';
+import 'package:wismod/modules/auth/controllers/auth_controller.dart';
+import 'package:wismod/shared/models/event.dart';
+import 'package:wismod/shared/services/firebase_firestore_serivce.dart';
+
+import '../../../routes/routes.dart';
 
 class CreateEventController extends GetxController {
   final imageUrl = ''.obs;
+  final tags = <String>[].obs;
+  final selectedCategory = 'Default'.obs;
 
   final TextEditingController eventNameController = TextEditingController();
   final TextEditingController eventDetailController = TextEditingController();
@@ -17,9 +24,50 @@ class CreateEventController extends GetxController {
   final dateTime = DateTime.now().obs;
   final _firebaseStorage = FirebaseStorage.instance;
   final _imagePicker = ImagePicker();
+  final _auth = AuthController.instance;
+  final isOn = false.obs;
+
+  void setSelectedCategory(String? value) {
+    selectedCategory(value ?? '');
+  }
+
+  late List<String> categoryOptions = [
+    'Default',
+    'Competition',
+    'Tutoring',
+    'Sports',
+    'Hanging Out',
+    'Thesis'
+        'Other',
+  ];
+
+  toggleSwitch(bool value) {
+    isOn(isOn.value == false ? true : false);
+  }
+
+  void addTag() {
+    final tag = '#${eventTagsController.text.trim()}';
+    if (!tags.contains(tag)) {
+      tags.add(tag);
+    } else {
+      Get.snackbar('Warning', 'Tag with same name already exists',
+          backgroundColor: Colors.yellow, snackPosition: SnackPosition.BOTTOM);
+    }
+  }
+
+  void removeTag(int index) {
+    tags.removeAt(index);
+  }
+
+  //TODO: Add more validaiton functions, add tooltip for automatic join
+  String? validateTotalCapacity(int? value) {
+    if (value == null || value <= 2 || value >= 500) {
+      return 'Please enter a vaild amount of people';
+    }
+    return null;
+  }
 
   uploadImage() async {
-    //Check Permissions
     //Select Image
     final image = await _imagePicker.pickImage(source: ImageSource.gallery);
     if (image != null) {
@@ -47,7 +95,37 @@ class CreateEventController extends GetxController {
     dateTime(date ?? dateTime.value);
   }
 
-  void createEvent() {
-    // TODO: Implement this function to create an event
+  //TODO: IMPORTANT! Category
+  void createEvent() async {
+    try {
+      final eventOwner = _auth.appUser.value;
+      final event = Event(
+        createdAt: DateTime.now(),
+        description: eventDetailController.text.trim(),
+        eventDate: dateTime.value,
+        imageUrl: imageUrl.value,
+        members: [],
+        tags: tags,
+        totalCapacity: int.parse(eventAmountOfNumberController.text.trim()),
+        location: eventLocationController.text.trim(),
+        category: selectedCategory.value,
+        title: eventNameController.text.trim(),
+        upvotes: 0,
+        allowAutomaticJoin: isOn.value,
+        eventOwner: EventOwner(
+            name: eventOwner.getName(),
+            department: eventOwner.department,
+            year: eventOwner.year,
+            uid: eventOwner.uid!),
+      );
+      await FirebaseService().addEvent(event);
+      Get.snackbar('Sucess', 'Event was created sucessfulyy!',
+          backgroundColor: Colors.green, snackPosition: SnackPosition.BOTTOM);
+      Get.offAllNamed(Routes.allPagesNav);
+    } catch (e) {
+      Get.snackbar('Error',
+          'There was a problem creating the event. Please recheck your values and try again!',
+          backgroundColor: Colors.red, snackPosition: SnackPosition.BOTTOM);
+    }
   }
 }

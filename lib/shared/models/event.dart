@@ -8,14 +8,17 @@ class Event {
   final DateTime? eventDate;
   final EventOwner eventOwner;
   final String? description;
-  final String id;
+  final String? id;
   final int? totalCapacity;
   final List<String>? members;
   final String location;
   final List<String>? tags;
   final bool? isReported;
+  final DateTime? createdAt;
+  final bool allowAutomaticJoin;
 
   Event({
+    this.createdAt,
     this.members,
     this.tags,
     this.isReported,
@@ -27,8 +30,9 @@ class Event {
     this.eventDate,
     required this.eventOwner,
     this.description,
-    required this.id,
+    this.id,
     this.totalCapacity,
+    this.allowAutomaticJoin = true
   });
   @override
   String toString() {
@@ -46,6 +50,8 @@ class Event {
         ' location: $location,'
         ' tags: $tags,'
         ' isReported: $isReported'
+        ' createdAt: $createdAt'
+        ' allowAutomaticJoin: $allowAutomaticJoin'
         '}';
   }
 
@@ -62,13 +68,16 @@ class Event {
   }
   factory Event.fromMap(Map<String, dynamic> map, String documentId) {
     final time = map['EventDate'] as Timestamp;
+    final createdAt = map['CreatedAt'] as Timestamp;
     return Event(
       id: documentId,
       title: map['Title'] as String,
       category: map['Category'] as String,
       upvotes: map['Upvotes'] as int,
       imageUrl: map['ImageURL'] as String?,
+      createdAt: createdAt.toDate(),
       eventDate: map['EventDate'] == null ? null : time.toDate(),
+      allowAutomaticJoin: map['AllowAutomaticJoin'] as bool,
       eventOwner: EventOwner(
           department: map['EventOwnerDepartment'] as String,
           name: map['EventOwnerName'] as String,

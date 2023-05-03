@@ -5,6 +5,7 @@ class AppUser {
   final String department;
   final String? profilePicture;
   final int year;
+  final bool? isAdmin;
   final List<String>? blockedUsers;
   final List<String>? bookmarkedEvents;
   final List<String>? joinedEvents;
@@ -14,6 +15,7 @@ class AppUser {
 
   AppUser(
       {this.uid,
+      this.isAdmin,
       required this.firstName,
       required this.lastName,
       required this.department,
@@ -30,15 +32,20 @@ class AppUser {
     return 'AppUser{uid: $uid, firstName: $firstName, lastName: $lastName, department: $department, '
         'profilePicture: $profilePicture, year: $year, blockedUsers: $blockedUsers, '
         'bookmarkedEvents: $bookmarkedEvents, joinedEvents: $joinedEvents, ownedEvents: $ownedEvents, '
-        'requestedEvents: $requestedEvents, upvotedEvents: $upvotedEvents}';
+        'requestedEvents: $requestedEvents, upvotedEvents: $upvotedEvents, isAdmin: $isAdmin}';
   }
 
   factory AppUser.empty() {
     return AppUser(firstName: '', lastName: '', department: '', year: 0);
   }
 
+  String getName() {
+    return '$firstName $lastName';
+  }
+
   factory AppUser.fromMap(Map<String, dynamic> map, String userId) {
     return AppUser(
+      isAdmin: map['IsAdmin'] ?? false,
       uid: userId,
       firstName: map['Firstname'],
       lastName: map['Lastname'],

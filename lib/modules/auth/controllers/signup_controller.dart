@@ -30,7 +30,7 @@ class SignUpController extends GetxController {
     'Department of Food Engineering',
     'Department of Biological Engineering',
     'Department of Aquaculture Engineering'
-  ];
+  ].obs;
 
   final selectedDepartment = 'School of Information Technology'.obs;
 
@@ -41,6 +41,12 @@ class SignUpController extends GetxController {
   final passwordError = RxString('');
   final confirmPasswordError = RxString('');
   final _auth = AuthController.instance;
+
+  @override
+  void onInit() async {
+    super.onInit();
+    departmentOptions(await FirebaseService().getDepartments() ?? departmentOptions);
+  }
 
   Future<void>? registerUser() async {
     final email = getCorrectEmail(emailController.text.trim());

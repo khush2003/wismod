@@ -27,6 +27,17 @@ class FirebaseService {
     return List<String>.from(data!['Categories'] as List<dynamic>);
   }
 
+  Future<List<String>?> getDepartments() async {
+    final document = _firestore.collection('AppData').doc('AppData');
+    final snapshot = await document.get();
+
+    if (!snapshot.exists) {
+      return null;
+    }
+    final data = snapshot.data();
+    return List<String>.from(data!['Departments'] as List<dynamic>);
+  }
+
   Future<Event?> getEvent(String eventId) async {
     final document = _firestore.collection('Events').doc(eventId);
     final snapshot = await document.get();
@@ -44,19 +55,15 @@ class FirebaseService {
   }
 
   Future<AppUser?> getUserById(String userId) async {
-   
-      final docSnapshot =
-          await _firestore.collection('Users').doc(userId).get();
-      if (docSnapshot.exists) {
-        final userData = docSnapshot.data();
-        if (userData != null) {
-          return AppUser.fromMap(userData, userId);
-        }
-        return null;
-      } 
+    final docSnapshot = await _firestore.collection('Users').doc(userId).get();
+    if (docSnapshot.exists) {
+      final userData = docSnapshot.data();
+      if (userData != null) {
+        return AppUser.fromMap(userData, userId);
+      }
       return null;
-      
-    
+    }
+    return null;
   }
 
   Future<void> addEvent(Event event) async {
@@ -73,10 +80,14 @@ class FirebaseService {
       'EventOwnerId': event.eventOwner.uid,
       'Description': event.description,
       'TotalCapacity': event.totalCapacity,
+      'AllowAutomaticJoin': event.allowAutomaticJoin,
       'Members': event.members,
       'Location': event.location,
       'Tags': event.tags,
       'IsReported': event.isReported,
+      'CreatedAt': event.createdAt == null
+          ? Timestamp.now()
+          : Timestamp.fromDate(event.createdAt!)
     });
     await _addTagsToTagData(event);
   }
@@ -94,6 +105,7 @@ class FirebaseService {
       'OwnedEvents': user.ownedEvents ?? [],
       'RequestedEvents': user.requestedEvents ?? [],
       'UpvotedEvents': user.upvotedEvents ?? [],
+      'IsAdmin': user.isAdmin ?? false
     });
   }
 
@@ -103,8 +115,9 @@ class FirebaseService {
       final documentAppData = _firestore.collection('AppData').doc('AppData');
       await documentAppData.get().then((doc) {
         if (doc.exists) {
-          tags = doc['Tags'] as List<String>? ??
-              <String>[]; // Handle the case where tags is null or undefined.
+          tags = doc['Tags'] != null
+              ? List<String>.from(doc['Tags'] as List<dynamic>)
+              : <String>[]; // Handle the case where tags is null or undefined.
           for (String tag in event.tags!) {
             if (!tags.contains(tag)) {
               tags.add(tag);
@@ -113,7 +126,7 @@ class FirebaseService {
         }
       });
       await _firestore.collection('AppData').doc('AppData').update({
-        'tags': tags,
+        'Tags': tags,
       });
     }
   }

@@ -11,7 +11,7 @@ class NotificationView extends StatelessWidget {
     return Scaffold(
       appBar: AppBar(
           title: const Text(
-        "Account",
+        "Notifications",
         style: TextStyle(
             fontFamily: "Gotham",
             fontWeight: FontWeight.bold,
@@ -30,7 +30,7 @@ class NotificationView extends StatelessWidget {
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
                       const Text(
-                        "Chat notification",
+                        "Chat Updates",
                         style: TextStyle(
                             fontFamily: "Gotham",
                             fontWeight: FontWeight.w500,
@@ -51,7 +51,7 @@ class NotificationView extends StatelessWidget {
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
                       const Text(
-                        "Event update notification",
+                        "Event updates",
                         style: TextStyle(
                             fontFamily: "Gotham",
                             fontWeight: FontWeight.w500,

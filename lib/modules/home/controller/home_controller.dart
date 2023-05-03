@@ -18,12 +18,11 @@ class HomeController extends GetxController {
     'Sports',
     'Hanging Out',
     'Thesis'
-        'Other',
+    'Other',
   ];
   @override
   void onReady() async {
     categoryOptions = await firestore.getCategories() ?? categoryOptions;
-    print(_auth.appUser.value.toString());
     fetchEvents();
     super.onReady();
   }

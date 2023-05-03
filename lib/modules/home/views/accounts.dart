@@ -166,7 +166,7 @@ class AccountSections extends StatelessWidget {
 }
 
 class DepartmentSections extends StatelessWidget {
-  // TODO: Change SignUp controller to accounts controller
+  // TODO: Create a controller for this view and use that instead of signup controller
   final SignUpController signUpController = Get.put(SignUpController());
   final String label;
   final Widget trailingWidget;

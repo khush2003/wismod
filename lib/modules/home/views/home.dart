@@ -5,6 +5,7 @@ import 'package:wismod/modules/home/views/filter_options.dart';
 import 'package:wismod/utils/app_utils.dart';
 
 import '../../../routes/routes.dart';
+import '../../../shared/models/event.dart';
 import '../../../theme/global_widgets.dart';
 
 class HomeView extends StatelessWidget {
@@ -15,86 +16,57 @@ class HomeView extends StatelessWidget {
   Widget build(BuildContext context) {
     final th = Theme.of(context);
     return Scaffold(
-      body: SingleChildScrollView(
-        child: Padding(
-          padding: const EdgeInsets.all(sideWidth),
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              Row(
-                mainAxisAlignment: MainAxisAlignment.center,
+      body: Padding(
+        padding: const EdgeInsets.all(sideWidth),
+        child: Obx(() => homeController.isLoading.value
+            ? const Center(child: CircularProgressIndicator())
+            : Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  SearchBox(th: th),
-                  addHorizontalSpace(20),
-                  const FilterButton()
+                  Column(
+                    children: [
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          SearchBox(th: th),
+                          addHorizontalSpace(20),
+                          const FilterButton()
+                        ],
+                      ),
+                      addVerticalSpace(8),
+                      OutlineButtonMedium(
+                        onPressed: () => Get.toNamed(Routes.createEvent),
+                        child: const Text('Create Event'),
+                      ),
+                      addVerticalSpace(16),
+                    ],
+                  ),
+                  Flexible(
+                    child: ListView.builder(
+                      itemCount: homeController.events.length,
+                      itemBuilder: (context, index) {
+                        print(homeController.events[index].toString());
+                        return EventCard(event: homeController.events[index]);
+                      },
+                    ),
+                  )
                 ],
-              ),
-              addVerticalSpace(8),
-              SizedBox(
-                child: OutlineButtonMedium(
-                  onPressed: () => Get.toNamed(Routes.createEvent),
-                  child: const Text('Create Event'),
-                ),
-              ),
-              addVerticalSpace(16),
-              // TODO: ListView for eventcards and mapping them to incoming values and use a builder function instead
-              EventCard(
-                description: 'Loreum ipsum dolor sit amet consectetur',
-                imageUrl:
-                    'https://images.unsplash.com/photo-1575936123452-b67c3203c357?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxzZWFyY2h8Mnx8aW1hZ2V8ZW58MHx8MHx8&w=1000&q=80',
-                eventDate: DateTime.now(),
-                category: 'Competition',
-                eventOwner: 'John Hotfoot',
-                id: 5,
-                title: 'KMUTT BioHackathon',
-                upvotes: 4,
-              ),
-              addVerticalSpace(24),
-              EventCard(
-                description:
-                    'Welcome, come, join, have fuuuuuuuuuuunnunununun KMUTT is the best join me my friends we will enjoy our life and not write code.',
-                imageUrl:
-                    'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTzbmT5f6Uqu-p0tDftdiTuI8u187X2fyvoUXkcKcWz&s',
-                eventDate: DateTime.now(),
-                category: 'Hanging Out',
-                eventOwner: 'Khush Agarwal',
-                id: 3,
-                title: "Let's play a Board Game",
-                upvotes: 400,
-              ),
-            ],
-          ),
-        ),
+              )),
       ),
     );
   }
 }
 
 class EventCard extends StatelessWidget {
-  final String category;
-  final String title;
-  final int upvotes;
-  final String? imageUrl;
-  final DateTime? eventDate;
-  final String eventOwner;
-  final String? description;
-  final int id;
-  const EventCard(
-      {super.key,
-      required this.category,
-      required this.title,
-      required this.upvotes,
-      this.imageUrl,
-      this.eventDate,
-      required this.eventOwner,
-      this.description,
-      required this.id});
+  final Event event;
+  const EventCard({super.key, required this.event});
 
   @override
   Widget build(BuildContext context) {
     return Container(
-        width: MediaQuery.of(context).size.width,
+        // width: MediaQuery.of(context).size.width,
+        margin: const EdgeInsets.only(bottom: 20, left: 8, right: 8),
         decoration: BoxDecoration(
             shape: BoxShape.rectangle,
             color: Colors.white,
@@ -111,7 +83,7 @@ class EventCard extends StatelessWidget {
             children: [
               Column(crossAxisAlignment: CrossAxisAlignment.stretch, children: [
                 Text(
-                  '#$category',
+                  '#${event.category}',
                   style: TextStyle(
                       color: Theme.of(context).colorScheme.secondary,
                       fontWeight: FontWeight.bold),
@@ -124,30 +96,37 @@ class EventCard extends StatelessWidget {
                   runSpacing: 10,
                   spacing: 10,
                   children: [
-                    Text(title,
+                    Text(event.title,
                         style: const TextStyle(
                             fontSize: 20, fontWeight: FontWeight.w500)),
-                    Text('$upvotes upvotes',
+                    Text('${event.upvotes} upvotes',
                         style: Theme.of(context).textTheme.bodyMedium)
                   ],
                 ),
                 addVerticalSpace(20),
-                if (imageUrl != null)
-                  ClipRRect(
-                      borderRadius: BorderRadius.circular(5),
-                      child: Image.network(imageUrl!, fit: BoxFit.cover)),
+                ClipRRect(
+                    borderRadius: BorderRadius.circular(5),
+                    child: Image.network(
+                        event.imageUrl ??
+                            'https://perspectives.agf.com/wp-content/plugins/accelerated-mobile-pages/images/SD-default-image.png',
+                        errorBuilder: (context, error, stackTrace) =>
+                            Image.network(
+                              'https://perspectives.agf.com/wp-content/plugins/accelerated-mobile-pages/images/SD-default-image.png',
+                              fit: BoxFit.cover,
+                            ),
+                        fit: BoxFit.cover)),
                 addVerticalSpace(20),
-                if (eventDate != null)
+                if (event.eventDate != null)
                   Text(
-                    'Date: ${formatDate(eventDate!)}',
+                    'Date: ${formatDate(event.eventDate!)}',
                     style: const TextStyle(fontWeight: FontWeight.bold),
                   ),
                 addVerticalSpace(20),
-                Text('Event Owner: $eventOwner',
+                Text('Event Owner: ${event.eventOwner.name}',
                     style: Theme.of(context).textTheme.bodyMedium),
                 addVerticalSpace(20),
-                if (description != null)
-                  Text('Details: $description',
+                if (event.description != null)
+                  Text('Details: ${event.description}',
                       style: Theme.of(context).textTheme.bodyMedium,
                       maxLines: 3),
               ]),
@@ -156,7 +135,7 @@ class EventCard extends StatelessWidget {
                   child: const Text("Read More"),
                   onPressed: () {
                     // Todo: Function to go to event detail page
-                    Get.toNamed(Routes.eventDetials);
+                    Get.toNamed(Routes.eventDetials, parameters: {'id': event.id});
                   })
             ],
           ),

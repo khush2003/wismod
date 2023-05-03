@@ -28,10 +28,16 @@ class EventDetailView extends StatelessWidget {
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.stretch,
                   children: [
-                    if (controller.eventData.value.imageUrl != null)
                       ClipRRect(
                           borderRadius: BorderRadius.circular(5),
-                          child: Image.network(eventData().imageUrl!,
+                          child: Image.network(
+                              eventData().imageUrl ??
+                                  'https://perspectives.agf.com/wp-content/plugins/accelerated-mobile-pages/images/SD-default-image.png',
+                              errorBuilder: (context, error, stackTrace) =>
+                                  Image.network(
+                                    'https://perspectives.agf.com/wp-content/plugins/accelerated-mobile-pages/images/SD-default-image.png',
+                                    fit: BoxFit.cover,
+                                  ),
                               fit: BoxFit.cover)),
                     addVerticalSpace(20),
                     Wrap(
@@ -44,9 +50,10 @@ class EventDetailView extends StatelessWidget {
                         Text(eventData().title,
                             style: const TextStyle(
                                 fontSize: 20, fontWeight: FontWeight.w500)),
-                        if (eventData().numJoined != null)
+                        if (eventData().members != null &&
+                            eventData().totalCapacity != null)
                           Text(
-                              'Members: ${eventData().numJoined}/${eventData().totalCapacity}',
+                              'Members: ${eventData().members!.length}/${eventData().totalCapacity}',
                               style: Theme.of(context).textTheme.displayMedium)
                       ],
                     ),
@@ -61,7 +68,7 @@ class EventDetailView extends StatelessWidget {
                       style: TextStyle(fontWeight: FontWeight.bold),
                     ),
                     addVerticalSpace(),
-                    const Text("No Tags Found"),
+                    if (eventData().tags == null) const Text("No Tags Found"),
                     // TODO: tags
                     addVerticalSpace(20),
                     Text("${eventData().upvotes} upvotes"),
@@ -73,7 +80,7 @@ class EventDetailView extends StatelessWidget {
                       ),
                     addVerticalSpace(20),
                     Text(
-                      'Location: ${eventData().loacation}',
+                      'Location: ${eventData().location}',
                     ),
                     addVerticalSpace(20),
                     if (eventData().description != null)
@@ -128,17 +135,24 @@ class ChatBox extends StatelessWidget {
                   crossAxisAlignment: CrossAxisAlignment.center,
                   mainAxisSize: MainAxisSize.min,
                   children: [
-                    if (eventData().eventOwner.userPhotoUrl != null)
-                      ClipRRect(
-                        borderRadius: BorderRadius.circular(10),
-                        child: Image.network(
-                          eventData().eventOwner.userPhotoUrl!,
-                          // Image size adjustment here
+                    ClipRRect(
+                      borderRadius: BorderRadius.circular(10),
+                      child: Image.network(
+                        eventData().eventOwner.userPhotoUrl ??
+                            'https://perspectives.agf.com/wp-content/plugins/accelerated-mobile-pages/images/SD-default-image.png',
+                        errorBuilder: (context, error, stackTrace) =>
+                            Image.network(
+                          'https://perspectives.agf.com/wp-content/plugins/accelerated-mobile-pages/images/SD-default-image.png',
                           width: 82,
                           height: 82,
                           fit: BoxFit.cover,
                         ),
+                        // Image size adjustment here
+                        width: 82,
+                        height: 82,
+                        fit: BoxFit.cover,
                       ),
+                    ),
                   ],
                 ),
                 addHorizontalSpace(10),

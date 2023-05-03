@@ -1,3 +1,5 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
+
 class Event {
   final String category;
   final String title;
@@ -6,13 +8,18 @@ class Event {
   final DateTime? eventDate;
   final EventOwner eventOwner;
   final String? description;
-  final int id;
+  final String id;
   final int? totalCapacity;
-  final int? numJoined;
-   final String loacation;
+  final List<String>? members;
+  final String location;
+  final List<String>? tags;
+  final bool? isReported;
 
   Event({
-    required this.loacation,
+    this.members,
+    this.tags,
+    this.isReported,
+    required this.location,
     required this.category,
     required this.title,
     required this.upvotes,
@@ -22,8 +29,63 @@ class Event {
     this.description,
     required this.id,
     this.totalCapacity,
-    this.numJoined,
   });
+  @override
+  String toString() {
+    return 'Event {'
+        ' id: $id,'
+        ' category: $category,'
+        ' title: $title,'
+        ' upvotes: $upvotes,'
+        ' imageUrl: $imageUrl,'
+        ' eventDate: $eventDate,'
+        ' eventOwner: $eventOwner,'
+        ' description: $description,'
+        ' totalCapacity: $totalCapacity,'
+        ' members: $members,'
+        ' location: $location,'
+        ' tags: $tags,'
+        ' isReported: $isReported'
+        '}';
+  }
+
+  factory Event.empty() {
+    return Event(
+      location: '',
+      category: 'Loading',
+      eventOwner:
+          EventOwner(name: 'Loading', department: 'Loading', uid: '1', year: 0),
+      id: '1',
+      title: "Loading",
+      upvotes: 0,
+    );
+  }
+  factory Event.fromMap(Map<String, dynamic> map, String documentId) {
+    final time = map['EventDate'] as Timestamp;
+    return Event(
+      id: documentId,
+      title: map['Title'] as String,
+      category: map['Category'] as String,
+      upvotes: map['Upvotes'] as int,
+      imageUrl: map['ImageURL'] as String?,
+      eventDate: map['EventDate'] == null ? null : time.toDate(),
+      eventOwner: EventOwner(
+          department: map['EventOwnerDepartment'] as String,
+          name: map['EventOwnerName'] as String,
+          year: map['EventOwnerYear'] as int,
+          uid: map['EventOwnerId'] as String),
+      description: map['Description'] as String?,
+      totalCapacity: map['TotalCapacity'] as int?,
+      members: map['Members'] == null
+          ? null
+          : List<String>.from(map['Members'] as List<dynamic>),
+      location: map['Location'] as String,
+      tags: map['Tags'] == null
+          ? null
+          : List<String>.from(map['Tags'] as List<dynamic>),
+      isReported: map['IsReported'] as bool?,
+    );
+  }
 }
 
 class EventOwner {
@@ -34,7 +96,6 @@ class EventOwner {
   final String uid;
   EventOwner(
       {this.userPhotoUrl,
-      
       required this.name,
       required this.department,
       required this.year,

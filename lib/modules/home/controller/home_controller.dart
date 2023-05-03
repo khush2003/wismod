@@ -23,6 +23,7 @@ class HomeController extends GetxController {
   @override
   void onReady() async {
     categoryOptions = await firestore.getCategories() ?? categoryOptions;
+    print(_auth.appUser.value.toString());
     fetchEvents();
     super.onReady();
   }

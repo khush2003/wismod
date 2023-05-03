@@ -1,4 +1,5 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:wismod/shared/models/user.dart';
 import '../models/event.dart';
 
 class FirebaseService {
@@ -42,31 +43,78 @@ class FirebaseService {
     return Event.fromMap(data, eventId);
   }
 
-  Future<void> addEvent(Event event) async {
-    try {
-      await _firestore.collection('Events').add({
-        'Title': event.title,
-        'Category': event.category,
-        'Upvotes': event.upvotes,
-        'ImageURL': event.imageUrl,
-        'EventDate': event.eventDate == null
-            ? null
-            : Timestamp.fromDate(event.eventDate!),
-        'EventOwnerName': event.eventOwner.name,
-        'EventOwnerDepartment': event.eventOwner.department,
-        'EventOwnerYear': event.eventOwner.year,
-        'EventOwnerId': event.eventOwner.uid,
-        'Description': event.description,
-        'TotalCapacity': event.totalCapacity,
-        'Members': event.members,
-        'Location': event.location,
-        'Tags': event.tags,
-        'IsReported': event.isReported,
-      });
+  Future<AppUser?> getUserById(String userId) async {
+   
+      final docSnapshot =
+          await _firestore.collection('Users').doc(userId).get();
+      if (docSnapshot.exists) {
+        final userData = docSnapshot.data();
+        if (userData != null) {
+          return AppUser.fromMap(userData, userId);
+        }
+        return null;
+      } 
+      return null;
+      
+    
+  }
 
-      // throw Exception('Missing required fields');
-    } catch (e) {
-      throw Exception(e);
+  Future<void> addEvent(Event event) async {
+    await _firestore.collection('Events').add({
+      'Title': event.title,
+      'Category': event.category,
+      'Upvotes': event.upvotes,
+      'ImageURL': event.imageUrl,
+      'EventDate':
+          event.eventDate == null ? null : Timestamp.fromDate(event.eventDate!),
+      'EventOwnerName': event.eventOwner.name,
+      'EventOwnerDepartment': event.eventOwner.department,
+      'EventOwnerYear': event.eventOwner.year,
+      'EventOwnerId': event.eventOwner.uid,
+      'Description': event.description,
+      'TotalCapacity': event.totalCapacity,
+      'Members': event.members,
+      'Location': event.location,
+      'Tags': event.tags,
+      'IsReported': event.isReported,
+    });
+    await _addTagsToTagData(event);
+  }
+
+  Future<void> addUser(AppUser user) async {
+    await _firestore.collection('Users').doc(user.uid).set({
+      'Firstname': user.firstName,
+      'Lastname': user.lastName,
+      'Department': user.department,
+      'ProfilePicture': user.profilePicture,
+      'Year': user.year,
+      'BlockedUsers': user.blockedUsers ?? [],
+      'BookmarkedEevnts': user.bookmarkedEvents ?? [],
+      'JoinedEvents': user.joinedEvents ?? [],
+      'OwnedEvents': user.ownedEvents ?? [],
+      'RequestedEvents': user.requestedEvents ?? [],
+      'UpvotedEvents': user.upvotedEvents ?? [],
+    });
+  }
+
+  Future<void> _addTagsToTagData(Event event) async {
+    if (event.tags != null) {
+      var tags = [];
+      final documentAppData = _firestore.collection('AppData').doc('AppData');
+      await documentAppData.get().then((doc) {
+        if (doc.exists) {
+          tags = doc['Tags'] as List<String>? ??
+              <String>[]; // Handle the case where tags is null or undefined.
+          for (String tag in event.tags!) {
+            if (!tags.contains(tag)) {
+              tags.add(tag);
+            }
+          }
+        }
+      });
+      await _firestore.collection('AppData').doc('AppData').update({
+        'tags': tags,
+      });
     }
   }
 }

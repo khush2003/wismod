@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:wismod/modules/home/controller/home_controller.dart';
-import 'package:wismod/modules/home/views/filter_options.dart';
 import 'package:wismod/utils/app_utils.dart';
 
 import '../../../routes/routes.dart';
@@ -46,7 +45,6 @@ class HomeView extends StatelessWidget {
                     child: ListView.builder(
                       itemCount: homeController.events.length,
                       itemBuilder: (context, index) {
-                        print(homeController.events[index].toString());
                         return EventCard(event: homeController.events[index]);
                       },
                     ),
@@ -108,10 +106,10 @@ class EventCard extends StatelessWidget {
                     borderRadius: BorderRadius.circular(5),
                     child: Image.network(
                         event.imageUrl ??
-                            'https://perspectives.agf.com/wp-content/plugins/accelerated-mobile-pages/images/SD-default-image.png',
+                            placeholderImage,
                         errorBuilder: (context, error, stackTrace) =>
                             Image.network(
-                              'https://perspectives.agf.com/wp-content/plugins/accelerated-mobile-pages/images/SD-default-image.png',
+                              placeholderImage,
                               fit: BoxFit.cover,
                             ),
                         fit: BoxFit.cover)),
@@ -135,7 +133,8 @@ class EventCard extends StatelessWidget {
                   child: const Text("Read More"),
                   onPressed: () {
                     // Todo: Function to go to event detail page
-                    Get.toNamed(Routes.eventDetials, parameters: {'id': event.id});
+                    Get.toNamed(Routes.eventDetials,
+                        parameters: {'id': event.id});
                   })
             ],
           ),

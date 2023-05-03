@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:wismod/shared/models/user.dart';
+import 'package:wismod/shared/services/firebase_firestore_serivce.dart';
 
 import '../../../utils/app_utils.dart';
 import 'auth_controller.dart';
@@ -14,7 +16,6 @@ class SignUpController extends GetxController {
   final confirmPasswordController = TextEditingController();
 
   final departmentOptions = [
-    'Department',
     'School of Information Technology',
     'Department of Electrical Engineering',
     'Department of Computer Engineering',
@@ -31,7 +32,7 @@ class SignUpController extends GetxController {
     'Department of Aquaculture Engineering'
   ];
 
-  final selectedDepartment = 'Department'.obs;
+  final selectedDepartment = 'School of Information Technology'.obs;
 
   final firstNameError = RxString('');
   final lastNameError = RxString('');
@@ -45,7 +46,12 @@ class SignUpController extends GetxController {
     final email = getCorrectEmail(emailController.text.trim());
     final password = passwordController.text;
     if (validateInputs()) {
-      String? error = await _auth.createUser(email, password);
+      final user = AppUser(
+          firstName: firstNameController.text.trim(),
+          lastName: lastNameController.text.trim(),
+          department: selectedDepartment.value,
+          year: int.parse(yearController.text));
+      String? error = await _auth.createUser(email, password, user);
       if (error != null) {
         Get.snackbar('Error', error.toString(),
             snackPosition: SnackPosition.BOTTOM,

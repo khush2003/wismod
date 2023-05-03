@@ -45,7 +45,6 @@ class EventDetailController extends GetxController {
       isLoading(true);
       var eventTemp = await firestore
           .getEvent(Get.parameters['id'] ?? '2l8UVLQgFin3dthssdlI');
-      print(eventTemp.toString());
       if (eventTemp != null) {
         eventData(eventTemp);
         isLoading(false);

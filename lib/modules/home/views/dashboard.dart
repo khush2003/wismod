@@ -1,21 +1,18 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:wismod/modules/auth/controllers/auth_controller.dart';
 import 'package:wismod/utils/app_utils.dart';
 import 'package:wismod/modules/home/controller/dashboard_controller.dart';
 
-import '../../../routes/routes.dart';
 import '../../../theme/global_widgets.dart';
-import '../controller/all_pages_nav_controller.dart';
 
 class DashboardView extends StatelessWidget {
-  DashboardView({Key? key});
+  DashboardView({super.key});
   final profilePictureController = Get.put(ProfilePictureController());
   final dropDownController = Get.put(DropDownController());
+  final auth = AuthController.instance;
   @override
   Widget build(BuildContext context) {
-    final screenWidth = MediaQuery.of(context).size.width;
-    String dropdownValue = 'Upcoming Activities';
-
     return Center(
       child: Scaffold(
         body: SingleChildScrollView(
@@ -41,29 +38,34 @@ class DashboardView extends StatelessWidget {
                               color: Color.fromRGBO(123, 56, 255, 1),
                               fontWeight: FontWeight.bold)),
                       addVerticalSpace(16),
-                      const CircleAvatar(
+                      CircleAvatar(
                         radius: 90,
-                        backgroundImage: NetworkImage(
-                          'https://plus.unsplash.com/premium_photo-1671581559476-10b8a92ffb77?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxzZWFyY2h8MXx8cHJvZmlsZXxlbnwwfHwwfHw%3D&auto=format&fit=crop&w=800&q=60',
-                        ),
+                        backgroundImage: Image.network(
+                          auth.appUser.value.profilePicture ?? placeholderImage,
+                          errorBuilder: (context, error, stackTrace) =>
+                              Image.network(
+                            placeholderImage,
+                            fit: BoxFit.cover,
+                          ),
+                        ).image,
                       ),
                       addVerticalSpace(20),
                       Column(
                         children: [
                           Text(
-                            'Khush Agarwal',
+                            '${auth.appUser.value.firstName} ${auth.appUser.value.lastName}',
                             textAlign: TextAlign.center,
                             style: Theme.of(context).textTheme.displayLarge,
                           ),
                           addVerticalSpace(),
                           Text(
-                            'Computer Science',
+                            auth.appUser.value.department,
                             textAlign: TextAlign.center,
                             style: Theme.of(context).textTheme.bodyMedium,
                           ),
                           addVerticalSpace(),
                           Text(
-                            'Year 1',
+                            'Year ${auth.appUser.value.year}',
                             textAlign: TextAlign.center,
                             style: Theme.of(context).textTheme.bodyMedium,
                           ),
@@ -74,7 +76,7 @@ class DashboardView extends StatelessWidget {
                                 context: context,
                                 builder: (BuildContext context) {
                                   return AlertDialog(
-                                    title: Text("Choose Profile Picture"),
+                                    title: const Text("Choose Profile Picture"),
                                     content: Padding(
                                       padding: const EdgeInsets.fromLTRB(
                                           14.0, 0.0, 14.0, 16.0),
@@ -111,19 +113,18 @@ class DashboardView extends StatelessWidget {
                                     ),
                                     actions: <Widget>[
                                       OutlineButtonMedium(
-                                          child: Text("Cancel"),
+                                          child: const Text("Cancel"),
                                           onPressed: () {
                                             Navigator.pop(context);
                                           }),
                                       SecondaryButtonMedium(
-                                        child: Text("Save"),
+                                        child: const Text("Save"),
                                         onPressed: () {
                                           Navigator.pop(context);
                                         },
                                       ),
                                     ],
                                   );
-                                  ;
                                 },
                               );
                             },
@@ -228,7 +229,7 @@ class DashboardView extends StatelessWidget {
                               height: 50,
                               child: Obx(() => DropdownButton(
                                   isExpanded: true,
-                                  underline: SizedBox(),
+                                  underline: const SizedBox(),
                                   itemHeight: null,
                                   icon: null,
                                   iconSize: 0.0,
@@ -258,7 +259,7 @@ class DashboardView extends StatelessWidget {
                               height: 50,
                               child: Obx(() => DropdownButton(
                                     isExpanded: true,
-                                    underline: SizedBox(),
+                                    underline: const SizedBox(),
                                     itemHeight: null,
                                     icon: null,
                                     iconSize: 0.0,
@@ -289,7 +290,7 @@ class DashboardView extends StatelessWidget {
                               height: 50,
                               child: Obx(() => DropdownButton(
                                     isExpanded: true,
-                                    underline: SizedBox(),
+                                    underline: const SizedBox(),
                                     itemHeight: null,
                                     icon: null,
                                     iconSize: 0.0,
@@ -320,7 +321,7 @@ class DashboardView extends StatelessWidget {
                               height: 50,
                               child: Obx(() => DropdownButton(
                                     isExpanded: true,
-                                    underline: SizedBox(),
+                                    underline: const SizedBox(),
                                     itemHeight: null,
                                     icon: null,
                                     iconSize: 0.0,

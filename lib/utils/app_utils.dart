@@ -8,6 +8,9 @@ SizedBox addVerticalSpace([double gap = 8]) {
   return SizedBox(height: gap);
 }
 
+const placeholderImage =
+    'https://perspectives.agf.com/wp-content/plugins/accelerated-mobile-pages/images/SD-default-image.png';
+
 /// Returns a SizedBox widget with a specified width [gap].
 /// By default, [gap] is set to 8.
 SizedBox addHorizontalSpace([double gap = 8]) {

@@ -10,6 +10,7 @@ import 'package:wismod/modules/home/views/password.dart';
 import '../modules/home/views/event_details.dart';
 import '../modules/home/views/onboarding.dart';
 import '../modules/home/views/create_event.dart';
+import '../modules/home/views/chatting.dart';
 import '../middleware/page_route_middleware.dart';
 
 abstract class Routes {
@@ -25,6 +26,7 @@ abstract class Routes {
   static const String blockList = '/blockList';
   static const String eventDetials = '/eventDetails';
   static const String filterOptions = '/filterOptions';
+  static const String chatting = '/chatting';
   // Add page string (route) here
 }
 
@@ -46,5 +48,6 @@ final getPages = [
       name: Routes.filterOptions,
       page: () => FilterOptionsView(),
       transition: Transition.rightToLeft),
+  GetPage(name: Routes.chatting, page: () => const ChattingView()),
   // Initialize route here
 ];

@@ -2,7 +2,9 @@
 
 import 'package:flutter/material.dart';
 import 'package:wismod/utils/app_utils.dart';
+import 'package:get/get.dart';
 
+import 'package:wismod/routes/routes.dart';
 
 class ChatRoomView extends StatelessWidget {
   const ChatRoomView({super.key});
@@ -88,7 +90,10 @@ class ChatEvent extends StatelessWidget {
         ],
       ),
       child: OutlinedButton(
-        onPressed: () {},
+        // Route to the Chatting Page
+        onPressed: () {
+          Get.toNamed(Routes.chatting);
+        },
         child: Padding(
           padding: const EdgeInsets.all(sideWidth),
           child: Column(
@@ -99,7 +104,7 @@ class ChatEvent extends StatelessWidget {
                   Column(
                     mainAxisAlignment: MainAxisAlignment.start,
                     crossAxisAlignment: CrossAxisAlignment.center,
-                    mainAxisSize: MainAxisSize.min,
+                    mainAxisSize: MainAxisSize.max,
                     children: [
                       if (eventImageUrl != null)
                         ClipRRect(
@@ -127,18 +132,12 @@ class ChatEvent extends StatelessWidget {
                               fontFamily: "Gotham",
                               fontWeight: FontWeight.bold,
                               color: Colors.black,
-                              fontSize: 22),
-                          maxLines: 1,
-                          softWrap: false,
-                          overflow: TextOverflow.fade,
+                              fontSize: 20),
                         ),
                         addVerticalSpace(5),
                         Text(
                           'Owner: $eventOwner',
                           style: Theme.of(context).textTheme.bodyMedium,
-                          maxLines: 1,
-                          softWrap: false,
-                          overflow: TextOverflow.fade,
                         ),
                       ],
                     ),
@@ -158,10 +157,11 @@ class ChatEvent extends StatelessWidget {
                         Text(
                           latestChat,
                           style: const TextStyle(
-                              fontFamily: "Gotham",
-                              fontWeight: FontWeight.w500,
-                              color: Colors.black,
-                              fontSize: 18),
+                            fontFamily: "Gotham",
+                            fontWeight: FontWeight.w500,
+                            color: Colors.black,
+                            fontSize: 18,
+                          ),
                           maxLines: 1,
                           softWrap: false,
                           overflow: TextOverflow.ellipsis,

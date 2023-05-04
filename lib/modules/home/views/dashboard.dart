@@ -3,13 +3,14 @@ import 'package:get/get.dart';
 import 'package:wismod/modules/auth/controllers/auth_controller.dart';
 import 'package:wismod/utils/app_utils.dart';
 import 'package:wismod/modules/home/controller/dashboard_controller.dart';
+import 'package:intl/intl.dart';
 
 import '../../../theme/global_widgets.dart';
 
 class DashboardView extends StatelessWidget {
   DashboardView({super.key});
   final profilePictureController = Get.put(ProfilePictureController());
-  final dropDownController = Get.put(DropDownController());
+  final fourButtonsController = Get.put(FourButtonsController());
   final auth = AuthController.instance;
   @override
   Widget build(BuildContext context) {
@@ -217,128 +218,193 @@ class DashboardView extends StatelessWidget {
                       ],
                     ),
                     addVerticalSpace(20),
-                    Row(
+                    Column(
                       children: [
-                        Expanded(
-                          child: Container(
-                            decoration: BoxDecoration(
-                              color: const Color(0xFFEAF4F4),
-                              borderRadius: BorderRadius.circular(10),
-                            ),
-                            child: SizedBox(
-                              height: 50,
-                              child: Obx(() => DropdownButton(
-                                  isExpanded: true,
-                                  underline: const SizedBox(),
-                                  itemHeight: null,
-                                  icon: null,
-                                  iconSize: 0.0,
-                                  value: dropDownController.dropdownState
-                                      .upcomingSelectedValue.value,
-                                  items: dropDownController
-                                      .dropdownState.upcomingDropdownItems,
-                                  onChanged: (newValue) {
-                                    dropDownController.dropdownState
-                                        .onItemSelectedUpcoming(newValue!);
-                                  })),
-                            ),
-                          ),
+                        FourButtonsWidget(
+                          activityType: 'Upcoming Activities',
+                          activityNumber: 1,
+                          onPressed: fourButtonsController.toggleUpcoming,
+                          showSizeBox: fourButtonsController.showUpcoming,
                         ),
-                      ],
-                    ),
-                    addVerticalSpace(20),
-                    Row(
-                      children: [
-                        Expanded(
-                          child: Container(
-                            decoration: BoxDecoration(
-                              color: const Color(0xFFEAF4F4),
-                              borderRadius: BorderRadius.circular(10),
-                            ),
-                            child: SizedBox(
-                              height: 50,
-                              child: Obx(() => DropdownButton(
-                                    isExpanded: true,
-                                    underline: const SizedBox(),
-                                    itemHeight: null,
-                                    icon: null,
-                                    iconSize: 0.0,
-                                    value: dropDownController.dropdownState
-                                        .requestedSelectedValue.value,
-                                    items: dropDownController
-                                        .dropdownState.requestedDropdownItems,
-                                    onChanged: (newValue) {
-                                      dropDownController.dropdownState
-                                          .onItemSelectedRequested(newValue!);
+                        Obx(() => fourButtonsController.showUpcoming.value
+                            ? SizedBox(
+                                height: 230,
+                                child: Container(
+                                  padding: const EdgeInsets.all(10),
+                                  decoration: const BoxDecoration(
+                                    color: Color(0xffEAF4F4),
+                                    borderRadius: BorderRadius.only(
+                                      bottomLeft: Radius.circular(10),
+                                      bottomRight: Radius.circular(10),
+                                    ),
+                                  ),
+                                  child: ListView.builder(
+                                    itemCount: 3,
+                                    itemBuilder:
+                                        (BuildContext context, int index) {
+                                      return Padding(
+                                        padding: const EdgeInsets.all(5.0),
+                                        child: Column(
+                                          children: [
+                                            _otherActivityBox(
+                                              activityDate: DateTime.now(),
+                                              activityName:
+                                                  'My Activity $index',
+                                              activityLocation:
+                                                  'My Location $index',
+                                              activityCategory:
+                                                  'My Category $index',
+                                            ),
+                                            const SizedBox(
+                                              height: 7,
+                                            ),
+                                          ],
+                                        ),
+                                      );
                                     },
-                                  )),
-                            ),
-                          ),
+                                  ),
+                                ),
+                              )
+                            : const SizedBox()),
+                        addVerticalSpace(16),
+                        FourButtonsWidget(
+                          activityType: 'Requested Activities',
+                          activityNumber: 1,
+                          onPressed: fourButtonsController.toggleRequested,
+                          showSizeBox: fourButtonsController.showRequested,
                         ),
-                      ],
-                    ),
-                    addVerticalSpace(20),
-                    Row(
-                      children: [
-                        Expanded(
-                          child: Container(
-                            decoration: BoxDecoration(
-                              color: const Color(0xFFEAF4F4),
-                              borderRadius: BorderRadius.circular(10),
-                            ),
-                            child: SizedBox(
-                              height: 50,
-                              child: Obx(() => DropdownButton(
-                                    isExpanded: true,
-                                    underline: const SizedBox(),
-                                    itemHeight: null,
-                                    icon: null,
-                                    iconSize: 0.0,
-                                    value: dropDownController.dropdownState
-                                        .bookmarkedSelectedValue.value,
-                                    items: dropDownController
-                                        .dropdownState.bookmarkedDropdownItems,
-                                    onChanged: (newValue) {
-                                      dropDownController.dropdownState
-                                          .onItemSelectedBookmarked(newValue!);
+                        Obx(() => fourButtonsController.showRequested.value
+                            ? SizedBox(
+                                height: 230,
+                                child: Container(
+                                  padding: const EdgeInsets.all(10),
+                                  decoration: const BoxDecoration(
+                                    color: Color(0xffEAF4F4),
+                                    borderRadius: BorderRadius.only(
+                                      bottomLeft: Radius.circular(10),
+                                      bottomRight: Radius.circular(10),
+                                    ),
+                                  ),
+                                  child: ListView.builder(
+                                    itemCount: 3,
+                                    itemBuilder:
+                                        (BuildContext context, int index) {
+                                      return Padding(
+                                        padding: const EdgeInsets.all(5.0),
+                                        child: Column(
+                                          children: [
+                                            _requestedActivityBox(
+                                                'Activity Name',
+                                                DateTime.now(),
+                                                'Jane Vive'),
+                                            const SizedBox(
+                                              height: 7,
+                                            ),
+                                          ],
+                                        ),
+                                      );
                                     },
-                                  )),
-                            ),
-                          ),
+                                  ),
+                                ),
+                              )
+                            : const SizedBox()),
+                        addVerticalSpace(16),
+                        FourButtonsWidget(
+                          activityType: 'Bookmarked Activities',
+                          activityNumber: 1,
+                          onPressed: fourButtonsController.toggleBookmarked,
+                          showSizeBox: fourButtonsController.showBookmarked,
                         ),
-                      ],
-                    ),
-                    addVerticalSpace(20),
-                    Row(
-                      children: [
-                        Expanded(
-                          child: Container(
-                            decoration: BoxDecoration(
-                              color: const Color(0xFFEAF4F4),
-                              borderRadius: BorderRadius.circular(10),
-                            ),
-                            child: SizedBox(
-                              height: 50,
-                              child: Obx(() => DropdownButton(
-                                    isExpanded: true,
-                                    underline: const SizedBox(),
-                                    itemHeight: null,
-                                    icon: null,
-                                    iconSize: 0.0,
-                                    value: dropDownController
-                                        .dropdownState.ownSelectedValue.value,
-                                    items: dropDownController
-                                        .dropdownState.ownDropdownItems,
-                                    onChanged: (newValue) {
-                                      dropDownController.dropdownState
-                                          .onItemSelectedOwn(newValue!);
+                        Obx(() => fourButtonsController.showBookmarked.value
+                            ? SizedBox(
+                                height: 230,
+                                child: Container(
+                                  padding: const EdgeInsets.all(10),
+                                  decoration: const BoxDecoration(
+                                    color: Color(0xffEAF4F4),
+                                    borderRadius: BorderRadius.only(
+                                      bottomLeft: Radius.circular(10),
+                                      bottomRight: Radius.circular(10),
+                                    ),
+                                  ),
+                                  child: ListView.builder(
+                                    itemCount: 3,
+                                    itemBuilder:
+                                        (BuildContext context, int index) {
+                                      return Padding(
+                                        padding: const EdgeInsets.all(5.0),
+                                        child: Column(
+                                          children: [
+                                            _otherActivityBox(
+                                              activityDate: DateTime.now(),
+                                              activityName:
+                                                  'My Activity $index',
+                                              activityLocation:
+                                                  'My Location $index',
+                                              activityCategory:
+                                                  'My Category $index',
+                                            ),
+                                            const SizedBox(
+                                              height: 7,
+                                            ),
+                                          ],
+                                        ),
+                                      );
                                     },
-                                  )),
-                            ),
-                          ),
+                                  ),
+                                ),
+                              )
+                            : const SizedBox()),
+                        addVerticalSpace(),
+                        FourButtonsWidget(
+                          activityType: 'Activities You Own',
+                          activityNumber: 1,
+                          onPressed: fourButtonsController.toggleOwn,
+                          showSizeBox: fourButtonsController.showOwn,
                         ),
+                        Obx(() => fourButtonsController.showOwn.value
+                            ? SizedBox(
+                                height: 230,
+                                child: Container(
+                                  padding: const EdgeInsets.all(10),
+                                  decoration: const BoxDecoration(
+                                    color: Color(0xffEAF4F4),
+                                    borderRadius: BorderRadius.only(
+                                      bottomLeft: Radius.circular(10),
+                                      bottomRight: Radius.circular(10),
+                                    ),
+                                  ),
+                                  child: ListView.builder(
+                                    itemCount: 3,
+                                    itemBuilder:
+                                        (BuildContext context, int index) {
+                                      return Padding(
+                                        padding: const EdgeInsets.all(5.0),
+                                        child: Column(
+                                          children: [
+                                            _otherActivityBox(
+                                              activityDate: DateTime.now(),
+                                              activityName:
+                                                  'My Activity $index',
+                                              activityLocation:
+                                                  'My Location $index',
+                                              activityCategory:
+                                                  'My Category $index',
+                                            ),
+                                            const SizedBox(
+                                              height: 7,
+                                            ),
+                                          ],
+                                        ),
+                                      );
+                                    },
+                                  ),
+                                ),
+                              )
+                            : const SizedBox()),
+                        addVerticalSpace(16),
                       ],
-                    ),
+                    )
                   ],
                 ),
               ),
@@ -348,4 +414,241 @@ class DashboardView extends StatelessWidget {
       ),
     );
   }
+}
+
+class FourButtonsWidget extends StatelessWidget {
+  final String activityType;
+  final int activityNumber;
+  final VoidCallback onPressed;
+  final fourButtonsController = Get.put(FourButtonsController());
+  final RxBool showSizeBox;
+  FourButtonsWidget({
+    Key? key,
+    required this.activityType,
+    required this.activityNumber,
+    required this.onPressed,
+    required this.showSizeBox,
+  }) : super(key: key);
+  @override
+  Widget build(BuildContext context) {
+    return InkWell(
+      onTap: onPressed,
+      child: Container(
+        decoration: BoxDecoration(
+          color: const Color(0xFFEAF4F4),
+          borderRadius: showSizeBox.value
+              ? const BorderRadius.only(
+                  topLeft: Radius.circular(10),
+                  topRight: Radius.circular(10),
+                )
+              : BorderRadius.circular(10),
+        ),
+        child: Row(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            Padding(
+              padding: const EdgeInsets.all(12.0),
+              child: Text(
+                activityType,
+                style: const TextStyle(
+                  fontSize: 17,
+                  fontWeight: FontWeight.bold,
+                  color: Color(0xFF7B38FF),
+                ),
+              ),
+            ),
+            Container(
+              decoration: BoxDecoration(
+                color: const Color(0xFFFF669F),
+                borderRadius: BorderRadius.circular(4),
+              ),
+              child: Padding(
+                padding: const EdgeInsets.fromLTRB(6, 3, 6, 3),
+                child: Text(
+                  activityNumber.toString(),
+                  style: const TextStyle(
+                    color: Colors.white,
+                    fontSize: 17,
+                    fontWeight: FontWeight.normal,
+                  ),
+                ),
+              ),
+            ),
+            Icon(
+              showSizeBox.value ? Icons.arrow_drop_up : Icons.arrow_drop_down,
+              size: 40,
+              color: const Color(0xFF7B38FF),
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+}
+
+Widget _otherActivityBox(
+    {required DateTime activityDate,
+    required String activityName,
+    required String activityLocation,
+    required String activityCategory}) {
+  return Container(
+    decoration: BoxDecoration(
+      color: Colors.white,
+      borderRadius: BorderRadius.circular(5),
+      boxShadow: const [
+        BoxShadow(
+          color: Color(0xFFFF669F),
+          offset: Offset(0, 4),
+          blurRadius: 3,
+        ),
+      ],
+    ),
+    child: Padding(
+      padding: const EdgeInsets.all(sideWidth),
+      child: Column(
+        children: [
+          addVerticalSpace(16),
+          Row(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            children: [
+              Text(
+                DateFormat("dd/MM/yyyy").format(activityDate),
+                style: const TextStyle(
+                  fontSize: 16,
+                  fontWeight: FontWeight.bold,
+                  color: Color(0xFFFF669F),
+                ),
+              ),
+            ],
+          ),
+          addVerticalSpace(16),
+          Row(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            children: [
+              Text(
+                activityName,
+                style: const TextStyle(
+                  fontSize: 24,
+                  fontWeight: FontWeight.w500,
+                ),
+              ),
+            ],
+          ),
+          addVerticalSpace(16),
+          Row(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            children: [
+              Text(
+                activityLocation,
+                style: const TextStyle(
+                  fontSize: 16,
+                  fontWeight: FontWeight.normal,
+                  color: Color(0xFFFF669F),
+                ),
+              ),
+            ],
+          ),
+          addVerticalSpace(20),
+          Row(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            children: [
+              Text(
+                'Category: $activityCategory',
+                style: const TextStyle(
+                  fontSize: 16,
+                  fontWeight: FontWeight.bold,
+                  color: Color(0xFFFF669F),
+                ),
+              ),
+            ],
+          ),
+        ],
+      ),
+    ),
+  );
+}
+
+Widget _requestedActivityBox(
+    String activityName, DateTime activityDate, String requestMember) {
+  return Container(
+    decoration: BoxDecoration(
+      color: Colors.white,
+      borderRadius: BorderRadius.circular(5),
+      boxShadow: const [
+        BoxShadow(
+          color: Color(0xFFFF669F),
+          offset: Offset(0, 4),
+          blurRadius: 3,
+        ),
+      ],
+    ),
+    child: Padding(
+      padding: const EdgeInsets.all(sideWidth),
+      child: Column(
+        children: [
+          addVerticalSpace(16),
+          Row(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            children: [
+              Text(
+                DateFormat("dd/MM/yyyy").format(activityDate),
+                style: const TextStyle(
+                  fontSize: 16,
+                  fontWeight: FontWeight.bold,
+                  color: Color(0xFFFF669F),
+                ),
+              ),
+            ],
+          ),
+          addVerticalSpace(16),
+          Row(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            children: [
+              Text(
+                activityName,
+                style: const TextStyle(
+                  fontSize: 24,
+                  fontWeight: FontWeight.w500,
+                ),
+              ),
+            ],
+          ),
+          addVerticalSpace(16),
+          Row(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            children: [
+              Text(
+                'Request from: $requestMember',
+                style: const TextStyle(
+                  fontSize: 16,
+                  fontWeight: FontWeight.normal,
+                  color: Color(0xFFFF669F),
+                ),
+              ),
+            ],
+          ),
+          addVerticalSpace(20),
+          Row(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            children: [
+              addHorizontalSpace(15),
+              OutlineButtonMedium(
+                onPressed: () {},
+                child: const Text('Approve'),
+              ),
+              ElevatedButton(
+                onPressed: () {},
+                style: ElevatedButton.styleFrom(
+                  backgroundColor: const Color(0xFFF33D81), // Red
+                  foregroundColor: Colors.white, // Text color
+                ),
+                child: const Text('Deny'),
+              ),
+              addHorizontalSpace(15),
+            ],
+          ),
+        ],
+      ),
+    ),
+  );
 }

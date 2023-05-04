@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:wismod/modules/auth/controllers/auth_controller.dart';
+import 'package:wismod/modules/home/controller/home_controller.dart';
 import 'package:wismod/shared/models/event.dart';
 import 'package:wismod/shared/services/firebase_firestore_serivce.dart';
 
@@ -10,12 +11,22 @@ class EventDetailController extends GetxController {
   final isLoading = true.obs;
   final _auth = AuthController.instance;
   final Rx<bool> isJoined = false.obs;
+  final Rx<bool> isUpvoted = false.obs;
   final tags = <String>[].obs;
 
   @override
   void onReady() async {
     fetchEvent();
+
     super.onReady();
+  }
+
+  void setIsUpvoted() {
+    if (_auth.appUser.value.upvotedEvents != null) {
+      _auth.appUser.value.upvotedEvents!.contains(eventData.value.id)
+          ? isUpvoted(true)
+          : isUpvoted(false);
+    }
   }
 
   void setIsJoined() {
@@ -24,6 +35,20 @@ class EventDetailController extends GetxController {
           ? isJoined(true)
           : isJoined(false);
     }
+  }
+
+  void upvoteEvent() async {
+    // try{
+    await firestore.upvoteEvent(
+        _auth.firebaseUser.value!.uid, eventData.value.id!);
+    await _auth.updateUser();
+    fetchEvent();
+    Get.snackbar("Sucess!", 'You have sucessfully upvoted this event',
+        snackPosition: SnackPosition.BOTTOM, backgroundColor: Colors.green);
+    // } catch (e) {
+    //   Get.snackbar("Error!", e.toString(),
+    //       snackPosition: SnackPosition.BOTTOM, backgroundColor: Colors.red);
+    // }
   }
 
   void joinEvent() async {
@@ -49,9 +74,18 @@ class EventDetailController extends GetxController {
       if (eventTemp != null) {
         eventData(eventTemp);
         setIsJoined();
+        setIsUpvoted();
         tags(eventData.value.tags);
         isLoading(false);
       }
+      updateHomeScreen();
+    } finally {}
+  }
+
+  void updateHomeScreen() {
+    try {
+      final c = Get.find<HomeController>();
+      c.fetchEvents();
     } finally {}
   }
 }

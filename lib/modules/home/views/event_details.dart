@@ -73,7 +73,7 @@ class EventDetailView extends StatelessWidget {
                       const Text("No Tags Found"),
                     createTags(controller),
                     addVerticalSpace(20),
-                    Text("${eventData().upvotes} upvotes"),
+                    Obx(() => Text("${eventData().upvotes} upvotes")),
                     addVerticalSpace(20),
                     if (eventData().eventDate != null)
                       Text(
@@ -93,11 +93,18 @@ class EventDetailView extends StatelessWidget {
                     Row(
                       mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                       children: [
+                        //TODO: Devote event
                         Expanded(
-                          child: OutlineButtonMedium(
-                            child: const Text("Upvote"),
-                            onPressed: () {},
-                          ),
+                          child: Obx(() => OutlineButtonMedium(
+                                onPressed: controller.isUpvoted.value
+                                    ? null
+                                    : () {
+                                        controller.upvoteEvent();
+                                      },
+                                child: controller.isUpvoted.value
+                                    ? const Text("Upvoted")
+                                    : const Text("Upvote"),
+                              )),
                         ),
                         addHorizontalSpace(16),
                         Expanded(

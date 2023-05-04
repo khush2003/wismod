@@ -54,7 +54,7 @@ class DashboardView extends StatelessWidget {
                       Column(
                         children: [
                           Text(
-                            '${auth.appUser.value.firstName} ${auth.appUser.value.lastName}',
+                            auth.appUser.value.getName(),
                             textAlign: TextAlign.center,
                             style: Theme.of(context).textTheme.displayLarge,
                           ),
@@ -183,7 +183,7 @@ class DashboardView extends StatelessWidget {
                               ),
                               addVerticalSpace(),
                               Text(
-                                '16 activities',
+                                '${auth.appUser.value.joinedEvents!.length} Activities',
                                 style: Theme.of(context).textTheme.bodyMedium,
                               ),
                             ],
@@ -209,7 +209,7 @@ class DashboardView extends StatelessWidget {
                               ),
                               addVerticalSpace(),
                               Text(
-                                '12 Upvotes',
+                                '${auth.appUser.value.upvotedEvents!.length} Upvotes',
                                 style: Theme.of(context).textTheme.bodyMedium,
                               ),
                             ],

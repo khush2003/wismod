@@ -74,7 +74,7 @@ class PrimaryButtonLarge extends StatelessWidget {
 }
 
 class OutlineButtonMedium extends StatelessWidget {
-  final VoidCallback onPressed;
+  final VoidCallback? onPressed;
   final Widget child;
   final Size? size;
   final Size? maxSize;

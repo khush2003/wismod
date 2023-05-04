@@ -131,6 +131,46 @@ class FirebaseService {
     }
   }
 
+  Future<void> upvoteEvent(String userId, String eventId) async {
+    final documentUsers = _firestore.collection('Users').doc(userId);
+    final documentEvents = _firestore.collection('Events').doc(eventId);
+    var upvotedEvents = <String>[];
+    var upvotes = 0;
+
+    await documentEvents.get().then((doc) {
+      if (doc.exists) {
+        upvotes = doc['Upvotes'] as int; // Handle the case where tags is null or undefined.
+        upvotes++;
+      } else {
+        throw Exception('Event does not exist!');
+      }
+    });
+
+    await documentUsers.get().then((doc) {
+      if (doc.exists) {
+        upvotedEvents = doc['UpvotedEvents'] != null
+            ? List<String>.from(doc['UpvotedEvents'] as List<dynamic>)
+            : <String>[]; // Handle the case where tags is null or undefined.
+        if (!upvotedEvents.contains(eventId)) {
+          upvotedEvents.add(eventId);
+        } else {
+          throw Exception('Event upvoted already!');
+        }
+      } else {
+        throw Exception('User does not exist!');
+      }
+    });
+    await _firestore
+        .collection('Users')
+        .doc(userId)
+        .update({'UpvotedEvents': upvotedEvents});
+    await _firestore
+        .collection('Events')
+        .doc(eventId)
+        .update({'Upvotes': upvotes});
+
+  }
+
   Future<void> joinEvent(String userId, String eventId) async {
     final documentUsers = _firestore.collection('Users').doc(userId);
     final documentEvents = _firestore.collection('Events').doc(eventId);

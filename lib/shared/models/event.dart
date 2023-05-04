@@ -17,23 +17,22 @@ class Event {
   final DateTime? createdAt;
   final bool allowAutomaticJoin;
 
-  Event({
-    this.createdAt,
-    this.members,
-    this.tags,
-    this.isReported,
-    required this.location,
-    required this.category,
-    required this.title,
-    required this.upvotes,
-    this.imageUrl,
-    this.eventDate,
-    required this.eventOwner,
-    this.description,
-    this.id,
-    this.totalCapacity,
-    this.allowAutomaticJoin = true
-  });
+  Event(
+      {this.createdAt,
+      this.members,
+      this.tags,
+      this.isReported,
+      required this.location,
+      required this.category,
+      required this.title,
+      required this.upvotes,
+      this.imageUrl,
+      this.eventDate,
+      required this.eventOwner,
+      this.description,
+      this.id,
+      this.totalCapacity,
+      this.allowAutomaticJoin = true});
   @override
   String toString() {
     return 'Event {'

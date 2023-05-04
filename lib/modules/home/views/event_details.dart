@@ -5,6 +5,7 @@ import 'package:wismod/theme/global_widgets.dart';
 import 'package:wismod/utils/app_utils.dart';
 
 import '../../../shared/models/event.dart';
+import '../../../theme/theme_data.dart';
 
 class EventDetailView extends StatelessWidget {
   EventDetailView({super.key});
@@ -28,17 +29,17 @@ class EventDetailView extends StatelessWidget {
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.stretch,
                   children: [
-                      ClipRRect(
-                          borderRadius: BorderRadius.circular(5),
-                          child: Image.network(
-                              eventData().imageUrl ??
+                    ClipRRect(
+                        borderRadius: BorderRadius.circular(5),
+                        child: Image.network(
+                            eventData().imageUrl ??
+                                'https://perspectives.agf.com/wp-content/plugins/accelerated-mobile-pages/images/SD-default-image.png',
+                            errorBuilder: (context, error, stackTrace) =>
+                                Image.network(
                                   'https://perspectives.agf.com/wp-content/plugins/accelerated-mobile-pages/images/SD-default-image.png',
-                              errorBuilder: (context, error, stackTrace) =>
-                                  Image.network(
-                                    'https://perspectives.agf.com/wp-content/plugins/accelerated-mobile-pages/images/SD-default-image.png',
-                                    fit: BoxFit.cover,
-                                  ),
-                              fit: BoxFit.cover)),
+                                  fit: BoxFit.cover,
+                                ),
+                            fit: BoxFit.cover)),
                     addVerticalSpace(20),
                     Wrap(
                       direction: Axis.horizontal,
@@ -68,14 +69,15 @@ class EventDetailView extends StatelessWidget {
                       style: TextStyle(fontWeight: FontWeight.bold),
                     ),
                     addVerticalSpace(),
-                    if (eventData().tags == null) const Text("No Tags Found"),
-                    // TODO: tags
+                    if (eventData().tags == null || eventData().tags!.isEmpty)
+                      const Text("No Tags Found"),
+                    createTags(controller),
                     addVerticalSpace(20),
                     Text("${eventData().upvotes} upvotes"),
                     addVerticalSpace(20),
                     if (eventData().eventDate != null)
                       Text(
-                        'Date: ${eventData().eventDate}',
+                        'Date: ${formatDate(eventData().eventDate!)}',
                         style: const TextStyle(fontWeight: FontWeight.bold),
                       ),
                     addVerticalSpace(20),
@@ -99,8 +101,15 @@ class EventDetailView extends StatelessWidget {
                         ),
                         addHorizontalSpace(16),
                         Expanded(
-                          child: PrimaryButtonMedium(
-                              child: const Text('Join'), onPressed: () {}),
+                          child: Obx(() => PrimaryButtonMedium(
+                              onPressed: controller.isJoined.value
+                                  ? null
+                                  : () {
+                                      controller.joinEvent();
+                                    },
+                              child: controller.isJoined.value
+                                  ? const Text('Joined')
+                                  : const Text('Join'))),
                         )
                       ],
                     ),
@@ -206,4 +215,23 @@ class ChatBox extends StatelessWidget {
       ),
     );
   }
+}
+
+Widget createTags(EventDetailController controller) {
+  final tagsWidgets = <Widget>[];
+  for (int i = 0; i < controller.tags.length; i++) {
+    tagsWidgets.add(Container(
+      decoration: BoxDecoration(
+          border: Border.all(
+              color: AppThemeData.themedata.colorScheme.primary, width: 2),
+          borderRadius: BorderRadius.circular(5)),
+      child: Text(controller.tags[i]),
+    ));
+  }
+  return Wrap(
+    direction: Axis.horizontal,
+    spacing: 10,
+    runSpacing: 10,
+    children: tagsWidgets,
+  );
 }

@@ -130,4 +130,47 @@ class FirebaseService {
       });
     }
   }
+
+  Future<void> joinEvent(String userId, String eventId) async {
+    final documentUsers = _firestore.collection('Users').doc(userId);
+    final documentEvents = _firestore.collection('Events').doc(eventId);
+    var members = <String>[];
+    var joinedEvents = <String>[];
+    await documentUsers.get().then((doc) {
+      if (doc.exists) {
+        joinedEvents = doc['JoinedEvents'] != null
+            ? List<String>.from(doc['JoinedEvents'] as List<dynamic>)
+            : <String>[]; // Handle the case where tags is null or undefined.
+        if (!joinedEvents.contains(eventId)) {
+          joinedEvents.add(eventId);
+        } else {
+          throw Exception('Event joined already!');
+        }
+      } else {
+        throw Exception('User does not exist!');
+      }
+    });
+    await documentEvents.get().then((doc) {
+      if (doc.exists) {
+        members = doc['Members'] != null
+            ? List<String>.from(doc['Members'] as List<dynamic>)
+            : <String>[]; // Handle the case where tags is null or undefined.
+        if (!members.contains(userId)) {
+          members.add(userId);
+        } else {
+          throw Exception('Event joined already!');
+        }
+      } else {
+        throw Exception('Event does not exist!');
+      }
+    });
+    await _firestore
+        .collection('Users')
+        .doc(userId)
+        .update({'JoinedEvents': joinedEvents});
+    await _firestore
+        .collection('Events')
+        .doc(eventId)
+        .update({'Members': members});
+  }
 }

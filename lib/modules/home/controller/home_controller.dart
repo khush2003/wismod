@@ -18,7 +18,7 @@ class HomeController extends GetxController {
     'Sports',
     'Hanging Out',
     'Thesis'
-    'Other',
+        'Other',
   ];
   @override
   void onReady() async {

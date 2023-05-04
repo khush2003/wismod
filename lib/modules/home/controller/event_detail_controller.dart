@@ -1,4 +1,6 @@
+import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:wismod/modules/auth/controllers/auth_controller.dart';
 import 'package:wismod/shared/models/event.dart';
 import 'package:wismod/shared/services/firebase_firestore_serivce.dart';
 
@@ -6,38 +8,37 @@ class EventDetailController extends GetxController {
   final firestore = FirebaseService();
   final Rx<Event> eventData = Event.empty().obs;
   final isLoading = true.obs;
+  final _auth = AuthController.instance;
+  final Rx<bool> isJoined = false.obs;
+  final tags = <String>[].obs;
 
   @override
   void onReady() async {
     fetchEvent();
-    // final eventData = Event(
-    //   description:
-    //       'Welcome, come, join, have fuuuuuuuuuuunnunununun KMUTT is the best join me my friends we will enjoy our life and not write code.',
-    //   // imageUrl:
-    //   //     'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTzbmT5f6Uqu-p0tDftdiTuI8u187X2fyvoUXkcKcWz&s',
-    //   eventDate: DateTime.now(),
-    //   location: 'Online',
-    //   category: 'Hanging Out',
-    //   eventOwner: EventOwner(
-    //       name: 'Khush Agarwal',
-    //       department: 'SIT',
-    //       uid: '12',
-    //       year: 2,
-    //       userPhotoUrl:
-    //           'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTzbmT5f6Uqu-p0tDftdiTuI8u187X2fyvoUXkcKcWz&s'),
-    //   id: '3',
-    //   title: "Let's play a Board Game",
-    //   upvotes: 400,
-    //   members: [],
-    // );
-
-    // final firestore = FirebaseService();
-    // await firestore.addEvent(eventData);
-    // final events = await firestore.getEvents();
-    // for (Event event in events) {
-    //   print(event.toString());
-    // }
     super.onReady();
+  }
+
+  void setIsJoined() {
+    if (_auth.appUser.value.joinedEvents != null) {
+      _auth.appUser.value.joinedEvents!.contains(eventData.value.id)
+          ? isJoined(true)
+          : isJoined(false);
+    }
+  }
+
+  void joinEvent() async {
+    try {
+      //todo: Check if user exists
+      await firestore.joinEvent(
+          _auth.firebaseUser.value!.uid, eventData.value.id!);
+      await _auth.updateUser();
+      setIsJoined();
+      Get.snackbar("Sucess!", 'You have sucessfully joined this event',
+          snackPosition: SnackPosition.BOTTOM, backgroundColor: Colors.green);
+    } catch (e) {
+      Get.snackbar("Error!", e.toString(),
+          snackPosition: SnackPosition.BOTTOM, backgroundColor: Colors.red);
+    }
   }
 
   void fetchEvent() async {
@@ -47,6 +48,8 @@ class EventDetailController extends GetxController {
           .getEvent(Get.parameters['id'] ?? '2l8UVLQgFin3dthssdlI');
       if (eventTemp != null) {
         eventData(eventTemp);
+        setIsJoined();
+        tags(eventData.value.tags);
         isLoading(false);
       }
     } finally {}

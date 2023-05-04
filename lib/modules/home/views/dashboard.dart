@@ -474,11 +474,14 @@ class FourButtonsWidget extends StatelessWidget {
                 ),
               ),
             ),
-            Icon(
-              showSizeBox.value ? Icons.arrow_drop_up : Icons.arrow_drop_down,
-              size: 40,
-              color: const Color(0xFF7B38FF),
-            ),
+            Obx(() {
+              final isExpanded = showSizeBox.value;
+              return Icon(
+                isExpanded ? Icons.arrow_drop_up : Icons.arrow_drop_down,
+                size: 40,
+                color: const Color(0xFF7B38FF),
+              );
+            }),
           ],
         ),
       ),

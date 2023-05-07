@@ -431,60 +431,67 @@ class FourButtonsWidget extends StatelessWidget {
   }) : super(key: key);
   @override
   Widget build(BuildContext context) {
+    final boxDecoration = BoxDecoration(
+      color: const Color(0xFFEAF4F4),
+      borderRadius: showSizeBox.value
+          ? const BorderRadius.only(
+              topLeft: Radius.circular(10),
+              topRight: Radius.circular(10),
+            )
+          : BorderRadius.circular(10),
+    );
     return InkWell(
       onTap: onPressed,
-      child: Container(
-        decoration: BoxDecoration(
-          color: const Color(0xFFEAF4F4),
-          borderRadius: showSizeBox.value
-              ? const BorderRadius.only(
-                  topLeft: Radius.circular(10),
-                  topRight: Radius.circular(10),
-                )
-              : BorderRadius.circular(10),
-        ),
-        child: Row(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            Padding(
-              padding: const EdgeInsets.all(12.0),
-              child: Text(
-                activityType,
-                style: const TextStyle(
-                  fontSize: 17,
-                  fontWeight: FontWeight.bold,
-                  color: Color(0xFF7B38FF),
-                ),
-              ),
+      child: Obx(() => Container(
+            decoration: boxDecoration.copyWith(
+              borderRadius: showSizeBox.value
+                  ? const BorderRadius.only(
+                      topLeft: Radius.circular(10),
+                      topRight: Radius.circular(10),
+                    )
+                  : BorderRadius.circular(10),
             ),
-            Container(
-              decoration: BoxDecoration(
-                color: const Color(0xFFFF669F),
-                borderRadius: BorderRadius.circular(4),
-              ),
-              child: Padding(
-                padding: const EdgeInsets.fromLTRB(6, 3, 6, 3),
-                child: Text(
-                  activityNumber.toString(),
-                  style: const TextStyle(
-                    color: Colors.white,
-                    fontSize: 17,
-                    fontWeight: FontWeight.normal,
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                Padding(
+                  padding: const EdgeInsets.all(12.0),
+                  child: Text(
+                    activityType,
+                    style: const TextStyle(
+                      fontSize: 17,
+                      fontWeight: FontWeight.bold,
+                      color: Color(0xFF7B38FF),
+                    ),
                   ),
                 ),
-              ),
+                Container(
+                  decoration: BoxDecoration(
+                    color: const Color(0xFFFF669F),
+                    borderRadius: BorderRadius.circular(4),
+                  ),
+                  child: Padding(
+                    padding: const EdgeInsets.fromLTRB(6, 3, 6, 3),
+                    child: Text(
+                      activityNumber.toString(),
+                      style: const TextStyle(
+                        color: Colors.white,
+                        fontSize: 17,
+                        fontWeight: FontWeight.normal,
+                      ),
+                    ),
+                  ),
+                ),
+                Icon(
+                  showSizeBox.value
+                      ? Icons.arrow_drop_up
+                      : Icons.arrow_drop_down,
+                  size: 40,
+                  color: const Color(0xFF7B38FF),
+                ),
+              ],
             ),
-            Obx(() {
-              final isExpanded = showSizeBox.value;
-              return Icon(
-                isExpanded ? Icons.arrow_drop_up : Icons.arrow_drop_down,
-                size: 40,
-                color: const Color(0xFF7B38FF),
-              );
-            }),
-          ],
-        ),
-      ),
+          )),
     );
   }
 }

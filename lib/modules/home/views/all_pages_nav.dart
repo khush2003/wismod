@@ -1,13 +1,16 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:wismod/modules/auth/controllers/auth_controller.dart';
 import 'package:wismod/modules/home/views/chat_room.dart';
 import 'package:wismod/modules/home/views/home.dart';
 import 'package:wismod/modules/home/views/settings.dart';
 
 import '../controller/all_pages_nav_controller.dart';
 import 'dashboard.dart';
+import 'admin.dart';
 
 class AllPagesNav extends StatelessWidget {
+  final auth = AuthController.instance;
   AllPagesNav({super.key});
   final k = Get.put(AllPagesNavController());
   @override
@@ -20,22 +23,35 @@ class AllPagesNav extends StatelessWidget {
                     HomeView(),
                     const ChatRoomView(),
                     DashboardView(),
-                    const SettingsView()
+                    const SettingsView(),
+                    const AdminView()
                   ],
                 ))),
-        bottomNavigationBar: Obx(
-          () => NavigationBar(
-              onDestinationSelected: k.changeTabIndex,
-              selectedIndex: k.tabIndex.value,
-              destinations: const [
-                NavigationDestination(icon: Icon(Icons.home), label: "Home"),
-                NavigationDestination(
-                    icon: Icon(Icons.chat_rounded), label: "Chat"),
-                NavigationDestination(
-                    icon: Icon(Icons.dashboard), label: "Dashboard"),
-                NavigationDestination(
-                    icon: Icon(Icons.settings), label: "Settings")
-              ]),
-        ));
+        bottomNavigationBar: Obx(() => NavigationBar(
+            onDestinationSelected: k.changeTabIndex,
+            selectedIndex: k.tabIndex.value,
+            destinations: auth.appUser.value.isAdmin!
+                ? const [
+                    NavigationDestination(
+                        icon: Icon(Icons.home), label: "Home"),
+                    NavigationDestination(
+                        icon: Icon(Icons.chat_rounded), label: "Chat"),
+                    NavigationDestination(
+                        icon: Icon(Icons.dashboard), label: "Dashboard"),
+                    NavigationDestination(
+                        icon: Icon(Icons.settings), label: "Settings"),
+                    NavigationDestination(
+                        icon: Icon(Icons.admin_panel_settings), label: "Admin"),
+                  ]
+                : const [
+                    NavigationDestination(
+                        icon: Icon(Icons.home), label: "Home"),
+                    NavigationDestination(
+                        icon: Icon(Icons.chat_rounded), label: "Chat"),
+                    NavigationDestination(
+                        icon: Icon(Icons.dashboard), label: "Dashboard"),
+                    NavigationDestination(
+                        icon: Icon(Icons.settings), label: "Settings"),
+                  ])));
   }
 }

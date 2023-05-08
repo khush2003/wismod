@@ -38,17 +38,29 @@ class EventDetailController extends GetxController {
   }
 
   void upvoteEvent() async {
-    // try{
-    await firestore.upvoteEvent(
-        _auth.firebaseUser.value!.uid, eventData.value.id!);
-    await _auth.updateUser();
-    fetchEvent();
-    Get.snackbar("Sucess!", 'You have sucessfully upvoted this event',
-        snackPosition: SnackPosition.BOTTOM, backgroundColor: Colors.green);
-    // } catch (e) {
-    //   Get.snackbar("Error!", e.toString(),
-    //       snackPosition: SnackPosition.BOTTOM, backgroundColor: Colors.red);
-    // }
+    try {
+      await firestore.upvoteEvent(
+          _auth.firebaseUser.value!.uid, eventData.value.id!);
+      await _auth.updateUser();
+      fetchEvent(); //TODO: try to make it faster
+      Get.snackbar("Sucess!", 'You have sucessfully upvoted this event',
+          snackPosition: SnackPosition.BOTTOM, backgroundColor: Colors.green);
+    } catch (e) {
+      Get.snackbar("Error!", e.toString(),
+          snackPosition: SnackPosition.BOTTOM, backgroundColor: Colors.red);
+    }
+  }
+
+  void reportEvent() async {
+    try {
+      await firestore.reportEvent(eventData.value.id!);
+      fetchEvent();
+       Get.snackbar("Sucess!", 'You have sucessfully reported this event',
+          snackPosition: SnackPosition.BOTTOM, backgroundColor: Colors.green);
+    } catch (e) {
+      Get.snackbar("Error!", e.toString(),
+          snackPosition: SnackPosition.BOTTOM, backgroundColor: Colors.red);
+    }
   }
 
   void joinEvent() async {

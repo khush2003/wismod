@@ -16,7 +16,11 @@ class EventDetailView extends StatelessWidget {
     return Scaffold(
         appBar: AppBar(
           actions: [
-            IconButton(onPressed: () {}, icon: const Icon(Icons.report)),
+            IconButton(
+                onPressed: () {
+                  controller.reportEvent();
+                },
+                icon: const Icon(Icons.report)),
             IconButton(
                 onPressed: () {}, icon: const Icon(Icons.bookmark_add_outlined))
           ],

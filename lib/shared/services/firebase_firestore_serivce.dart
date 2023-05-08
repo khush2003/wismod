@@ -2,7 +2,6 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:wismod/shared/models/user.dart';
 import '../models/event.dart';
 
-
 class FirebaseService {
   final FirebaseFirestore _firestore = FirebaseFirestore.instance;
 
@@ -139,6 +138,22 @@ class FirebaseService {
     }
   }
 
+  Future<void> reportEvent(String eventId) async {
+    final eventDocument = _firestore.collection('Events').doc(eventId);
+    final eventSnapshot = await eventDocument.get();
+
+    if (!eventSnapshot.exists) {
+      throw Exception('Event does not exist!');
+    }
+
+    final event = Event.fromMap(eventSnapshot.data()!, eventSnapshot.id);
+    if (event.isReported == true) {
+      return;
+    }
+
+    await eventDocument.update({'IsReported': true});
+  }
+
   Future<void> upvoteEvent(String userId, String eventId) async {
     final documentUsers = _firestore.collection('Users').doc(userId);
     final documentEvents = _firestore.collection('Events').doc(eventId);
@@ -147,7 +162,8 @@ class FirebaseService {
 
     await documentEvents.get().then((doc) {
       if (doc.exists) {
-        upvotes = doc['Upvotes'] as int; // Handle the case where upvotes is null or undefined.
+        upvotes = doc['Upvotes']
+            as int; // Handle the case where upvotes is null or undefined.
       } else {
         throw Exception('Event does not exist!');
       }
@@ -177,7 +193,6 @@ class FirebaseService {
         .collection('Events')
         .doc(eventId)
         .update({'Upvotes': upvotes});
-
   }
 
   Future<void> joinEvent(String userId, String eventId) async {

@@ -1,8 +1,11 @@
+import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
 import 'dart:io';
 import 'package:firebase_storage/firebase_storage.dart';
 import 'package:image_picker/image_picker.dart';
+import 'package:wismod/modules/auth/controllers/auth_controller.dart';
+import 'package:wismod/shared/services/firebase_firestore_serivce.dart';
 
 class ProfilePictureController extends GetxController {
   final imageUrl = ''.obs;
@@ -10,6 +13,22 @@ class ProfilePictureController extends GetxController {
   final dateTime = DateTime.now().obs;
   final _firebaseStorage = FirebaseStorage.instance;
   final _imagePicker = ImagePicker();
+  final _auth = AuthController.instance;
+
+  bool setProfilePicture() {
+    bool isPassed = false;
+    final firestore = FirebaseService();
+    try {
+      firestore.updateProfilePicture(
+          _auth.firebaseUser.value!.uid, imageUrl.value);
+      return !isPassed;
+    } catch (e) {
+      Get.snackbar("Error",
+          "An unknown error occured! Please make sure to login and select a proper image file!",
+          snackPosition: SnackPosition.BOTTOM, backgroundColor: Colors.red);
+      return isPassed;
+    }
+  }
 
   uploadImage() async {
     //Check Permissions

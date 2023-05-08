@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:wismod/modules/auth/controllers/auth_controller.dart';
 import 'package:wismod/modules/home/views/chat_room.dart';
 import 'package:wismod/modules/home/views/home.dart';
 import 'package:wismod/modules/home/views/settings.dart';
@@ -10,7 +9,6 @@ import 'dashboard.dart';
 import 'admin.dart';
 
 class AllPagesNav extends StatelessWidget {
-  final auth = AuthController.instance;
   AllPagesNav({super.key});
   final k = Get.put(AllPagesNavController());
   @override
@@ -30,7 +28,7 @@ class AllPagesNav extends StatelessWidget {
         bottomNavigationBar: Obx(() => NavigationBar(
             onDestinationSelected: k.changeTabIndex,
             selectedIndex: k.tabIndex.value,
-            destinations: auth.appUser.value.isAdmin!
+            destinations: k.checkIsAdmin()
                 ? const [
                     NavigationDestination(
                         icon: Icon(Icons.home), label: "Home"),

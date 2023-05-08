@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:intl/intl.dart';
 import 'package:wismod/utils/app_utils.dart';
 
 import '../../../theme/global_widgets.dart';
@@ -45,7 +44,7 @@ class EventCard extends StatelessWidget {
   final String eventLocation;
   final String eventCategory;
 
-  const EventCard({
+  const EventCard({super.key, 
     required this.eventDate,
     required this.eventName,
     required this.eventLocation,
@@ -58,7 +57,7 @@ class EventCard extends StatelessWidget {
         elevation: 3,
         shape: RoundedRectangleBorder(
           borderRadius: BorderRadius.circular(10),
-          side: BorderSide(
+          side: const BorderSide(
             color: Color(0xFF8C52FF),
             width: 1,
           ),
@@ -84,7 +83,7 @@ class EventCard extends StatelessWidget {
                       ),
                     ),
                   ),
-                  SizedBox(height: 10),
+                  const SizedBox(height: 10),
                   Expanded(
                     child: Wrap(
                       crossAxisAlignment: WrapCrossAlignment.start,
@@ -93,7 +92,7 @@ class EventCard extends StatelessWidget {
                         Row(
                           children: [
                             Text(
-                              DateFormat("dd/MM/yyyy").format(eventDate),
+                              formatDate(eventDate),
                               style: const TextStyle(
                                 fontSize: 14,
                                 fontWeight: FontWeight.bold,
@@ -101,7 +100,7 @@ class EventCard extends StatelessWidget {
                             ),
                           ],
                         ),
-                        SizedBox(height: 10),
+                        const SizedBox(height: 10),
                         Row(
                           children: [
                             Text(
@@ -110,7 +109,7 @@ class EventCard extends StatelessWidget {
                             ),
                           ],
                         ),
-                        SizedBox(height: 10),
+                        const SizedBox(height: 10),
                         Row(
                           children: [
                             Text(
@@ -122,7 +121,7 @@ class EventCard extends StatelessWidget {
                             ),
                           ],
                         ),
-                        SizedBox(height: 10),
+                        const SizedBox(height: 10),
                         Row(
                           children: [
                             Text(
@@ -142,7 +141,7 @@ class EventCard extends StatelessWidget {
               Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
-                  Text('18 upvotes'),
+                  const Text('18 upvotes'),
                   OutlineButtonMedium(
                     onPressed: () => {},
                     child: const Padding(

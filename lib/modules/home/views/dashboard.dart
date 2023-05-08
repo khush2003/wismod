@@ -27,10 +27,9 @@ class DashboardView extends StatelessWidget {
                     bottomRight: Radius.circular(30),
                   ),
                 ),
-                child: Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                  children: [
-                    Column(children: [
+                child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.stretch,
+                    children: [
                       addVerticalSpace(24),
                       const Text('Profile',
                           textAlign: TextAlign.center,
@@ -121,6 +120,8 @@ class DashboardView extends StatelessWidget {
                                       SecondaryButtonMedium(
                                         child: const Text("Save"),
                                         onPressed: () {
+                                          profilePictureController
+                                              .setProfilePicture();
                                           Navigator.pop(context);
                                         },
                                       ),
@@ -140,8 +141,6 @@ class DashboardView extends StatelessWidget {
                         ],
                       ),
                     ]),
-                  ],
-                ),
               ),
               Padding(
                 padding: const EdgeInsets.all(sideWidth),
@@ -183,7 +182,7 @@ class DashboardView extends StatelessWidget {
                               ),
                               addVerticalSpace(),
                               Text(
-                                '${auth.appUser.value.joinedEvents!.length} Activities',
+                                '${auth.appUser.value.joinedEvents != null ? auth.appUser.value.joinedEvents!.length : 0} Activities',
                                 style: Theme.of(context).textTheme.bodyMedium,
                               ),
                             ],
@@ -209,7 +208,7 @@ class DashboardView extends StatelessWidget {
                               ),
                               addVerticalSpace(),
                               Text(
-                                '${auth.appUser.value.upvotedEvents!.length} Upvotes',
+                                '${auth.appUser.value.upvotedEvents != null ? auth.appUser.value.upvotedEvents!.length : 0} Upvotes',
                                 style: Theme.of(context).textTheme.bodyMedium,
                               ),
                             ],

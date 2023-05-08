@@ -1,10 +1,12 @@
 import 'package:get/get.dart';
+import 'package:wismod/modules/auth/controllers/auth_controller.dart';
 
-enum Pages { homePage, chatPage, dashboardPage, settingsPage }
+enum Pages { homePage, chatPage, dashboardPage, settingsPage, adminPage }
 
 class AllPagesNavController extends GetxController {
-  late final int pageIndex = 1;
-  late final Rx<int> tabIndex = pageIndex.obs;
+  final _auth = AuthController.instance;
+
+  late final Rx<int> tabIndex = 0.obs;
   @override
   void onInit() {
     super.onInit();
@@ -13,6 +15,15 @@ class AllPagesNavController extends GetxController {
         ? convertPagestoNumber(Get.arguments['page'])
         : initialPage;
     changeTabIndex(pageIndex);
+  }
+
+  bool checkIsAdmin() {
+    if (_auth.appUser.value.isAdmin != null) {
+      if (_auth.appUser.value.isAdmin!) {
+        return true;
+      }
+    }
+    return false;
   }
 
   void changeTabIndex(int index) {
@@ -29,6 +40,8 @@ class AllPagesNavController extends GetxController {
         return 2;
       case Pages.settingsPage:
         return 3;
+      case Pages.adminPage:
+        return 4;
       default:
         return 0;
     }

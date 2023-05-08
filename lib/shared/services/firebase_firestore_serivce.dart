@@ -55,6 +55,13 @@ class FirebaseService {
     return Event.fromMap(data, eventId);
   }
 
+  Future<void> updateProfilePicture(String userId, String imagePath) async {
+    // Update the user's profile picture in Firestore
+    await _firestore.collection('Users').doc(userId).update({
+      'ProfilePicture': imagePath,
+    });
+  }
+
   Future<AppUser?> getUserById(String userId) async {
     final docSnapshot = await _firestore.collection('Users').doc(userId).get();
     if (docSnapshot.exists) {

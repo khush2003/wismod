@@ -2,6 +2,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:wismod/shared/models/user.dart';
 import '../models/event.dart';
 
+
 class FirebaseService {
   final FirebaseFirestore _firestore = FirebaseFirestore.instance;
 

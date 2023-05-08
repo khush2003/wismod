@@ -1,11 +1,8 @@
 // ignore_for_file: prefer_const_constructors_in_immutables, prefer_const_constructors
 
 import 'package:flutter/material.dart';
-import 'package:wismod/theme/global_widgets.dart';
 import 'package:wismod/utils/app_utils.dart';
-import 'package:get/get.dart';
 
-import '../../../routes/routes.dart';
 
 const double textTimeMargin = 30;
 

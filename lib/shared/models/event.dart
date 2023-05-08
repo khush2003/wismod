@@ -1,5 +1,6 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 
+
 class Event {
   final String category;
   final String title;
@@ -33,6 +34,7 @@ class Event {
       this.id,
       this.totalCapacity,
       this.allowAutomaticJoin = true});
+      
   @override
   String toString() {
     return 'Event {'

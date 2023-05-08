@@ -147,8 +147,7 @@ class FirebaseService {
 
     await documentEvents.get().then((doc) {
       if (doc.exists) {
-        upvotes = doc['Upvotes'] as int; // Handle the case where tags is null or undefined.
-        upvotes++;
+        upvotes = doc['Upvotes'] as int; // Handle the case where upvotes is null or undefined.
       } else {
         throw Exception('Event does not exist!');
       }
@@ -161,8 +160,10 @@ class FirebaseService {
             : <String>[]; // Handle the case where tags is null or undefined.
         if (!upvotedEvents.contains(eventId)) {
           upvotedEvents.add(eventId);
+          upvotes++;
         } else {
-          throw Exception('Event upvoted already!');
+          upvotedEvents.remove(eventId);
+          upvotes--;
         }
       } else {
         throw Exception('User does not exist!');

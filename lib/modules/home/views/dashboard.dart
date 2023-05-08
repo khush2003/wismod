@@ -3,7 +3,6 @@ import 'package:get/get.dart';
 import 'package:wismod/modules/auth/controllers/auth_controller.dart';
 import 'package:wismod/utils/app_utils.dart';
 import 'package:wismod/modules/home/controller/dashboard_controller.dart';
-import 'package:intl/intl.dart';
 
 import '../../../theme/global_widgets.dart';
 
@@ -521,7 +520,7 @@ Widget _otherActivityBox(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
               Text(
-                DateFormat("dd/MM/yyyy").format(activityDate),
+                formatDate(activityDate),
                 style: const TextStyle(
                   fontSize: 16,
                   fontWeight: FontWeight.bold,
@@ -600,7 +599,7 @@ Widget _requestedActivityBox(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
               Text(
-                DateFormat("dd/MM/yyyy").format(activityDate),
+               formatDate(activityDate),
                 style: const TextStyle(
                   fontSize: 16,
                   fontWeight: FontWeight.bold,

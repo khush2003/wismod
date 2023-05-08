@@ -93,17 +93,14 @@ class EventDetailView extends StatelessWidget {
                     Row(
                       mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                       children: [
-                        //TODO: Devote event
                         Expanded(
                           child: Obx(() => OutlineButtonMedium(
-                                onPressed: controller.isUpvoted.value
-                                    ? null
-                                    : () {
-                                        controller.upvoteEvent();
-                                      },
+                                onPressed: () {
+                                  controller.upvoteEvent();
+                                },
                                 child: controller.isUpvoted.value
                                     ? const Text("Upvoted")
-                                    : const Text("Upvote"),
+                                    : const Text("Remove Upvote"),
                               )),
                         ),
                         addHorizontalSpace(16),

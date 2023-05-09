@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
+import 'package:wismod/modules/auth/controllers/auth_controller.dart';
 import 'dart:ui' as ui;
 import 'package:wismod/shared/models/message.dart';
+import 'package:wismod/theme/theme_data.dart';
 import 'package:wismod/utils/app_utils.dart';
 import 'package:get/get.dart';
 import 'package:wismod/modules/home/controller/message_controller.dart';
@@ -320,7 +322,8 @@ class ChatBoxEventHost extends StatelessWidget {
 
 class ChatBoxUser extends StatelessWidget {
   final Message message;
-  const ChatBoxUser({super.key, required this.message});
+  final _auth = AuthController.instance;
+  ChatBoxUser({super.key, required this.message});
 
   @override
   Widget build(BuildContext context) {
@@ -331,30 +334,31 @@ class ChatBoxUser extends StatelessWidget {
     return Column(
       children: <Widget>[
         Row(
+          mainAxisAlignment: message.sentBy == _auth.firebaseUser.value!.uid
+              ? MainAxisAlignment.end
+              : MainAxisAlignment.start,
           mainAxisSize: MainAxisSize.max,
-          mainAxisAlignment: MainAxisAlignment.end,
           children: [
-            Expanded(
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.end,
-                children: [
-                  Container(
-                    margin: const EdgeInsets.only(right: textTimeMargin),
-                    child: Text(
-                      //chatUserName,
-                      message.userName,
-                      style: const TextStyle(
-                        fontFamily: "Gotham",
-                        fontWeight: FontWeight.bold,
-                        color: Colors.black,
-                        fontSize: 20,
-                      ),
-                      textDirection: ui.TextDirection.rtl,
-                      maxLines: 1,
-                      overflow: TextOverflow.ellipsis,
-                    ),
-                  ),
-                ],
+            Container(
+              margin: EdgeInsets.only(
+                  right: message.sentBy == _auth.firebaseUser.value!.uid
+                      ? 0
+                      : textTimeMargin,
+                  left: message.sentBy == _auth.firebaseUser.value!.uid
+                      ? textTimeMargin
+                      : 0),
+              child: Text(
+                //chatUserName,
+                message.userName,
+                style: const TextStyle(
+                  fontFamily: "Gotham",
+                  fontWeight: FontWeight.bold,
+                  color: Colors.black,
+                  fontSize: 20,
+                ),
+                textDirection: ui.TextDirection.rtl,
+                maxLines: 1,
+                overflow: TextOverflow.ellipsis,
               ),
             )
           ],
@@ -362,103 +366,98 @@ class ChatBoxUser extends StatelessWidget {
         addVerticalSpace(5),
         Container(
           width: MediaQuery.of(context).size.width,
-          margin: const EdgeInsets.only(left: textTimeMargin),
-          /*decoration: BoxDecoration(
-            color: Color.fromRGBO(255, 255, 255, 1),
-            boxShadow: const [
-              BoxShadow(
-                color: Color.fromRGBO(0, 0, 0, 1),
-                offset: Offset(0, 4),
-                blurRadius: 6,
-              ),
-            ],
-          ),*/
-          child: Column(
-            children: [
-              Padding(
-                //padding: const EdgeInsets.fromLTRB(0, 20, 10, 20),
-                padding: const EdgeInsets.only(left: textTimeMargin),
-                child: Column(
-                  children: <Widget>[
-                    Row(
-                      crossAxisAlignment: CrossAxisAlignment.center,
-                      children: [
-                        // Chat msg
-                        Expanded(
-                          child: Container(
-                            width: MediaQuery.of(context).size.width,
-                            padding: const EdgeInsets.all(sideWidth),
-                            //margin:
-                            //    const EdgeInsets.only(right: textTimeMargin),
-                            decoration: const BoxDecoration(
-                              // Circular Edge Chat
-                              //borderRadius: BorderRadius.circular(50),
-                              color: Color.fromRGBO(255, 255, 255, 1),
-                              boxShadow: [
-                                BoxShadow(
-                                  color: Color.fromRGBO(0, 0, 0, 1),
-                                  offset: Offset(0, 4),
-                                  blurRadius: 6,
-                                ),
-                              ],
+          margin: EdgeInsets.only(
+              left: message.sentBy == _auth.firebaseUser.value!.uid
+                  ? textTimeMargin
+                  : 0,
+              right: message.sentBy == _auth.firebaseUser.value!.uid
+                  ? 0
+                  : textTimeMargin),
+          child: Padding(
+            padding: const EdgeInsets.only(left: textTimeMargin),
+            child: Column(
+              children: <Widget>[
+                Row(
+                  textDirection: message.sentBy == _auth.firebaseUser.value!.uid
+                      ? TextDirection.ltr
+                      : TextDirection.rtl,
+                  crossAxisAlignment: CrossAxisAlignment.center,
+                  children: [
+                    // Chat msg
+                    Expanded(
+                      child: Container(
+                        width: MediaQuery.of(context).size.width,
+                        padding: const EdgeInsets.all(sideWidth),
+                        //margin:
+                        //    const EdgeInsets.only(right: textTimeMargin),
+                        decoration: BoxDecoration(
+                          // Circular Edge Chat
+                          //borderRadius: BorderRadius.circular(50),
+                          color: message.sentBy == _auth.firebaseUser.value!.uid
+                              ? AppThemeData.themedata.colorScheme.secondary
+                              : Colors.white,
+                          boxShadow: const [
+                            BoxShadow(
+                              color: Color.fromRGBO(0, 0, 0, 1),
+                              offset: Offset(0, 4),
+                              blurRadius: 6,
                             ),
-                            child: Column(
-                              mainAxisAlignment: MainAxisAlignment.start,
-                              crossAxisAlignment: CrossAxisAlignment.start,
-                              mainAxisSize: MainAxisSize.min,
-                              children: [
-                                Text(
-                                  message.message,
-                                  style: const TextStyle(
-                                    fontFamily: "Gotham",
-                                    color: Colors.black,
-                                    fontSize: 18,
-                                  ),
-                                  textDirection: ui.TextDirection.rtl,
-                                )
-                              ],
-                            ),
-                          ),
-                        ),
-                        addHorizontalSpace(10),
-                        // UserProfilePic
-                        Column(
-                          mainAxisAlignment: MainAxisAlignment.center,
-                          crossAxisAlignment: CrossAxisAlignment.end,
-                          mainAxisSize: MainAxisSize.min,
-                          children: [
-                            if (message.profilePicture != null)
-                              SizedBox(
-                                //width: 80,
-                                child: CircleAvatar(
-                                  radius: 30,
-                                  backgroundImage: Image.network(
-                                    message.profilePicture!,
-                                    errorBuilder:
-                                        (context, error, stackTrace) =>
-                                            Image.network(
-                                      placeholderImage,
-                                      fit: BoxFit.cover,
-                                    ),
-                                  ).image,
-                                ),
-                              ),
                           ],
                         ),
-                      ],
+                        child: Column(
+                          mainAxisAlignment: MainAxisAlignment.start,
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          mainAxisSize: MainAxisSize.min,
+                          children: [
+                            Text(
+                              message.message,
+                              style: const TextStyle(
+                                fontFamily: "Gotham",
+                                color: Colors.black,
+                                fontSize: 18,
+                              ),
+                              textDirection: ui.TextDirection.rtl,
+                            )
+                          ],
+                        ),
+                      ),
                     ),
-                    addVerticalSpace(10),
-                    Row(
-                      mainAxisAlignment: MainAxisAlignment.start,
-                      mainAxisSize: MainAxisSize.max,
+                    addHorizontalSpace(10),
+                    // UserProfilePic
+                    Column(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      mainAxisSize: MainAxisSize.min,
                       children: [
-                        Text(message.sentOn.toString()),
+                        SizedBox(
+                          child: CircleAvatar(
+                            radius: 30,
+                            backgroundImage: Image.network(
+                              message.profilePicture ?? placeholderImage,
+                              errorBuilder: (context, error, stackTrace) =>
+                                  Image.network(
+                                placeholderImage,
+                                fit: BoxFit.cover,
+                              ),
+                            ).image,
+                          ),
+                        ),
                       ],
                     ),
                   ],
                 ),
-              ),
-            ],
+                addVerticalSpace(10),
+                Row(
+                  mainAxisAlignment:
+                      message.sentBy == _auth.firebaseUser.value!.uid
+                          ? MainAxisAlignment.start
+                          : MainAxisAlignment.end,
+                  mainAxisSize: MainAxisSize.max,
+                  children: [
+                    Text(message.sentOn.toString()),
+                  ],
+                ),
+              ],
+            ),
           ),
         ),
         addVerticalSpace(10),

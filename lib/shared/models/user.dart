@@ -66,7 +66,7 @@ class AppUser {
       profilePicture: map['ProfilePicture'],
       year: map['Year'] as int,
       blockedUsers: List<String>.from(map['BlockedUsers'] ?? []),
-      bookmarkedEvents: List<String>.from(map['BookmarkedEevnts'] ?? []),
+      bookmarkedEvents: List<String>.from(map['BookmarkedEvents'] ?? []),
       joinedEvents: List<String>.from(map['JoinedEvents'] ?? []),
       ownedEvents: List<String>.from(map['OwnedEvents'] ?? []),
       requestedEvents: List<String>.from(map['RequestedEvents'] ?? []),

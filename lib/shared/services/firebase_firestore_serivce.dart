@@ -159,7 +159,7 @@ class FirebaseService {
       'ProfilePicture': user.profilePicture,
       'Year': user.year,
       'BlockedUsers': user.blockedUsers ?? [],
-      'BookmarkedEevnts': user.bookmarkedEvents ?? [],
+      'BookmarkedEvents': user.bookmarkedEvents ?? [],
       'JoinedEvents': user.joinedEvents ?? [],
       'OwnedEvents': user.ownedEvents ?? [],
       'RequestedEvents': user.requestedEvents ?? [],
@@ -307,5 +307,29 @@ class FirebaseService {
         .collection('Events')
         .doc(eventId)
         .update({'Members': members});
+  }
+
+  Future<void> bookmarkEvent(String userId, String eventId) async {
+    final userRef = _firestore.collection('Users').doc(userId);
+    final userDoc = await userRef.get();
+
+    if (!userDoc.exists) {
+      throw Exception('User does not exist!');
+    }
+
+    final user = AppUser.fromMap(userDoc.data()!, userId);
+    final bookmarkedEvents = user.bookmarkedEvents ?? [];
+    final isBookmarked = bookmarkedEvents.contains(eventId);
+
+    List<String> updatedBookmarkedEvents;
+
+    if (isBookmarked) {
+      updatedBookmarkedEvents =
+          bookmarkedEvents.where((id) => id != eventId).toList();
+    } else {
+      updatedBookmarkedEvents = [...bookmarkedEvents, eventId];
+    }
+
+    await userRef.update({'BookmarkedEvents': updatedBookmarkedEvents});
   }
 }

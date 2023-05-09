@@ -15,6 +15,7 @@ class EventDetailController extends GetxController {
   final _auth = AuthController.instance;
   final Rx<bool> isJoined = false.obs;
   final Rx<bool> isUpvoted = false.obs;
+  final Rx<bool> isBookmarked = false.obs;
   final tags = <String>[].obs;
 
   @override
@@ -40,6 +41,14 @@ class EventDetailController extends GetxController {
     }
   }
 
+  void setIsBookmarked() {
+    if (_auth.appUser.value.bookmarkedEvents != null) {
+      _auth.appUser.value.bookmarkedEvents!.contains(eventData.value.id)
+          ? isBookmarked(true)
+          : isBookmarked(false);
+    }
+  }
+
   void upvoteEvent() async {
     try {
       await firestore.upvoteEvent(
@@ -58,7 +67,7 @@ class EventDetailController extends GetxController {
     try {
       await firestore.reportEvent(eventData.value.id!);
       fetchEvent();
-      Get.snackbar("Sucess!", 'You have sucessfully reported this event',
+      Get.snackbar("Sucess!", 'You have sucessfully reported this event!',
           snackPosition: SnackPosition.BOTTOM, backgroundColor: Colors.green);
     } catch (e) {
       Get.snackbar("Error!", e.toString(),
@@ -79,6 +88,19 @@ class EventDetailController extends GetxController {
     }
   }
 
+  void bookmarkEvent() async {
+    try {
+      //todo: Check if user exists
+      await firestore.bookmarkEvent(
+          _auth.firebaseUser.value!.uid, eventData.value.id!);
+      await _auth.updateUser();
+      setIsBookmarked();
+      sucessSnackBar('You have sucessfully bookmarked this event');
+    } catch (e) {
+      errorSnackBar(e.toString());
+    }
+  }
+
   void fetchEvent() async {
     try {
       isLoading(true);
@@ -88,6 +110,7 @@ class EventDetailController extends GetxController {
         eventData(eventTemp);
         setIsJoined();
         setIsUpvoted();
+        setIsBookmarked();
         tags(eventData.value.tags);
         isLoading(false);
       }
@@ -104,7 +127,7 @@ class EventDetailController extends GetxController {
       try {
         //TODO: Fix no Update event when adding event through eventDetails
         await _auth.updateUser();
-        HomeController.instance.fetchEvents();
+        updateHomeScreen();
       } finally {}
     } catch (e) {
       errorSnackBar("There was an error");
@@ -113,7 +136,7 @@ class EventDetailController extends GetxController {
 
   void updateHomeScreen() {
     try {
-      final c = Get.find<HomeController>();
+      final c = HomeController.instance;
       c.fetchEvents();
     } finally {}
   }

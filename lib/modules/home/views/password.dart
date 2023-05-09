@@ -1,10 +1,23 @@
+import 'dart:js';
+
 import 'package:flutter/material.dart';
 import 'package:wismod/theme/global_widgets.dart';
+import '../../auth/controllers/signup_controller.dart';
+import 'package:get/get.dart';
+import '../controller/setting_controller.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 
 import '../../../utils/app_utils.dart';
 
 class PassWordView extends StatelessWidget {
-  const PassWordView({super.key});
+  PassWordView({Key? key}) : super(key: key);
+  var auth = FirebaseAuth.instance;
+  final TextEditingController currentPasswordController =
+      TextEditingController();
+  // final TextEditingController passwordController = TextEditingController();
+  // final TextEditingController confirmPasswordController =
+  //     TextEditingController();
+  final SettingController settingController = Get.put(SettingController());
 
   @override
   Widget build(BuildContext context) {
@@ -19,47 +32,79 @@ class PassWordView extends StatelessWidget {
             color: Colors.black),
       )),
       body: Padding(
-        padding: const EdgeInsets.fromLTRB(50.0, 20.0, 50.0, 0.0),
+        padding: EdgeInsets.fromLTRB(50.0, 20.0, 50.0, 0.0),
         child: Align(
-            alignment: Alignment.topCenter,
-            child: SingleChildScrollView(
-                child: Column(children: const [
-              Padding(
-                padding: EdgeInsets.fromLTRB(0.0, 0.0, 0.0, 20.0),
-                child: HeadAndTextField(
-                  label: 'Current Password',
-                  hintText: 'Type you current password',
-                ),
-              ),
-              Padding(
-                padding: EdgeInsets.fromLTRB(0.0, 0.0, 0.0, 20.0),
-                child: HeadAndTextField(
-                  label: 'New password',
-                  hintText: 'Input your new password',
-                ),
-              ),
-              Padding(
-                padding: EdgeInsets.fromLTRB(0.0, 0.0, 0.0, 20.0),
-                child: HeadAndTextField(
-                  label: 'Confirm New password',
-                  hintText: 'Retype your new password',
-                ),
-              ),
-              Padding(
-                padding: EdgeInsets.fromLTRB(0.0, 0.0, 0.0, 20.0),
-                child: SizedBox(
-                  width: double.infinity,
-                  child: AlertPasswordChange(),
-                ),
-              ),
-              // Padding(
-              //   padding: const EdgeInsets.fromLTRB(0.0, 0.0, 0.0, 20.0),
-              //   child: SizedBox(
-              //     width: double.infinity,
-              //     child: AlertPassWordCancel(),
-              //   ),
-              // ),
-            ]))),
+          alignment: Alignment.topCenter,
+          child: SingleChildScrollView(
+              child: Form(
+                  autovalidateMode: AutovalidateMode.always,
+                  child: Column(children: [
+                    Padding(
+                      padding: EdgeInsets.fromLTRB(0.0, 0.0, 0.0, 20.0),
+                      child: HeadAndTextField(
+                        label: 'Current Password',
+                        hintText: 'Type you current password',
+                        validateFunction: settingController.validatePassword,
+                        controllerFunction: currentPasswordController,
+                      ),
+                    ),
+                    Padding(
+                      padding: EdgeInsets.fromLTRB(0.0, 0.0, 0.0, 20.0),
+                      child: HeadAndTextField(
+                        label: 'New password',
+                        hintText: 'Input your new password',
+                        validateFunction: settingController.validatePassword,
+                        controllerFunction:
+                            settingController.passwordController,
+                      ),
+                    ),
+                    Padding(
+                      padding: EdgeInsets.fromLTRB(0.0, 0.0, 0.0, 20.0),
+                      child: HeadAndTextField(
+                        label: 'Confirm New password',
+                        hintText: 'Retype your new password',
+                        validateFunction:
+                            settingController.validateConfirmPassword,
+                        controllerFunction:
+                            settingController.confirmPasswordController,
+                      ),
+                    ),
+                    Padding(
+                      padding: EdgeInsets.fromLTRB(0.0, 0.0, 0.0, 20.0),
+                      child: SizedBox(
+                        width: double.infinity,
+                        child:
+                            AlertPasswordChange(onpressedYesFunction: () async {
+                          await settingController.changePassword(
+                            email: auth.currentUser?.email,
+                            currentPassword: currentPasswordController.text,
+                            newPassword:
+                                settingController.passwordController.text,
+                          );
+                          // ignore: use_build_context_synchronously
+                          Navigator.pop(context, 'Yes');
+                          if (settingController.checkCount == 1) {
+                            print(settingController.checkCount);
+                            settingController.checkCount =
+                                settingController.checkCount - 1;
+                            print(settingController.checkCount);
+                            Navigator.pop(context);
+                          }
+                        }
+
+
+                                ),
+                      ),
+                    ),
+                    // Padding(
+                    //   padding: const EdgeInsets.fromLTRB(0.0, 0.0, 0.0, 20.0),
+                    //   child: SizedBox(
+                    //     width: double.infinity,
+                    //     child: AlertPassWordCancel(),
+                    //   ),
+                    // ),
+                  ]))),
+        ),
       ),
     );
   }
@@ -68,12 +113,26 @@ class PassWordView extends StatelessWidget {
 class HeadAndTextField extends StatelessWidget {
   final String label;
   final String hintText;
+  final String? Function(String?)? validateFunction;
+  final TextEditingController? controllerFunction;
 
-  const HeadAndTextField({
+  HeadAndTextField({
     Key? key,
     required this.label,
     required this.hintText,
+    required this.validateFunction,
+    this.controllerFunction,
   }) : super(key: key);
+
+  String? validateNotEmpty(String? value) {
+    if (value == null || value.isEmpty) {
+      return 'This field cannot be empty';
+    }
+    return null;
+  }
+
+  final validate = (String? value) =>
+      value == null || value.isEmpty ? 'This field cannot be empty' : null;
 
   @override
   Widget build(BuildContext context) {
@@ -95,6 +154,9 @@ class HeadAndTextField extends StatelessWidget {
             width: double.infinity,
             child: TextFormFeildThemed(
               hintText: hintText,
+              validator: validateFunction ?? validate,
+              controller: controllerFunction,
+              obscureText: true,
             ),
           ),
         ),
@@ -104,7 +166,13 @@ class HeadAndTextField extends StatelessWidget {
 }
 
 class AlertPasswordChange extends StatelessWidget {
-  const AlertPasswordChange({super.key});
+  // final Future<void> Function() onpressedYesFunction;
+  final VoidCallback onpressedYesFunction;
+
+  const AlertPasswordChange({
+    Key? key,
+    required this.onpressedYesFunction,
+  }) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -115,7 +183,7 @@ class AlertPasswordChange extends StatelessWidget {
           context: context,
           builder: (BuildContext context) => AlertDialog(
             // contentPadding: EdgeInsets.all(24.0),
-            title: const Text('Do you want change your password?',
+            title: const Text('Do you want to change your password?',
                 style: TextStyle(
                     fontFamily: "Gotham",
                     fontWeight: FontWeight.bold,
@@ -140,14 +208,17 @@ class AlertPasswordChange extends StatelessWidget {
                   Padding(
                       padding: const EdgeInsets.fromLTRB(0.0, 0.0, 0.0, 20.0),
                       child: OutlineButtonMedium(
-                        onPressed: () {},
-                        child: const Text('Yes',
-                            style: TextStyle(
-                                fontFamily: "Gotham",
-                                fontWeight: FontWeight.bold,
-                                fontSize: 32,
-                                color: Color.fromRGBO(123, 56, 255, 1))),
-                      )),
+                          child: const Text('Yes',
+                              style: TextStyle(
+                                  fontFamily: "Gotham",
+                                  fontWeight: FontWeight.bold,
+                                  fontSize: 32,
+                                  color: Color.fromRGBO(123, 56, 255, 1))),
+                          onPressed: onpressedYesFunction
+                          // print("Password changed");
+                          // Get.back();
+
+                          )),
                 ],
               ),
             ],
@@ -176,7 +247,7 @@ class AlertPassWordCancel extends StatelessWidget {
           context: context,
           builder: (BuildContext context) => AlertDialog(
             // contentPadding: EdgeInsets.all(24.0),
-            title: const Text('Do you want change your password?',
+            title: const Text('Do you want to change your password?',
                 style: TextStyle(
                     fontFamily: "Gotham",
                     fontWeight: FontWeight.bold,

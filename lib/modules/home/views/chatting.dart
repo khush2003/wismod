@@ -374,7 +374,13 @@ class ChatBoxUser extends StatelessWidget {
                   ? 0
                   : textTimeMargin),
           child: Padding(
-            padding: const EdgeInsets.only(left: textTimeMargin),
+            padding: EdgeInsets.only(
+                left: message.sentBy == _auth.firebaseUser.value!.uid
+                    ? textTimeMargin
+                    : 0,
+                right: message.sentBy == _auth.firebaseUser.value!.uid
+                    ? 0
+                    : textTimeMargin),
             child: Column(
               children: <Widget>[
                 Row(

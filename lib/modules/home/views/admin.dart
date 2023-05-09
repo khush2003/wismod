@@ -105,7 +105,9 @@ class EventCard extends StatelessWidget {
                         Row(
                           children: [
                             Text(
-                              event.title,
+                              event.title.length <= 15
+                                  ? event.title
+                                  : '${event.title.substring(0, 15)}...',
                               style: Theme.of(context).textTheme.displayLarge,
                             ),
                           ],
@@ -114,11 +116,10 @@ class EventCard extends StatelessWidget {
                         Row(
                           children: [
                             Text(
-                              event.location,
-                              style: const TextStyle(
-                                fontSize: 12,
-                                fontWeight: FontWeight.normal,
-                              ),
+                              event.location.length <= 30
+                                  ? event.location
+                                  : '${event.location.substring(0, 30)}...',
+                              style: Theme.of(context).textTheme.displayLarge,
                             ),
                           ],
                         ),

@@ -294,7 +294,10 @@ class DashboardView extends StatelessWidget {
                         addVerticalSpace(16),
                         FourButtonsWidget(
                           activityType: 'Bookmarked Activities',
-                          activityNumber: 1,
+                          activityNumber:
+                              auth.appUser.value.bookmarkedEvents != null
+                                  ? auth.appUser.value.bookmarkedEvents!.length
+                                  : 0,
                           onPressed: fourButtonsController.toggleBookmarked,
                           showSizeBox: fourButtonsController.showBookmarked,
                         ),
@@ -455,7 +458,7 @@ class OtherActivityBox extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Padding(
-      padding: const EdgeInsets.only(bottom: 8.0),
+      padding: const EdgeInsets.only(bottom: 15.0),
       child: Container(
         decoration: BoxDecoration(
           color: Colors.white,

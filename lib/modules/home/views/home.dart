@@ -18,7 +18,7 @@ class HomeView extends StatelessWidget {
       body: Padding(
         padding: const EdgeInsets.all(sideWidth),
         child: Obx(() => homeController.isLoading.value
-            ? const Center(child: CircularProgressIndicator())
+            ? const LoadingWidget()
             : Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: <Widget>[
@@ -42,12 +42,13 @@ class HomeView extends StatelessWidget {
                     ],
                   ),
                   Flexible(
-                    child: ListView.builder(
-                      itemCount: homeController.events.length,
-                      itemBuilder: (context, index) {
-                        return EventCard(event: homeController.events[index]);
-                      },
-                    ),
+                    child: Obx(() => ListView.builder(
+                          itemCount: homeController.filteredEvents.length,
+                          itemBuilder: (context, index) {
+                            return EventCard(
+                                event: homeController.filteredEvents[index]);
+                          },
+                        )),
                   )
                 ],
               )),
@@ -121,7 +122,6 @@ class EventCard extends StatelessWidget {
                 Text('Event Owner: ${event.eventOwner.name}',
                     style: Theme.of(context).textTheme.bodyMedium),
                 addVerticalSpace(20),
-                if (event.description != null)
                   Text('Details: ${event.description}',
                       style: Theme.of(context).textTheme.bodyMedium,
                       maxLines: 3),
@@ -163,16 +163,19 @@ class FilterButton extends StatelessWidget {
 }
 
 class SearchBox extends StatelessWidget {
-  const SearchBox({super.key, required this.th});
+  SearchBox({super.key, required this.th});
   final ThemeData th;
+  final HomeController controller = HomeController.instance;
 
   @override
   Widget build(BuildContext context) {
     return Expanded(
       child: TextFormField(
+        controller: controller.searchController,
+        onChanged: (value) {
+          controller.searchEvents();
+        },
         decoration: InputDecoration(
-            // suffixIcon: const Icon(Icons.search_rounded),
-            // suffixIconColor: th.colorScheme.primary,
             hintText: "Search",
             hintStyle: TextStyle(
                 fontFamily: "Gotham",

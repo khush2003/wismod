@@ -12,7 +12,7 @@ import '../../../routes/routes.dart';
 class CreateEventController extends GetxController {
   final imageUrl = ''.obs;
   final tags = <String>[].obs;
-  final selectedCategory = 'Default'.obs;
+  final selectedCategory = 'Other'.obs;
 
   final TextEditingController eventNameController = TextEditingController();
   final TextEditingController eventDetailController = TextEditingController();
@@ -47,6 +47,7 @@ class CreateEventController extends GetxController {
           'Thesis'
               'Other',
         ];
+    categoryOptions.remove('Default');
     isLoading(false);
     super.onInit();
   }

@@ -55,7 +55,8 @@ class FourButtonsController extends GetxController {
   @override
   void onInit() {
     super.onInit();
-    fetchEvents();
+    fetchOwnedEvents();
+    fetchBookmarkEvents();
   }
 
   var showUpcoming = false.obs;
@@ -67,9 +68,11 @@ class FourButtonsController extends GetxController {
   final isLoading = true.obs;
   final RxList<Event> events = <Event>[].obs;
   final List<Event> _ownedEvents = [];
+  final List<Event> _bookmarkedEvents = [];
   final auth = AuthController.instance;
 
   List<Event> get ownedEvents => _ownedEvents;
+  List<Event> get bookmarkedEvents => _bookmarkedEvents;
 
   void toggleUpcoming() {
     showUpcoming.value = !showUpcoming.value;
@@ -87,7 +90,7 @@ class FourButtonsController extends GetxController {
     showOwn.value = !showOwn.value;
   }
 
-  void fetchEvents() async {
+  void fetchOwnedEvents() async {
     try {
       isLoading(true);
       final eventsTemp = await firestore.getEvents();
@@ -99,4 +102,41 @@ class FourButtonsController extends GetxController {
       }
     } finally {}
   }
+
+  void fetchBookmarkEvents() async {
+    try {
+      isLoading(true);
+      final tempBookmarkedEvents = auth.appUser.value.bookmarkedEvents;
+      print(
+          'tempBookmarkedEvents: ${auth.appUser.value.bookmarkedEvents?.first}');
+      if (tempBookmarkedEvents != null) {
+        for (final eventId in tempBookmarkedEvents) {
+          final event = await firestore.getEvent(eventId);
+          if (event != null) {
+            _bookmarkedEvents.add(event);
+          }
+        }
+      }
+    } finally {
+      isLoading(false);
+    }
+  }
+//   void fetchBookmarkEvents() async {
+//   try {
+//     isLoading(true);
+//     final tempBookmarkedEvents = <Event>[];
+//     if (auth.appUser.value.bookmarkedEvents != null) {
+//       for (final eventId in auth.appUser.value.bookmarkedEvents) {
+//         final event = await firestore.getEvent(eventId);
+//         if (event != null) {
+//           tempBookmarkedEvents.add(event);
+//         }
+//       }
+//     }
+//     print('tempBookmarkedEvents: $tempBookmarkedEvents');
+//     _bookmarkedEvents = tempBookmarkedEvents;
+//   } finally {
+//     isLoading(false);
+//   }
+// }
 }

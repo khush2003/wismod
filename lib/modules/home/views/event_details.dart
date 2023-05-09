@@ -3,13 +3,14 @@ import 'package:get/get.dart';
 import 'package:wismod/modules/home/controller/event_detail_controller.dart';
 import 'package:wismod/theme/global_widgets.dart';
 import 'package:wismod/utils/app_utils.dart';
-
+import 'package:wismod/modules/auth/controllers/auth_controller.dart';
 import '../../../shared/models/event.dart';
 import '../../../theme/theme_data.dart';
 
 class EventDetailView extends StatelessWidget {
   EventDetailView({super.key});
   final controller = Get.put(EventDetailController());
+  final auth = AuthController.instance;
   Event eventData() => controller.eventData.value;
   @override
   Widget build(BuildContext context) {
@@ -26,91 +27,133 @@ class EventDetailView extends StatelessWidget {
                     : Icons.bookmark_add_outlined)))
           ],
         ),
-        body: Obx(() => controller.isLoading.value
-            ? const Center(child: CircularProgressIndicator())
-            : SingleChildScrollView(
-                child: Padding(
-                padding: const EdgeInsets.all(sideWidth),
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.stretch,
-                  children: [
-                    ClipRRect(
-                        borderRadius: BorderRadius.circular(5),
-                        child: Image.network(
-                            eventData().imageUrl ??
-                                'https://perspectives.agf.com/wp-content/plugins/accelerated-mobile-pages/images/SD-default-image.png',
-                            errorBuilder: (context, error, stackTrace) =>
-                                Image.network(
-                                  'https://perspectives.agf.com/wp-content/plugins/accelerated-mobile-pages/images/SD-default-image.png',
-                                  fit: BoxFit.cover,
-                                ),
-                            fit: BoxFit.cover)),
-                    addVerticalSpace(20),
-                    Wrap(
-                      direction: Axis.horizontal,
-                      alignment: WrapAlignment.spaceBetween,
-                      runAlignment: WrapAlignment.spaceBetween,
-                      runSpacing: 10,
-                      spacing: 10,
-                      children: [
-                        Text(eventData().title,
-                            style: const TextStyle(
-                                fontSize: 20, fontWeight: FontWeight.w500)),
-                        if (eventData().members != null &&
-                            eventData().totalCapacity != null)
+        body: Column(
+          children: [
+            Expanded(
+              child: Obx(() => controller.isLoading.value
+                  ? const Center(child: CircularProgressIndicator())
+                  : SingleChildScrollView(
+                      child: Padding(
+                      padding: const EdgeInsets.all(sideWidth),
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.stretch,
+                        children: [
+                          ClipRRect(
+                              borderRadius: BorderRadius.circular(5),
+                              child: Image.network(
+                                  eventData().imageUrl ??
+                                      'https://perspectives.agf.com/wp-content/plugins/accelerated-mobile-pages/images/SD-default-image.png',
+                                  errorBuilder: (context, error, stackTrace) =>
+                                      Image.network(
+                                        'https://perspectives.agf.com/wp-content/plugins/accelerated-mobile-pages/images/SD-default-image.png',
+                                        fit: BoxFit.cover,
+                                      ),
+                                  fit: BoxFit.cover)),
+                          addVerticalSpace(20),
+                          Wrap(
+                            direction: Axis.horizontal,
+                            alignment: WrapAlignment.spaceBetween,
+                            runAlignment: WrapAlignment.spaceBetween,
+                            runSpacing: 10,
+                            spacing: 10,
+                            children: [
+                              Text(eventData().title,
+                                  style: const TextStyle(
+                                      fontSize: 20,
+                                      fontWeight: FontWeight.w500)),
+                              if (eventData().members != null &&
+                                  eventData().totalCapacity != null)
+                                Text(
+                                    'Members: ${eventData().members!.length}/${eventData().totalCapacity}',
+                                    style: Theme.of(context)
+                                        .textTheme
+                                        .displayMedium)
+                            ],
+                          ),
+                          addVerticalSpace(20),
                           Text(
-                              'Members: ${eventData().members!.length}/${eventData().totalCapacity}',
-                              style: Theme.of(context).textTheme.displayMedium)
-                      ],
-                    ),
-                    addVerticalSpace(20),
-                    Text(
-                      "Category: ${eventData().category}",
-                      style: const TextStyle(fontWeight: FontWeight.bold),
-                    ),
-                    addVerticalSpace(20),
-                    const Text(
-                      "Tags",
-                      style: TextStyle(fontWeight: FontWeight.bold),
-                    ),
-                    addVerticalSpace(),
-                    if (eventData().tags == null || eventData().tags!.isEmpty)
-                      const Text("No Tags Found"),
-                    createTags(controller),
-                    addVerticalSpace(20),
-                    Obx(() => Text("${eventData().upvotes} upvotes")),
-                    addVerticalSpace(20),
-                    if (eventData().eventDate != null)
-                      Text(
-                        'Date: ${formatDate(eventData().eventDate!)}',
-                        style: const TextStyle(fontWeight: FontWeight.bold),
+                            "Category: ${eventData().category}",
+                            style: const TextStyle(fontWeight: FontWeight.bold),
+                          ),
+                          addVerticalSpace(20),
+                          const Text(
+                            "Tags",
+                            style: TextStyle(fontWeight: FontWeight.bold),
+                          ),
+                          addVerticalSpace(),
+                          if (eventData().tags == null ||
+                              eventData().tags!.isEmpty)
+                            const Text("No Tags Found"),
+                          createTags(controller),
+                          addVerticalSpace(20),
+                          Obx(() => Text("${eventData().upvotes} upvotes")),
+                          addVerticalSpace(20),
+                          if (eventData().eventDate != null)
+                            Text(
+                              'Date: ${formatDate(eventData().eventDate!)}',
+                              style:
+                                  const TextStyle(fontWeight: FontWeight.bold),
+                            ),
+                          addVerticalSpace(20),
+                          Text(
+                            'Location: ${eventData().location}',
+                          ),
+                          addVerticalSpace(20),
+
+                            Text(
+                              eventData().description,
+                            ),
+                          addVerticalSpace(20),
+                          Row(
+                            mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                            children: [
+                              Expanded(
+                                child: Obx(() => OutlineButtonMedium(
+                                      onPressed: () {
+                                        controller.upvoteEvent();
+                                      },
+                                      child: controller.isUpvoted.value
+                                          ? const Text("Remove Upvote")
+                                          : const Text("Upvote"),
+                                    )),
+                              ),
+                              addHorizontalSpace(16),
+                              auth.appUser.value.isAdmin == true
+                                  ? Container()
+                                  : Expanded(
+                                      child: Obx(() => PrimaryButtonMedium(
+                                          onPressed: controller.isJoined.value
+                                              ? null
+                                              : () {
+                                                  controller.joinEvent();
+                                                },
+                                          child: controller.isJoined.value
+                                              ? const Text('Joined')
+                                              : const Text('Join'))),
+                                    ),
+                            ],
+                          ),
+                          addVerticalSpace(20),
+                          ChatBox(controller: controller),
+                        ],
                       ),
-                    addVerticalSpace(20),
-                    Text(
-                      'Location: ${eventData().location}',
-                    ),
-                    addVerticalSpace(20),
-                    if (eventData().description != null)
-                      Text(
-                        '${eventData().description}',
+                    ))),
+            ),
+            auth.appUser.value.isAdmin == true
+                ? Container(
+                    decoration: const BoxDecoration(
+                      color: Color(0xffECE4FC),
+                      borderRadius: BorderRadius.only(
+                        topLeft: Radius.circular(20),
+                        topRight: Radius.circular(20),
                       ),
-                    addVerticalSpace(20),
-                    Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                      children: [
-                        Expanded(
-                          child: Obx(() => OutlineButtonMedium(
-                                onPressed: () {
-                                  controller.upvoteEvent();
-                                },
-                                child: controller.isUpvoted.value
-                                    ? const Text("Remove Upvote")
-                                    : const Text("Upvote"),
-                              )),
-                        ),
-                        addHorizontalSpace(16),
-                        Expanded(
-                          child: Obx(() => PrimaryButtonMedium(
+                    ),
+                    child: Padding(
+                      padding: const EdgeInsets.all(16),
+                      child: Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                        children: [
+                          Obx(() => ElevatedButton(
                               onPressed: controller.isJoined.value
                                   ? null
                                   : () {
@@ -119,14 +162,20 @@ class EventDetailView extends StatelessWidget {
                               child: controller.isJoined.value
                                   ? const Text('Joined')
                                   : const Text('Join'))),
-                        )
-                      ],
+                          ElevatedButton(
+                            onPressed: () {},
+                            style: ElevatedButton.styleFrom(
+                              backgroundColor: Colors.red,
+                            ),
+                            child: const Text('Remove'),
+                          ),
+                        ],
+                      ),
                     ),
-                    addVerticalSpace(20),
-                    ChatBox(controller: controller),
-                  ],
-                ),
-              ))));
+                  )
+                : Container(),
+          ],
+        ));
   }
 }
 

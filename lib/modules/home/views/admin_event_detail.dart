@@ -112,9 +112,8 @@ class AdminEventDetailView extends StatelessWidget {
                                     fontWeight: FontWeight.bold),
                               ),
                             addVerticalSpace(20),
-                            if (eventData().description != null)
                               Text(
-                                '${eventData().description}',
+                                eventData().description,
                               ),
                           ],
                         ),
@@ -122,7 +121,7 @@ class AdminEventDetailView extends StatelessWidget {
                     )),
             ),
             Container(
-              decoration: BoxDecoration(
+              decoration: const BoxDecoration(
                 color: Color(0xffECE4FC),
                 borderRadius: BorderRadius.only(
                   topLeft: Radius.circular(20),
@@ -140,10 +139,10 @@ class AdminEventDetailView extends StatelessWidget {
                     ),
                     ElevatedButton(
                       onPressed: () {},
-                      child: const Text('Remove'),
                       style: ElevatedButton.styleFrom(
-                        primary: Colors.red,
+                        backgroundColor: Colors.red,
                       ),
+                      child: const Text('Remove'),
                     ),
                   ],
                 ),

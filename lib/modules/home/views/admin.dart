@@ -3,7 +3,7 @@ import 'package:get/get.dart';
 import 'package:wismod/utils/app_utils.dart';
 import 'package:wismod/modules/home/controller/admin_controller.dart';
 import '../../../shared/models/event.dart';
-
+import '../../../routes/routes.dart';
 import '../../../theme/global_widgets.dart';
 
 class AdminView extends StatelessWidget {
@@ -144,7 +144,10 @@ class EventCard extends StatelessWidget {
                 children: [
                   Text('${event.upvotes}'),
                   OutlineButtonMedium(
-                    onPressed: () => {},
+                    onPressed: () => {
+                      Get.toNamed(Routes.adminEventDetials,
+                          parameters: {'id': event.id!})
+                    },
                     child: const Padding(
                       padding: EdgeInsets.symmetric(horizontal: 5.0),
                       child: Text('More'),

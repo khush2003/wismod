@@ -168,6 +168,7 @@ class ChattingView extends StatelessWidget {
                       child: SizedBox(
                         width: 20,
                         child: TextFormField(
+                          controller: controller.messageTextController,
                           //textAlignVertical: TextAlignVertical.center,
                           decoration: InputDecoration(
                             filled: true,
@@ -396,7 +397,7 @@ class ChatBoxUser extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final userName = FirebaseService().getUserById(message.userId);
+    final userName = FirebaseService().getUserById(message.sentBy);
     final DateTime timeNow = DateTime.now();
     final String formattedTime = DateFormat.Hms().format(timeNow);
     //final TextDirection? textDirection;

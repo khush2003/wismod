@@ -13,7 +13,6 @@ void main() async {
   Get.put(AuthController());
   runApp(const Application());
 }
-
 class Application extends StatelessWidget {
   const Application({Key? key}) : super(key: key);
   @override

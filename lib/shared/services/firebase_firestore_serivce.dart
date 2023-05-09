@@ -158,10 +158,9 @@ class FirebaseService {
   }
 
   Future<void> addMessage(Message message) async {
-    await _firestore.collection('Message').add({
+    await _firestore.collection('Messages').add({
       'Message': message.message,
-      'UserId': message.userId,
-      'ImageUrl': message.imageUrl,
+      'SentBy': message.sentBy,
       'SentOn': message.sentOn == null
           ? Timestamp.now()
           : Timestamp.fromDate(message.sentOn!),
@@ -205,6 +204,7 @@ class FirebaseService {
         upvotedEvents = doc['UpvotedEvents'] != null
             ? List<String>.from(doc['UpvotedEvents'] as List<dynamic>)
             : <String>[]; // Handle the case where tags is null or undefined.
+        print("Upvoted Events: " + upvotedEvents.toString());
         if (!upvotedEvents.contains(eventId)) {
           upvotedEvents.add(eventId);
           upvotes++;

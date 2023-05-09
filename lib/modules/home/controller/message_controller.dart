@@ -36,11 +36,12 @@ class MessageController extends GetxController {
   }
 
   void createMessage() async {
+    
     try {
       final eventOwner = _auth.appUser.value;
       final message = Message(
         message: messageTextController.text,
-        userId: eventOwner.uid!,
+        sentBy: eventOwner.uid!,
         imageUrl: imageUrl.value,
       );
       await FirebaseService().addMessage(message);

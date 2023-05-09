@@ -4,14 +4,14 @@ import 'package:wismod/shared/services/firebase_firestore_serivce.dart';
 
 class Message {
   final String message;
-  final String userId;
+  final String sentBy;
   final String? imageUrl;
   final DateTime? sentOn;
   final String? eventId;
 
   Message({
     required this.message,
-    required this.userId,
+    required this.sentBy,
     this.imageUrl,
     this.sentOn,
     this.eventId,
@@ -19,7 +19,7 @@ class Message {
   @override
   String toString() {
     return 'Message {'
-        'id: $userId,'
+        'id: $sentBy,'
         'imageUrl: $imageUrl,'
         'message: $message,'
         'date: $sentOn'
@@ -30,7 +30,7 @@ class Message {
   factory Message.empty() {
     return Message(
       message: '',
-      userId: '1',
+      sentBy: '',
     );
   }
 
@@ -38,8 +38,7 @@ class Message {
     final time = map['sentOn'] as Timestamp;
     return Message(
       message: messageText,
-      userId: map['UserId'] as String,
-      imageUrl: map['ImageUrl'] as String,
+      sentBy: map['SentBy'] as String,  
       sentOn: time.toDate(),
       eventId: map['EventId'] as String,
     );

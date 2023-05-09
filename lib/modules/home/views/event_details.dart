@@ -103,8 +103,8 @@ class EventDetailView extends StatelessWidget {
                                   controller.upvoteEvent();
                                 },
                                 child: controller.isUpvoted.value
-                                    ? const Text("Upvoted")
-                                    : const Text("Remove Upvote"),
+                                    ? const Text("Remove Upvote")
+                                    : const Text("Upvote"),
                               )),
                         ),
                         addHorizontalSpace(16),

@@ -28,7 +28,7 @@ class PassWordView extends StatelessWidget {
                 padding: EdgeInsets.fromLTRB(0.0, 0.0, 0.0, 20.0),
                 child: HeadAndTextField(
                   label: 'Current Password',
-                  hintText: 'XXXXXXXX',
+                  hintText: 'Type you current password',
                 ),
               ),
               Padding(

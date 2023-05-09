@@ -28,17 +28,17 @@ class EventDetailView extends StatelessWidget {
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.stretch,
                   children: [
-                      ClipRRect(
-                          borderRadius: BorderRadius.circular(5),
-                          child: Image.network(
-                              eventData().imageUrl ??
+                    ClipRRect(
+                        borderRadius: BorderRadius.circular(5),
+                        child: Image.network(
+                            eventData().imageUrl ??
+                                'https://perspectives.agf.com/wp-content/plugins/accelerated-mobile-pages/images/SD-default-image.png',
+                            errorBuilder: (context, error, stackTrace) =>
+                                Image.network(
                                   'https://perspectives.agf.com/wp-content/plugins/accelerated-mobile-pages/images/SD-default-image.png',
-                              errorBuilder: (context, error, stackTrace) =>
-                                  Image.network(
-                                    'https://perspectives.agf.com/wp-content/plugins/accelerated-mobile-pages/images/SD-default-image.png',
-                                    fit: BoxFit.cover,
-                                  ),
-                              fit: BoxFit.cover)),
+                                  fit: BoxFit.cover,
+                                ),
+                            fit: BoxFit.cover)),
                     addVerticalSpace(20),
                     Wrap(
                       direction: Axis.horizontal,

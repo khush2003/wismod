@@ -48,6 +48,6 @@ final getPages = [
       name: Routes.filterOptions,
       page: () => FilterOptionsView(),
       transition: Transition.rightToLeft),
-  GetPage(name: Routes.chatting, page: () => const ChattingView()),
+  GetPage(name: Routes.chatting, page: () => ChattingView()),
   // Initialize route here
 ];

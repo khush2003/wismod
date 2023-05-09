@@ -6,8 +6,11 @@ import 'package:get/get.dart';
 
 import 'package:wismod/routes/routes.dart';
 
+import 'package:wismod/modules/home/controller/home_controller.dart';
+
 class ChatRoomView extends StatelessWidget {
-  const ChatRoomView({super.key});
+  ChatRoomView({super.key});
+  final homeController = Get.put(HomeController());
 
   @override
   Widget build(BuildContext context) {

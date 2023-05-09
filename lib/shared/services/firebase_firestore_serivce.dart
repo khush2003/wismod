@@ -1,4 +1,7 @@
+//import 'dart:html';
+
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:wismod/shared/models/message.dart';
 import 'package:wismod/shared/models/user.dart';
 import '../models/event.dart';
 
@@ -52,6 +55,22 @@ class FirebaseService {
     }
 
     return Event.fromMap(data, eventId);
+  }
+
+  Future<Message?> getMessage(String eventId) async {
+    final document = _firestore.collection('Message').doc(eventId);
+    final snapshot = await document.get();
+
+    if (!snapshot.exists) {
+      return null;
+    }
+
+    final data = snapshot.data();
+    if (data == null) {
+      return null;
+    }
+
+    return Message.fromMap(data, eventId);
   }
 
   Future<AppUser?> getUserById(String userId) async {
@@ -129,5 +148,17 @@ class FirebaseService {
         'Tags': tags,
       });
     }
+  }
+
+  Future<void> addMessage(Message message) async {
+    await _firestore.collection('Message').add({
+      'Message': message.message,
+      'UserId': message.userId,
+      'ImageUrl': message.imageUrl,
+      'SentOn': message.sentOn == null
+          ? Timestamp.now()
+          : Timestamp.fromDate(message.sentOn!),
+      'EventId': message.eventId,
+    });
   }
 }

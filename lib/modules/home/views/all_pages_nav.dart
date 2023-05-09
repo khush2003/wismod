@@ -18,7 +18,7 @@ class AllPagesNav extends StatelessWidget {
                   index: k.tabIndex.value,
                   children: [
                     HomeView(),
-                    const ChatRoomView(),
+                    ChatRoomView(),
                     DashboardView(),
                     const SettingsView()
                   ],

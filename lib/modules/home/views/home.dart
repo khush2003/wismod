@@ -21,7 +21,7 @@ class HomeView extends StatelessWidget {
             ? const Center(child: CircularProgressIndicator())
             : Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
+                children: <Widget>[
                   Column(
                     children: [
                       Row(
@@ -104,9 +104,7 @@ class EventCard extends StatelessWidget {
                 addVerticalSpace(20),
                 ClipRRect(
                     borderRadius: BorderRadius.circular(5),
-                    child: Image.network(
-                        event.imageUrl ??
-                            placeholderImage,
+                    child: Image.network(event.imageUrl ?? placeholderImage,
                         errorBuilder: (context, error, stackTrace) =>
                             Image.network(
                               placeholderImage,

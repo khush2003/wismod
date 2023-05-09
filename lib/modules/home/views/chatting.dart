@@ -1,17 +1,22 @@
 // ignore_for_file: prefer_const_constructors_in_immutables, prefer_const_constructors
 
 import 'package:flutter/material.dart';
+import 'package:intl/intl.dart';
+import 'dart:ui' as ui;
+import 'package:wismod/shared/models/message.dart';
+import 'package:wismod/shared/services/firebase_firestore_serivce.dart';
 import 'package:wismod/theme/global_widgets.dart';
 import 'package:wismod/utils/app_utils.dart';
 import 'package:get/get.dart';
-
+import 'package:wismod/modules/home/controller/message_controller.dart';
 import '../../../routes/routes.dart';
 
 const double textTimeMargin = 30;
 
 class ChattingView extends StatelessWidget {
-  const ChattingView({super.key});
-
+  ChattingView({super.key});
+  final controller = Get.put(MessageController());
+  Message messageData() => controller.messageData.value;
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -75,7 +80,7 @@ class ChattingView extends StatelessWidget {
         ),
       ),
       body: Stack(
-        children: <Widget>[
+        children: [
           SingleChildScrollView(
             child: Padding(
               padding: const EdgeInsets.all(sideWidth),
@@ -84,7 +89,15 @@ class ChattingView extends StatelessWidget {
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.center,
                   children: [
-                    ChatBoxEventHost(
+                    ListView.builder(
+                      shrinkWrap: true,
+                      itemCount: controller.events.length,
+                      itemBuilder: (context, index) {
+                        return ChatBoxUser(message: controller.events[index]);
+                      },
+                    ),
+
+                    /*ChatBoxEventHost(
                       chatUserName: 'John Hotfoot',
                       chatUserProfileUrl:
                           'https://images.unsplash.com/photo-1575936123452-b67c3203c357?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxzZWFyY2h8Mnx8aW1hZ2V8ZW58MHx8MHx8&w=1000&q=80',
@@ -99,7 +112,7 @@ class ChattingView extends StatelessWidget {
                           'https://images.unsplash.com/photo-1589571894960-20bbe2828d0a?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=386&q=80&q=80',
                       chatText: 'Not great mate, just wanna join your team bro',
                       chatUserId: 12,
-                      chatTime: TimeOfDay(hour: 22, minute: 1),
+                      chatTime: TimeOfDay(hour: 22, minute: 2),
                     ),
                     addVerticalSpace(10),
                     ChatBoxEventHost(
@@ -128,7 +141,7 @@ class ChattingView extends StatelessWidget {
                       chatUserId: 12,
                       chatTime: TimeOfDay(hour: 22, minute: 5),
                     ),
-                    addVerticalSpace(10),
+                    addVerticalSpace(10),*/
                   ],
                 ),
               ),
@@ -180,7 +193,7 @@ class ChattingView extends StatelessWidget {
                       height: double.infinity,
                       child: ElevatedButton(
                         // Send text
-                        onPressed: () {},
+                        onPressed: () => controller.createMessage(),
                         child: const Text('Send'),
                       ),
                     ),
@@ -233,7 +246,7 @@ class ChatBoxEventHost extends StatelessWidget {
                         color: Colors.black,
                         fontSize: 20,
                       ),
-                      textDirection: TextDirection.ltr,
+                      textDirection: ui.TextDirection.ltr,
                       maxLines: 1,
                       overflow: TextOverflow.ellipsis,
                     ),
@@ -323,7 +336,7 @@ class ChatBoxEventHost extends StatelessWidget {
                                     color: Colors.black,
                                     fontSize: 18,
                                   ),
-                                  textDirection: TextDirection.ltr,
+                                  textDirection: ui.TextDirection.ltr,
                                 )
                               ],
                             ),
@@ -363,7 +376,10 @@ class ChatBoxEventHost extends StatelessWidget {
 }
 
 class ChatBoxUser extends StatelessWidget {
-  final String chatUserName;
+  final Message message;
+  const ChatBoxUser({super.key, required this.message});
+
+  /*final String chatUserName;
   final String? chatUserProfileUrl;
   final String chatText;
   final int chatUserId;
@@ -376,10 +392,15 @@ class ChatBoxUser extends StatelessWidget {
     required this.chatText,
     required this.chatUserId,
     required this.chatTime,
-  });
+  });*/
 
   @override
   Widget build(BuildContext context) {
+    final userName = FirebaseService().getUserById(message.userId);
+    final DateTime timeNow = DateTime.now();
+    final String formattedTime = DateFormat.Hms().format(timeNow);
+    //final TextDirection? textDirection;
+
     return Column(
       children: <Widget>[
         Row(
@@ -393,14 +414,15 @@ class ChatBoxUser extends StatelessWidget {
                   Container(
                     margin: const EdgeInsets.only(right: textTimeMargin),
                     child: Text(
-                      chatUserName,
+                      //chatUserName,
+                      userName.toString(),
                       style: const TextStyle(
                         fontFamily: "Gotham",
                         fontWeight: FontWeight.bold,
                         color: Colors.black,
                         fontSize: 20,
                       ),
-                      textDirection: TextDirection.rtl,
+                      textDirection: ui.TextDirection.rtl,
                       maxLines: 1,
                       overflow: TextOverflow.ellipsis,
                     ),
@@ -459,13 +481,13 @@ class ChatBoxUser extends StatelessWidget {
                               mainAxisSize: MainAxisSize.min,
                               children: [
                                 Text(
-                                  chatText,
+                                  message.message,
                                   style: const TextStyle(
                                     fontFamily: "Gotham",
                                     color: Colors.black,
                                     fontSize: 18,
                                   ),
-                                  textDirection: TextDirection.rtl,
+                                  textDirection: ui.TextDirection.rtl,
                                 )
                               ],
                             ),
@@ -478,13 +500,13 @@ class ChatBoxUser extends StatelessWidget {
                           crossAxisAlignment: CrossAxisAlignment.end,
                           mainAxisSize: MainAxisSize.min,
                           children: [
-                            if (chatUserProfileUrl != null)
+                            if (message.imageUrl != null)
                               SizedBox(
                                 //width: 80,
                                 child: CircleAvatar(
                                   radius: 30,
                                   backgroundImage: Image.network(
-                                    chatUserProfileUrl!,
+                                    message.imageUrl!,
                                     errorBuilder:
                                         (context, error, stackTrace) =>
                                             Image.network(
@@ -503,7 +525,7 @@ class ChatBoxUser extends StatelessWidget {
                       mainAxisAlignment: MainAxisAlignment.start,
                       mainAxisSize: MainAxisSize.max,
                       children: [
-                        Text(chatTime.format(context)),
+                        Text(message.sentOn.toString()),
                       ],
                     ),
                   ],

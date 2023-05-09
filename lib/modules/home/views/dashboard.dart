@@ -5,6 +5,7 @@ import 'package:wismod/utils/app_utils.dart';
 import 'package:wismod/modules/home/controller/dashboard_controller.dart';
 
 import '../../../theme/global_widgets.dart';
+import '../../../shared/models/event.dart';
 
 class DashboardView extends StatelessWidget {
   DashboardView({super.key});
@@ -237,28 +238,12 @@ class DashboardView extends StatelessWidget {
                                     ),
                                   ),
                                   child: ListView.builder(
-                                    itemCount: 3,
-                                    itemBuilder:
-                                        (BuildContext context, int index) {
-                                      return Padding(
-                                        padding: const EdgeInsets.all(5.0),
-                                        child: Column(
-                                          children: [
-                                            _otherActivityBox(
-                                              activityDate: DateTime.now(),
-                                              activityName:
-                                                  'My Activity $index',
-                                              activityLocation:
-                                                  'My Location $index',
-                                              activityCategory:
-                                                  'My Category $index',
-                                            ),
-                                            const SizedBox(
-                                              height: 7,
-                                            ),
-                                          ],
-                                        ),
-                                      );
+                                    itemCount: fourButtonsController
+                                        .ownedEvents.length,
+                                    itemBuilder: (context, index) {
+                                      return OtherActivityBox(
+                                          event: fourButtonsController
+                                              .ownedEvents[index]);
                                     },
                                   ),
                                 ),
@@ -326,28 +311,12 @@ class DashboardView extends StatelessWidget {
                                     ),
                                   ),
                                   child: ListView.builder(
-                                    itemCount: 3,
-                                    itemBuilder:
-                                        (BuildContext context, int index) {
-                                      return Padding(
-                                        padding: const EdgeInsets.all(5.0),
-                                        child: Column(
-                                          children: [
-                                            _otherActivityBox(
-                                              activityDate: DateTime.now(),
-                                              activityName:
-                                                  'My Activity $index',
-                                              activityLocation:
-                                                  'My Location $index',
-                                              activityCategory:
-                                                  'My Category $index',
-                                            ),
-                                            const SizedBox(
-                                              height: 7,
-                                            ),
-                                          ],
-                                        ),
-                                      );
+                                    itemCount: fourButtonsController
+                                        .ownedEvents.length,
+                                    itemBuilder: (context, index) {
+                                      return OtherActivityBox(
+                                          event: fourButtonsController
+                                              .ownedEvents[index]);
                                     },
                                   ),
                                 ),
@@ -356,7 +325,8 @@ class DashboardView extends StatelessWidget {
                         addVerticalSpace(),
                         FourButtonsWidget(
                           activityType: 'Activities You Own',
-                          activityNumber: 1,
+                          activityNumber:
+                              fourButtonsController.ownedEvents.length,
                           onPressed: fourButtonsController.toggleOwn,
                           showSizeBox: fourButtonsController.showOwn,
                         ),
@@ -373,28 +343,12 @@ class DashboardView extends StatelessWidget {
                                     ),
                                   ),
                                   child: ListView.builder(
-                                    itemCount: 3,
-                                    itemBuilder:
-                                        (BuildContext context, int index) {
-                                      return Padding(
-                                        padding: const EdgeInsets.all(5.0),
-                                        child: Column(
-                                          children: [
-                                            _otherActivityBox(
-                                              activityDate: DateTime.now(),
-                                              activityName:
-                                                  'My Activity $index',
-                                              activityLocation:
-                                                  'My Location $index',
-                                              activityCategory:
-                                                  'My Category $index',
-                                            ),
-                                            const SizedBox(
-                                              height: 7,
-                                            ),
-                                          ],
-                                        ),
-                                      );
+                                    itemCount: fourButtonsController
+                                        .ownedEvents.length,
+                                    itemBuilder: (context, index) {
+                                      return OtherActivityBox(
+                                          event: fourButtonsController
+                                              .ownedEvents[index]);
                                     },
                                   ),
                                 ),
@@ -494,86 +448,91 @@ class FourButtonsWidget extends StatelessWidget {
   }
 }
 
-Widget _otherActivityBox(
-    {required DateTime activityDate,
-    required String activityName,
-    required String activityLocation,
-    required String activityCategory}) {
-  return Container(
-    decoration: BoxDecoration(
-      color: Colors.white,
-      borderRadius: BorderRadius.circular(5),
-      boxShadow: const [
-        BoxShadow(
-          color: Color(0xFFFF669F),
-          offset: Offset(0, 4),
-          blurRadius: 3,
+class OtherActivityBox extends StatelessWidget {
+  final Event event;
+  const OtherActivityBox({super.key, required this.event});
+
+  @override
+  Widget build(BuildContext context) {
+    return Padding(
+      padding: const EdgeInsets.only(bottom: 8.0),
+      child: Container(
+        decoration: BoxDecoration(
+          color: Colors.white,
+          borderRadius: BorderRadius.circular(5),
+          boxShadow: const [
+            BoxShadow(
+              color: Color(0xFFFF669F),
+              offset: Offset(0, 4),
+              blurRadius: 3,
+            ),
+          ],
         ),
-      ],
-    ),
-    child: Padding(
-      padding: const EdgeInsets.all(sideWidth),
-      child: Column(
-        children: [
-          addVerticalSpace(16),
-          Row(
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+        child: Padding(
+          padding: const EdgeInsets.all(sideWidth),
+          child: Column(
             children: [
-              Text(
-                formatDate(activityDate),
-                style: const TextStyle(
-                  fontSize: 16,
-                  fontWeight: FontWeight.bold,
-                  color: Color(0xFFFF669F),
-                ),
+              addVerticalSpace(16),
+              Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  Text(
+                    formatDate(event.eventDate!),
+                    style: const TextStyle(
+                      fontSize: 16,
+                      fontWeight: FontWeight.bold,
+                      color: Color(0xFFFF669F),
+                    ),
+                  ),
+                ],
+              ),
+              addVerticalSpace(16),
+              Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  Text(
+                    event.title,
+                    style: const TextStyle(
+                      fontSize: 24,
+                      fontWeight: FontWeight.w500,
+                    ),
+                  ),
+                ],
+              ),
+              addVerticalSpace(16),
+              Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  Text(
+                    event.location,
+                    style: const TextStyle(
+                      fontSize: 16,
+                      fontWeight: FontWeight.normal,
+                      color: Color(0xFFFF669F),
+                    ),
+                  ),
+                ],
+              ),
+              addVerticalSpace(20),
+              Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  Text(
+                    'Category: ${event.category}',
+                    style: const TextStyle(
+                      fontSize: 16,
+                      fontWeight: FontWeight.bold,
+                      color: Color(0xFFFF669F),
+                    ),
+                  ),
+                ],
               ),
             ],
           ),
-          addVerticalSpace(16),
-          Row(
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-            children: [
-              Text(
-                activityName,
-                style: const TextStyle(
-                  fontSize: 24,
-                  fontWeight: FontWeight.w500,
-                ),
-              ),
-            ],
-          ),
-          addVerticalSpace(16),
-          Row(
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-            children: [
-              Text(
-                activityLocation,
-                style: const TextStyle(
-                  fontSize: 16,
-                  fontWeight: FontWeight.normal,
-                  color: Color(0xFFFF669F),
-                ),
-              ),
-            ],
-          ),
-          addVerticalSpace(20),
-          Row(
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-            children: [
-              Text(
-                'Category: $activityCategory',
-                style: const TextStyle(
-                  fontSize: 16,
-                  fontWeight: FontWeight.bold,
-                  color: Color(0xFFFF669F),
-                ),
-              ),
-            ],
-          ),
-        ],
+        ),
       ),
-    ),
-  );
+    );
+  }
 }
 
 Widget _requestedActivityBox(
@@ -599,7 +558,7 @@ Widget _requestedActivityBox(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
               Text(
-               formatDate(activityDate),
+                formatDate(activityDate),
                 style: const TextStyle(
                   fontSize: 16,
                   fontWeight: FontWeight.bold,

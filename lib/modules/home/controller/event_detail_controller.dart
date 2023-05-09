@@ -1,9 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:wismod/modules/auth/controllers/auth_controller.dart';
+import 'package:wismod/modules/home/controller/all_pages_nav_controller.dart';
 import 'package:wismod/modules/home/controller/home_controller.dart';
+import 'package:wismod/routes/routes.dart';
 import 'package:wismod/shared/models/event.dart';
 import 'package:wismod/shared/services/firebase_firestore_serivce.dart';
+import 'package:wismod/utils/app_utils.dart';
 
 class EventDetailController extends GetxController {
   final firestore = FirebaseService();
@@ -12,6 +15,7 @@ class EventDetailController extends GetxController {
   final _auth = AuthController.instance;
   final Rx<bool> isJoined = false.obs;
   final Rx<bool> isUpvoted = false.obs;
+  final Rx<bool> isBookmarked = false.obs;
   final tags = <String>[].obs;
 
   @override
@@ -37,6 +41,14 @@ class EventDetailController extends GetxController {
     }
   }
 
+  void setIsBookmarked() {
+    if (_auth.appUser.value.bookmarkedEvents != null) {
+      _auth.appUser.value.bookmarkedEvents!.contains(eventData.value.id)
+          ? isBookmarked(true)
+          : isBookmarked(false);
+    }
+  }
+
   void upvoteEvent() async {
     try {
       await firestore.upvoteEvent(
@@ -55,7 +67,7 @@ class EventDetailController extends GetxController {
     try {
       await firestore.reportEvent(eventData.value.id!);
       fetchEvent();
-       Get.snackbar("Sucess!", 'You have sucessfully reported this event',
+      Get.snackbar("Sucess!", 'You have sucessfully reported this event!',
           snackPosition: SnackPosition.BOTTOM, backgroundColor: Colors.green);
     } catch (e) {
       Get.snackbar("Error!", e.toString(),
@@ -70,11 +82,22 @@ class EventDetailController extends GetxController {
           _auth.firebaseUser.value!.uid, eventData.value.id!);
       await _auth.updateUser();
       setIsJoined();
-      Get.snackbar("Sucess!", 'You have sucessfully joined this event',
-          snackPosition: SnackPosition.BOTTOM, backgroundColor: Colors.green);
+      sucessSnackBar('You have sucessfully joined this event');
     } catch (e) {
-      Get.snackbar("Error!", e.toString(),
-          snackPosition: SnackPosition.BOTTOM, backgroundColor: Colors.red);
+      errorSnackBar(e.toString());
+    }
+  }
+
+  void bookmarkEvent() async {
+    try {
+      //todo: Check if user exists
+      await firestore.bookmarkEvent(
+          _auth.firebaseUser.value!.uid, eventData.value.id!);
+      await _auth.updateUser();
+      setIsBookmarked();
+      sucessSnackBar('You have sucessfully bookmarked this event');
+    } catch (e) {
+      errorSnackBar(e.toString());
     }
   }
 
@@ -87,6 +110,7 @@ class EventDetailController extends GetxController {
         eventData(eventTemp);
         setIsJoined();
         setIsUpvoted();
+        setIsBookmarked();
         tags(eventData.value.tags);
         isLoading(false);
       }
@@ -94,9 +118,25 @@ class EventDetailController extends GetxController {
     } finally {}
   }
 
+  void chatGroupAdd() async {
+    try {
+      await firestore.joinChatGroup(
+          _auth.firebaseUser.value!.uid, eventData.value.id!);
+      Get.toNamed(Routes.chatting, parameters: {'id': eventData.value.id!});
+      sucessSnackBar("Joined ChatGroup Sucessfully!");
+      try {
+        //TODO: Fix no Update event when adding event through eventDetails
+        await _auth.updateUser();
+        updateHomeScreen();
+      } finally {}
+    } catch (e) {
+      errorSnackBar("There was an error");
+    }
+  }
+
   void updateHomeScreen() {
     try {
-      final c = Get.find<HomeController>();
+      final c = HomeController.instance;
       c.fetchEvents();
     } finally {}
   }

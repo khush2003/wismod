@@ -16,13 +16,14 @@ class EventDetailView extends StatelessWidget {
     return Scaffold(
         appBar: AppBar(
           actions: [
+            AlertReport(controller: controller),
             IconButton(
                 onPressed: () {
-                  controller.reportEvent();
+                  controller.bookmarkEvent();
                 },
-                icon: const Icon(Icons.report)),
-            IconButton(
-                onPressed: () {}, icon: const Icon(Icons.bookmark_add_outlined))
+                icon: Obx(() => Icon(controller.isBookmarked.value
+                    ? Icons.bookmark
+                    : Icons.bookmark_add_outlined)))
           ],
         ),
         body: Obx(() => controller.isLoading.value
@@ -103,8 +104,8 @@ class EventDetailView extends StatelessWidget {
                                   controller.upvoteEvent();
                                 },
                                 child: controller.isUpvoted.value
-                                    ? const Text("Upvoted")
-                                    : const Text("Remove Upvote"),
+                                    ? const Text("Remove Upvote")
+                                    : const Text("Upvote"),
                               )),
                         ),
                         addHorizontalSpace(16),
@@ -215,7 +216,10 @@ class ChatBox extends StatelessWidget {
               mainAxisAlignment: MainAxisAlignment.end,
               children: [
                 SecondaryButtonMedium(
-                    child: const Text("Chat"), onPressed: () {})
+                    child: const Text("Chat"),
+                    onPressed: () {
+                      controller.chatGroupAdd();
+                    })
               ],
             )
           ],
@@ -242,4 +246,62 @@ Widget createTags(EventDetailController controller) {
     runSpacing: 10,
     children: tagsWidgets,
   );
+}
+
+class AlertReport extends StatelessWidget {
+  final EventDetailController controller;
+  const AlertReport({super.key, required this.controller});
+
+  @override
+  Widget build(BuildContext context) {
+    return IconButton(
+        onPressed: () => showDialog(
+              context: context,
+              builder: (BuildContext context) => AlertDialog(
+                // contentPadding: EdgeInsets.all(24.0),
+                title: const Text('Do you want to report this event?',
+                    style: TextStyle(
+                        fontFamily: "Gotham",
+                        fontWeight: FontWeight.bold,
+                        fontSize: 32,
+                        color: Colors.black)),
+                // content: const Text('AlertDialog description'),
+                actions: [
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                    children: <Widget>[
+                      Padding(
+                          padding:
+                              const EdgeInsets.fromLTRB(0.0, 0.0, 0.0, 20.0),
+                          child: OutlineButtonMedium(
+                            onPressed: () => Navigator.pop(context, 'Cancel'),
+                            child: const Text('No',
+                                style: TextStyle(
+                                    fontFamily: "Gotham",
+                                    fontWeight: FontWeight.bold,
+                                    fontSize: 32,
+                                    color: Color.fromRGBO(123, 56, 255, 1))),
+                          )),
+                      Padding(
+                          padding:
+                              const EdgeInsets.fromLTRB(0.0, 0.0, 0.0, 20.0),
+                          child: OutlineButtonMedium(
+                            onPressed: () {
+                              controller.reportEvent();
+                              Navigator.pop(context, 'Done');
+                            },
+                            child: const Text('Yes',
+                                style: TextStyle(
+                                    fontFamily: "Gotham",
+                                    fontWeight: FontWeight.bold,
+                                    fontSize: 32,
+                                    color: Color.fromRGBO(123, 56, 255, 1))),
+                          )),
+                    ],
+                  ),
+                ],
+              ),
+            ),
+        icon: const Icon(Icons.report));
+  }
 }

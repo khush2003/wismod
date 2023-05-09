@@ -1,61 +1,58 @@
-// ignore_for_file: prefer_const_constructors_in_immutables, prefer_const_constructors
-
 import 'package:flutter/material.dart';
-import 'package:intl/intl.dart';
+import 'package:wismod/modules/auth/controllers/auth_controller.dart';
 import 'dart:ui' as ui;
 import 'package:wismod/shared/models/message.dart';
-import 'package:wismod/shared/services/firebase_firestore_serivce.dart';
-import 'package:wismod/theme/global_widgets.dart';
+import 'package:wismod/theme/theme_data.dart';
 import 'package:wismod/utils/app_utils.dart';
 import 'package:get/get.dart';
 import 'package:wismod/modules/home/controller/message_controller.dart';
-import '../../../routes/routes.dart';
 
 const double textTimeMargin = 30;
 
 class ChattingView extends StatelessWidget {
   ChattingView({super.key});
   final controller = Get.put(MessageController());
-  Message messageData() => controller.messageData.value;
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        // Using Event Owner Name later
         title: Row(
           mainAxisAlignment: MainAxisAlignment.center,
           crossAxisAlignment: CrossAxisAlignment.center,
           mainAxisSize: MainAxisSize.max,
           children: <Widget>[
             Expanded(
-              child: Column(
-                mainAxisAlignment: MainAxisAlignment.center,
-                crossAxisAlignment: CrossAxisAlignment.center,
-                mainAxisSize: MainAxisSize.min,
-                children: [
-                  const Text(
-                    "Event",
-                    style: TextStyle(
-                      fontSize: 28,
-                      color: Color.fromRGBO(0, 0, 0, 1),
-                      fontWeight: FontWeight.bold,
-                    ),
-                    maxLines: 1,
-                    overflow: TextOverflow.ellipsis,
-                  ),
-                  addVerticalSpace(5),
-                  const Text(
-                    "Event Host",
-                    style: TextStyle(
-                      fontSize: 20,
-                      color: Color.fromRGBO(0, 0, 0, 1),
-                      fontWeight: FontWeight.w400,
-                    ),
-                    maxLines: 1,
-                    overflow: TextOverflow.ellipsis,
-                  ),
-                ],
-              ),
+              child: Obx(() => controller.isLoading.value
+                  ? const Center(child: CircularProgressIndicator())
+                  : Column(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      crossAxisAlignment: CrossAxisAlignment.center,
+                      mainAxisSize: MainAxisSize.min,
+                      children: [
+                        Text(
+                          controller.eventData.value.title,
+                          style: const TextStyle(
+                            fontSize: 28,
+                            color: Color.fromRGBO(0, 0, 0, 1),
+                            fontWeight: FontWeight.bold,
+                          ),
+                          maxLines: 1,
+                          overflow: TextOverflow.ellipsis,
+                        ),
+                        addVerticalSpace(5),
+                        Text(
+                          controller.eventData.value.eventOwner.name,
+                          style: const TextStyle(
+                            fontSize: 20,
+                            color: Color.fromRGBO(0, 0, 0, 1),
+                            fontWeight: FontWeight.w400,
+                          ),
+                          maxLines: 1,
+                          overflow: TextOverflow.ellipsis,
+                        ),
+                      ],
+                    )),
             ),
             Column(
               mainAxisAlignment: MainAxisAlignment.center,
@@ -63,7 +60,9 @@ class ChattingView extends StatelessWidget {
               mainAxisSize: MainAxisSize.max,
               children: [
                 IconButton(
-                  onPressed: () {},
+                  onPressed: () {
+                    //Todo: Block user
+                  },
                   icon: const Icon(Icons.block),
                 ),
               ],
@@ -79,76 +78,21 @@ class ChattingView extends StatelessWidget {
           ),
         ),
       ),
-      body: Stack(
-        children: [
-          SingleChildScrollView(
-            child: Padding(
+      body: Obx(() => controller.isLoading.value
+          ? const Center(child: CircularProgressIndicator())
+          : Padding(
               padding: const EdgeInsets.all(sideWidth),
               child: Align(
                 alignment: Alignment.topCenter,
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.center,
-                  children: [
-                    ListView.builder(
+                child: Obx(() => ListView.builder(
                       shrinkWrap: true,
-                      itemCount: controller.events.length,
+                      itemCount: controller.messages.length,
                       itemBuilder: (context, index) {
-                        return ChatBoxUser(message: controller.events[index]);
+                        return ChatBoxUser(message: controller.messages[index]);
                       },
-                    ),
-
-                    /*ChatBoxEventHost(
-                      chatUserName: 'John Hotfoot',
-                      chatUserProfileUrl:
-                          'https://images.unsplash.com/photo-1575936123452-b67c3203c357?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxzZWFyY2h8Mnx8aW1hZ2V8ZW58MHx8MHx8&w=1000&q=80',
-                      chatText: 'How you doin bruv?',
-                      chatUserId: 21,
-                      chatTime: TimeOfDay(hour: 22, minute: 0),
-                    ),
-                    addVerticalSpace(10),
-                    ChatBoxUser(
-                      chatUserName: 'Jane Vive',
-                      chatUserProfileUrl:
-                          'https://images.unsplash.com/photo-1589571894960-20bbe2828d0a?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=386&q=80&q=80',
-                      chatText: 'Not great mate, just wanna join your team bro',
-                      chatUserId: 12,
-                      chatTime: TimeOfDay(hour: 22, minute: 2),
-                    ),
-                    addVerticalSpace(10),
-                    ChatBoxEventHost(
-                      chatUserName: 'John Hotfoot',
-                      chatUserProfileUrl:
-                          'https://images.unsplash.com/photo-1575936123452-b67c3203c357?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxzZWFyY2h8Mnx8aW1hZ2V8ZW58MHx8MHx8&w=1000&q=80',
-                      chatText: 'Sure dude!',
-                      chatUserId: 21,
-                      chatTime: TimeOfDay(hour: 22, minute: 3),
-                    ),
-                    addVerticalSpace(10),
-                    ChatBoxEventHost(
-                      chatUserName: 'John Hotfoot',
-                      chatUserProfileUrl:
-                          'https://images.unsplash.com/photo-1575936123452-b67c3203c357?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxzZWFyY2h8Mnx8aW1hZ2V8ZW58MHx8MHx8&w=1000&q=80',
-                      chatText: 'See you tomorrow',
-                      chatUserId: 21,
-                      chatTime: TimeOfDay(hour: 22, minute: 3),
-                    ),
-                    addVerticalSpace(10),
-                    ChatBoxUser(
-                      chatUserName: 'Jane Vive',
-                      chatUserProfileUrl:
-                          'https://images.unsplash.com/photo-1589571894960-20bbe2828d0a?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=386&q=80&q=80',
-                      chatText: 'Thanks man',
-                      chatUserId: 12,
-                      chatTime: TimeOfDay(hour: 22, minute: 5),
-                    ),
-                    addVerticalSpace(10),*/
-                  ],
-                ),
+                    )),
               ),
-            ),
-          ),
-        ],
-      ),
+            )),
       bottomNavigationBar: Padding(
         padding:
             EdgeInsets.only(bottom: MediaQuery.of(context).viewInsets.bottom),
@@ -168,8 +112,9 @@ class ChattingView extends StatelessWidget {
                       child: SizedBox(
                         width: 20,
                         child: TextFormField(
+                          controller: controller.messageTextController,
                           //textAlignVertical: TextAlignVertical.center,
-                          decoration: InputDecoration(
+                          decoration: const InputDecoration(
                             filled: true,
                             fillColor: Colors.white,
                             hintText: "Type Something...",
@@ -184,7 +129,7 @@ class ChattingView extends StatelessWidget {
                         ),
                       ),
                     ),
-                    SizedBox(
+                    const SizedBox(
                       width: 20,
                     ),
                     // Send Button
@@ -215,7 +160,7 @@ class ChatBoxEventHost extends StatelessWidget {
   final int chatUserId;
   final TimeOfDay chatTime;
 
-  ChatBoxEventHost({
+  const ChatBoxEventHost({
     super.key,
     required this.chatUserName,
     this.chatUserProfileUrl,
@@ -292,7 +237,7 @@ class ChatBoxEventHost extends StatelessWidget {
                                 child: CircleAvatar(
                                   radius: 30,
                                   backgroundImage: Image.network(
-                                    chatUserProfileUrl!,
+                                    chatUserProfileUrl ?? placeholderImage,
                                     errorBuilder:
                                         (context, error, stackTrace) =>
                                             Image.network(
@@ -309,14 +254,14 @@ class ChatBoxEventHost extends StatelessWidget {
                         Expanded(
                           child: Container(
                             width: MediaQuery.of(context).size.width,
-                            padding: EdgeInsets.all(sideWidth),
+                            padding: const EdgeInsets.all(sideWidth),
                             //margin:
                             //    const EdgeInsets.only(right: textTimeMargin),
-                            decoration: BoxDecoration(
+                            decoration: const BoxDecoration(
                               // Circular Edge Chat
                               //borderRadius: BorderRadius.circular(50),
                               color: Color.fromRGBO(255, 255, 255, 1),
-                              boxShadow: const [
+                              boxShadow: [
                                 BoxShadow(
                                   color: Color.fromRGBO(0, 0, 0, 1),
                                   offset: Offset(0, 4),
@@ -377,57 +322,43 @@ class ChatBoxEventHost extends StatelessWidget {
 
 class ChatBoxUser extends StatelessWidget {
   final Message message;
-  const ChatBoxUser({super.key, required this.message});
-
-  /*final String chatUserName;
-  final String? chatUserProfileUrl;
-  final String chatText;
-  final int chatUserId;
-  final TimeOfDay chatTime;
-
-  ChatBoxUser({
-    super.key,
-    required this.chatUserName,
-    this.chatUserProfileUrl,
-    required this.chatText,
-    required this.chatUserId,
-    required this.chatTime,
-  });*/
+  final _auth = AuthController.instance;
+  ChatBoxUser({super.key, required this.message});
 
   @override
   Widget build(BuildContext context) {
-    final userName = FirebaseService().getUserById(message.userId);
-    final DateTime timeNow = DateTime.now();
-    final String formattedTime = DateFormat.Hms().format(timeNow);
+    // final DateTime timeNow = DateTime.now();
+    // final String formattedTime = formatDate(timeNow);
     //final TextDirection? textDirection;
 
     return Column(
       children: <Widget>[
         Row(
+          mainAxisAlignment: message.sentBy == _auth.firebaseUser.value!.uid
+              ? MainAxisAlignment.end
+              : MainAxisAlignment.start,
           mainAxisSize: MainAxisSize.max,
-          mainAxisAlignment: MainAxisAlignment.end,
           children: [
-            Expanded(
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.end,
-                children: [
-                  Container(
-                    margin: const EdgeInsets.only(right: textTimeMargin),
-                    child: Text(
-                      //chatUserName,
-                      userName.toString(),
-                      style: const TextStyle(
-                        fontFamily: "Gotham",
-                        fontWeight: FontWeight.bold,
-                        color: Colors.black,
-                        fontSize: 20,
-                      ),
-                      textDirection: ui.TextDirection.rtl,
-                      maxLines: 1,
-                      overflow: TextOverflow.ellipsis,
-                    ),
-                  ),
-                ],
+            Container(
+              margin: EdgeInsets.only(
+                  right: message.sentBy == _auth.firebaseUser.value!.uid
+                      ? 0
+                      : textTimeMargin,
+                  left: message.sentBy == _auth.firebaseUser.value!.uid
+                      ? textTimeMargin
+                      : 0),
+              child: Text(
+                //chatUserName,
+                message.userName,
+                style: const TextStyle(
+                  fontFamily: "Gotham",
+                  fontWeight: FontWeight.bold,
+                  color: Colors.black,
+                  fontSize: 20,
+                ),
+                textDirection: ui.TextDirection.rtl,
+                maxLines: 1,
+                overflow: TextOverflow.ellipsis,
               ),
             )
           ],
@@ -435,103 +366,104 @@ class ChatBoxUser extends StatelessWidget {
         addVerticalSpace(5),
         Container(
           width: MediaQuery.of(context).size.width,
-          margin: const EdgeInsets.only(left: textTimeMargin),
-          /*decoration: BoxDecoration(
-            color: Color.fromRGBO(255, 255, 255, 1),
-            boxShadow: const [
-              BoxShadow(
-                color: Color.fromRGBO(0, 0, 0, 1),
-                offset: Offset(0, 4),
-                blurRadius: 6,
-              ),
-            ],
-          ),*/
-          child: Column(
-            children: [
-              Padding(
-                //padding: const EdgeInsets.fromLTRB(0, 20, 10, 20),
-                padding: const EdgeInsets.only(left: textTimeMargin),
-                child: Column(
-                  children: <Widget>[
-                    Row(
-                      crossAxisAlignment: CrossAxisAlignment.center,
-                      children: [
-                        // Chat msg
-                        Expanded(
-                          child: Container(
-                            width: MediaQuery.of(context).size.width,
-                            padding: EdgeInsets.all(sideWidth),
-                            //margin:
-                            //    const EdgeInsets.only(right: textTimeMargin),
-                            decoration: BoxDecoration(
-                              // Circular Edge Chat
-                              //borderRadius: BorderRadius.circular(50),
-                              color: Color.fromRGBO(255, 255, 255, 1),
-                              boxShadow: const [
-                                BoxShadow(
-                                  color: Color.fromRGBO(0, 0, 0, 1),
-                                  offset: Offset(0, 4),
-                                  blurRadius: 6,
-                                ),
-                              ],
+          margin: EdgeInsets.only(
+              left: message.sentBy == _auth.firebaseUser.value!.uid
+                  ? textTimeMargin
+                  : 0,
+              right: message.sentBy == _auth.firebaseUser.value!.uid
+                  ? 0
+                  : textTimeMargin),
+          child: Padding(
+            padding: EdgeInsets.only(
+                left: message.sentBy == _auth.firebaseUser.value!.uid
+                    ? textTimeMargin
+                    : 0,
+                right: message.sentBy == _auth.firebaseUser.value!.uid
+                    ? 0
+                    : textTimeMargin),
+            child: Column(
+              children: <Widget>[
+                Row(
+                  textDirection: message.sentBy == _auth.firebaseUser.value!.uid
+                      ? TextDirection.ltr
+                      : TextDirection.rtl,
+                  crossAxisAlignment: CrossAxisAlignment.center,
+                  children: [
+                    // Chat msg
+                    Expanded(
+                      child: Container(
+                        width: MediaQuery.of(context).size.width,
+                        padding: const EdgeInsets.all(sideWidth),
+                        //margin:
+                        //    const EdgeInsets.only(right: textTimeMargin),
+                        decoration: BoxDecoration(
+                          // Circular Edge Chat
+                          //borderRadius: BorderRadius.circular(50),
+                          color: message.sentBy == _auth.firebaseUser.value!.uid
+                              ? AppThemeData.themedata.colorScheme.secondary
+                              : Colors.white,
+                          boxShadow: const [
+                            BoxShadow(
+                              color: Color.fromRGBO(0, 0, 0, 1),
+                              offset: Offset(0, 4),
+                              blurRadius: 6,
                             ),
-                            child: Column(
-                              mainAxisAlignment: MainAxisAlignment.start,
-                              crossAxisAlignment: CrossAxisAlignment.start,
-                              mainAxisSize: MainAxisSize.min,
-                              children: [
-                                Text(
-                                  message.message,
-                                  style: const TextStyle(
-                                    fontFamily: "Gotham",
-                                    color: Colors.black,
-                                    fontSize: 18,
-                                  ),
-                                  textDirection: ui.TextDirection.rtl,
-                                )
-                              ],
-                            ),
-                          ),
-                        ),
-                        addHorizontalSpace(10),
-                        // UserProfilePic
-                        Column(
-                          mainAxisAlignment: MainAxisAlignment.center,
-                          crossAxisAlignment: CrossAxisAlignment.end,
-                          mainAxisSize: MainAxisSize.min,
-                          children: [
-                            if (message.imageUrl != null)
-                              SizedBox(
-                                //width: 80,
-                                child: CircleAvatar(
-                                  radius: 30,
-                                  backgroundImage: Image.network(
-                                    message.imageUrl!,
-                                    errorBuilder:
-                                        (context, error, stackTrace) =>
-                                            Image.network(
-                                      placeholderImage,
-                                      fit: BoxFit.cover,
-                                    ),
-                                  ).image,
-                                ),
-                              ),
                           ],
                         ),
-                      ],
+                        child: Column(
+                          mainAxisAlignment: MainAxisAlignment.start,
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          mainAxisSize: MainAxisSize.min,
+                          children: [
+                            Text(
+                              message.message,
+                              style: const TextStyle(
+                                fontFamily: "Gotham",
+                                color: Colors.black,
+                                fontSize: 18,
+                              ),
+                              textDirection: ui.TextDirection.rtl,
+                            )
+                          ],
+                        ),
+                      ),
                     ),
-                    addVerticalSpace(10),
-                    Row(
-                      mainAxisAlignment: MainAxisAlignment.start,
-                      mainAxisSize: MainAxisSize.max,
+                    addHorizontalSpace(10),
+                    // UserProfilePic
+                    Column(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      mainAxisSize: MainAxisSize.min,
                       children: [
-                        Text(message.sentOn.toString()),
+                        SizedBox(
+                          child: CircleAvatar(
+                            radius: 30,
+                            backgroundImage: Image.network(
+                              message.profilePicture ?? placeholderImage,
+                              errorBuilder: (context, error, stackTrace) =>
+                                  Image.network(
+                                placeholderImage,
+                                fit: BoxFit.cover,
+                              ),
+                            ).image,
+                          ),
+                        ),
                       ],
                     ),
                   ],
                 ),
-              ),
-            ],
+                addVerticalSpace(10),
+                Row(
+                  mainAxisAlignment:
+                      message.sentBy == _auth.firebaseUser.value!.uid
+                          ? MainAxisAlignment.start
+                          : MainAxisAlignment.end,
+                  mainAxisSize: MainAxisSize.max,
+                  children: [
+                    Text(message.sentOn.toString()),
+                  ],
+                ),
+              ],
+            ),
           ),
         ),
         addVerticalSpace(10),

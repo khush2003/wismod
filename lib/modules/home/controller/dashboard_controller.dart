@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import '../../../shared/models/event.dart';
 
 import 'dart:io';
 import 'package:firebase_storage/firebase_storage.dart';
@@ -51,10 +52,24 @@ class ProfilePictureController extends GetxController {
 }
 
 class FourButtonsController extends GetxController {
+  @override
+  void onInit() {
+    super.onInit();
+    fetchEvents();
+  }
+
   var showUpcoming = false.obs;
   var showRequested = false.obs;
   var showBookmarked = false.obs;
   var showOwn = false.obs;
+
+  final firestore = FirebaseService();
+  final isLoading = true.obs;
+  final RxList<Event> events = <Event>[].obs;
+  final List<Event> _ownedEvents = [];
+  final auth = AuthController.instance;
+
+  List<Event> get ownedEvents => _ownedEvents;
 
   void toggleUpcoming() {
     showUpcoming.value = !showUpcoming.value;
@@ -70,5 +85,18 @@ class FourButtonsController extends GetxController {
 
   void toggleOwn() {
     showOwn.value = !showOwn.value;
+  }
+
+  void fetchEvents() async {
+    try {
+      isLoading(true);
+      final eventsTemp = await firestore.getEvents();
+      if (eventsTemp.isNotEmpty) {
+        _ownedEvents.clear();
+        _ownedEvents.addAll(eventsTemp
+            .where((event) => event.eventOwner.uid == auth.appUser.value.uid));
+        isLoading(false);
+      }
+    } finally {}
   }
 }

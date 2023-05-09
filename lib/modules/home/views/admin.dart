@@ -1,10 +1,14 @@
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
 import 'package:wismod/utils/app_utils.dart';
-
+import 'package:wismod/modules/home/controller/admin_controller.dart';
+import '../../../shared/models/event.dart';
+import '../../../routes/routes.dart';
 import '../../../theme/global_widgets.dart';
 
 class AdminView extends StatelessWidget {
-  const AdminView({Key? key}) : super(key: key);
+  AdminView({Key? key}) : super(key: key);
+  final adminController = Get.put(AdminController());
 
   @override
   Widget build(BuildContext context) {
@@ -25,12 +29,15 @@ class AdminView extends StatelessWidget {
               style: Theme.of(context).textTheme.displayLarge,
             ),
             const SizedBox(height: 20),
-            EventCard(
-              eventDate: DateTime.now(),
-              eventName: 'Marathon',
-              eventLocation: 'IconSiam',
-              eventCategory: 'Exercise',
-            ),
+            Flexible(
+              child: ListView.builder(
+                itemCount: adminController.reportedEvents.length,
+                itemBuilder: (context, index) {
+                  return EventCard(
+                      event: adminController.reportedEvents[index]);
+                },
+              ),
+            )
           ],
         ),
       ),
@@ -39,17 +46,8 @@ class AdminView extends StatelessWidget {
 }
 
 class EventCard extends StatelessWidget {
-  final DateTime eventDate;
-  final String eventName;
-  final String eventLocation;
-  final String eventCategory;
-
-  const EventCard({super.key, 
-    required this.eventDate,
-    required this.eventName,
-    required this.eventLocation,
-    required this.eventCategory,
-  });
+  final Event event;
+  const EventCard({super.key, required this.event});
 
   @override
   Widget build(BuildContext context) {
@@ -70,19 +68,22 @@ class EventCard extends StatelessWidget {
               Row(
                 children: [
                   Padding(
-                    padding: const EdgeInsets.only(right: 16.0),
-                    child: SizedBox(
-                      width: MediaQuery.of(context).size.width * 2 / 7,
-                      height: MediaQuery.of(context).size.height * 0.15,
-                      child: ClipRRect(
-                        borderRadius: BorderRadius.circular(10.0),
-                        child: Image.network(
-                          "https://images.unsplash.com/photo-1452626038306-9aae5e071dd3?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxzZWFyY2h8M3x8bWFyYXRob258ZW58MHx8MHx8&auto=format&fit=crop&w=800&q=60",
-                          fit: BoxFit.cover,
+                      padding: const EdgeInsets.only(right: 16.0),
+                      child: SizedBox(
+                        width: MediaQuery.of(context).size.width * 2 / 7,
+                        height: MediaQuery.of(context).size.height * 0.15,
+                        child: ClipRRect(
+                          borderRadius: BorderRadius.circular(10.0),
+                          child: Image.network(
+                              event.imageUrl ?? placeholderImage,
+                              errorBuilder: (context, error, stackTrace) =>
+                                  Image.network(
+                                    placeholderImage,
+                                    fit: BoxFit.cover,
+                                  ),
+                              fit: BoxFit.cover),
                         ),
-                      ),
-                    ),
-                  ),
+                      )),
                   const SizedBox(height: 10),
                   Expanded(
                     child: Wrap(
@@ -92,7 +93,7 @@ class EventCard extends StatelessWidget {
                         Row(
                           children: [
                             Text(
-                              formatDate(eventDate),
+                              formatDate(event.eventDate!),
                               style: const TextStyle(
                                 fontSize: 14,
                                 fontWeight: FontWeight.bold,
@@ -104,7 +105,7 @@ class EventCard extends StatelessWidget {
                         Row(
                           children: [
                             Text(
-                              eventName,
+                              event.title,
                               style: Theme.of(context).textTheme.displayLarge,
                             ),
                           ],
@@ -113,7 +114,7 @@ class EventCard extends StatelessWidget {
                         Row(
                           children: [
                             Text(
-                              eventLocation,
+                              event.location,
                               style: const TextStyle(
                                 fontSize: 12,
                                 fontWeight: FontWeight.normal,
@@ -125,7 +126,7 @@ class EventCard extends StatelessWidget {
                         Row(
                           children: [
                             Text(
-                              'Category: $eventCategory',
+                              'Category: ${event.category}',
                               style: const TextStyle(
                                 fontSize: 10,
                                 fontWeight: FontWeight.bold,
@@ -141,9 +142,12 @@ class EventCard extends StatelessWidget {
               Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
-                  const Text('18 upvotes'),
+                  Text('${event.upvotes}'),
                   OutlineButtonMedium(
-                    onPressed: () => {},
+                    onPressed: () => {
+                      Get.toNamed(Routes.adminEventDetials,
+                          parameters: {'id': event.id!})
+                    },
                     child: const Padding(
                       padding: EdgeInsets.symmetric(horizontal: 5.0),
                       child: Text('More'),

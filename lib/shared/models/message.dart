@@ -4,44 +4,50 @@ import 'package:wismod/shared/services/firebase_firestore_serivce.dart';
 
 class Message {
   final String message;
-  final String userId;
-  final String? imageUrl;
+  final String sentBy;
+  final String userName;
+  final String? profilePicture;
   final DateTime? sentOn;
   final String? eventId;
 
   Message({
     required this.message,
-    required this.userId,
-    this.imageUrl,
+    required this.sentBy,
     this.sentOn,
     this.eventId,
+    required this.userName,
+    this.profilePicture,
   });
   @override
   String toString() {
     return 'Message {'
-        'id: $userId,'
-        'imageUrl: $imageUrl,'
+        'id: $sentBy,'
         'message: $message,'
         'date: $sentOn'
         'event: $eventId'
+        'userName : $userName'
+        'profilePicture : $profilePicture'
         '}';
   }
 
   factory Message.empty() {
     return Message(
       message: '',
-      userId: '1',
+      sentBy: '',
+      profilePicture: '',
+      userName: '',
     );
   }
 
-  factory Message.fromMap(Map<String, dynamic> map, String messageText) {
-    final time = map['sentOn'] as Timestamp;
+  factory Message.fromMap(Map<String, dynamic> map) {
+    final time = map['SentOn'] as Timestamp;
     return Message(
-      message: messageText,
-      userId: map['UserId'] as String,
-      imageUrl: map['ImageUrl'] as String,
+      message: map['Message'] as String,
+      sentBy: map['SentBy'] as String,
       sentOn: time.toDate(),
       eventId: map['EventId'] as String,
+      profilePicture: map['ProfilePicture'] as String?,
+      userName: map['UserName'] as String,
     );
   }
 }

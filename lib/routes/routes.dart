@@ -7,6 +7,7 @@ import 'package:wismod/modules/home/views/block_list.dart';
 import 'package:wismod/modules/home/views/filter_options.dart';
 import 'package:wismod/modules/home/views/notification.dart';
 import 'package:wismod/modules/home/views/password.dart';
+import '../modules/home/views/admin_event_detail.dart';
 import '../modules/home/views/event_details.dart';
 import '../modules/home/views/onboarding.dart';
 import '../modules/home/views/create_event.dart';
@@ -25,6 +26,7 @@ abstract class Routes {
   static const String notficaition = '/notficaition';
   static const String blockList = '/blockList';
   static const String eventDetials = '/eventDetails';
+  static const String adminEventDetials = '/admineventDetails';
   static const String filterOptions = '/filterOptions';
   static const String chatting = '/chatting';
   // Add page string (route) here
@@ -43,7 +45,9 @@ final getPages = [
   GetPage(name: Routes.password, page: () => PassWordView()),
   GetPage(name: Routes.notficaition, page: () => NotificationView()),
   GetPage(name: Routes.blockList, page: () => const BlockListView()),
+  GetPage(name: Routes.adminEventDetials, page: () => AdminEventDetailView()),
   GetPage(name: Routes.eventDetials, page: () => EventDetailView()),
+  //
   GetPage(
       name: Routes.filterOptions,
       page: () => FilterOptionsView(),

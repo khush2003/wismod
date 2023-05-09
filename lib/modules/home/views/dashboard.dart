@@ -294,7 +294,10 @@ class DashboardView extends StatelessWidget {
                         addVerticalSpace(16),
                         FourButtonsWidget(
                           activityType: 'Bookmarked Activities',
-                          activityNumber: 1,
+                          activityNumber:
+                              auth.appUser.value.bookmarkedEvents != null
+                                  ? auth.appUser.value.bookmarkedEvents!.length
+                                  : 0,
                           onPressed: fourButtonsController.toggleBookmarked,
                           showSizeBox: fourButtonsController.showBookmarked,
                         ),

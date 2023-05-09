@@ -139,7 +139,6 @@ class EventDetailView extends StatelessWidget {
                       ),
                     ))),
             ),
-            addVerticalSpace(20),
             auth.appUser.value.isAdmin == true
                 ? Container(
                     decoration: const BoxDecoration(

@@ -455,7 +455,7 @@ class OtherActivityBox extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Padding(
-      padding: const EdgeInsets.only(bottom: 8.0),
+      padding: const EdgeInsets.only(bottom: 15.0),
       child: Container(
         decoration: BoxDecoration(
           color: Colors.white,

@@ -7,7 +7,7 @@ class Event {
   final String? imageUrl;
   final DateTime? eventDate;
   final EventOwner eventOwner;
-  final String? description;
+  final String description;
   final String? id;
   final int? totalCapacity;
   final List<String>? members;
@@ -29,7 +29,7 @@ class Event {
       this.imageUrl,
       this.eventDate,
       required this.eventOwner,
-      this.description,
+      required this.description,
       this.id,
       this.totalCapacity,
       this.allowAutomaticJoin = true});
@@ -62,7 +62,7 @@ class Event {
           EventOwner(name: 'Loading', department: 'Loading', uid: '1', year: 0),
       id: '1',
       title: "Loading",
-      upvotes: 0,
+      upvotes: 0, description: '',
     );
   }
   factory Event.fromMap(Map<String, dynamic> map, String documentId) {
@@ -82,7 +82,7 @@ class Event {
           name: map['EventOwnerName'] as String,
           year: map['EventOwnerYear'] as int,
           uid: map['EventOwnerId'] as String),
-      description: map['Description'] as String?,
+      description: map['Description'] as String,
       totalCapacity: map['TotalCapacity'] as int?,
       members: map['Members'] == null
           ? null

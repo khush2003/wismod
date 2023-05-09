@@ -7,14 +7,12 @@ import 'package:wismod/utils/app_utils.dart';
 
 import '../../../routes/routes.dart';
 
-class SettingController extends GetxController {
-  late BuildContext? context;
+class PasswordController extends GetxController {
   var auth = FirebaseAuth.instance;
   var currentUser = FirebaseAuth.instance.currentUser;
   final passwordController = TextEditingController();
   final confirmPasswordController = TextEditingController();
   int checkCount = 0;
-  String wordCheck = "";
 
   final passwordError = RxString('');
   final confirmPasswordError = RxString('');
@@ -84,7 +82,7 @@ class SettingController extends GetxController {
         confirmPasswordController.text.isEmpty ||
         passwordError != null ||
         confirmPasswordError != null) {
-      print("you didn't type it all");
+      print("you didn't type it at all");
       print(passwordController.text);
       print(confirmPasswordController.text);
       return false;

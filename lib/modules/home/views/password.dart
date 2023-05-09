@@ -4,7 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:wismod/theme/global_widgets.dart';
 import '../../auth/controllers/signup_controller.dart';
 import 'package:get/get.dart';
-import '../controller/setting_controller.dart';
+import '../controller/password_controller.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 
 import '../../../utils/app_utils.dart';
@@ -17,7 +17,7 @@ class PassWordView extends StatelessWidget {
   // final TextEditingController passwordController = TextEditingController();
   // final TextEditingController confirmPasswordController =
   //     TextEditingController();
-  final SettingController settingController = Get.put(SettingController());
+  final PasswordController settingController = Get.put(PasswordController());
 
   @override
   Widget build(BuildContext context) {

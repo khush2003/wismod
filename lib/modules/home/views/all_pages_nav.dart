@@ -22,7 +22,7 @@ class AllPagesNav extends StatelessWidget {
                     ChatRoomView(),
                     DashboardView(),
                     const SettingsView(),
-                    const AdminView()
+                    AdminView()
                   ],
                 ))),
         bottomNavigationBar: Obx(() => NavigationBar(

@@ -5,7 +5,7 @@ import 'package:wismod/utils/app_utils.dart';
 
 import '../controller/home_controller.dart';
 
-//TODO: Apply filter logic, change to sort by location instead since location is string
+
 class FilterOptionsView extends StatelessWidget {
   FilterOptionsView({super.key});
   final homeController = Get.find<HomeController>();

@@ -57,20 +57,53 @@ class FirebaseService {
     return Event.fromMap(data, eventId);
   }
 
-  Future<Message?> getMessage(String eventId) async {
-    final document = _firestore.collection('Message').doc(eventId);
-    final snapshot = await document.get();
+  Future<Message?> getLatestMessage(String eventId) async {
+    final querySnapshot = await _firestore
+        .collection('Messages')
+        .where('EventId', isEqualTo: eventId)
+        .orderBy('SentOn', descending: true)
+        .limit(1)
+        .get();
 
-    if (!snapshot.exists) {
-      return null;
+    if (querySnapshot.size == 0) {
+      return null; // No messages found
     }
 
-    final data = snapshot.data();
-    if (data == null) {
-      return null;
+    final latestMessage = querySnapshot.docs.first;
+    final data = latestMessage.data();
+    return Message.fromMap(data);
+  }
+
+  Future<List<Message>> getMessages(String eventId) async {
+    final querySnapshot = await _firestore
+        .collection('Messages')
+        .where('EventId', isEqualTo: eventId)
+        .orderBy('SentOn', descending: true)
+        .get();
+
+    if (querySnapshot.size == 0) {
+      return <Message>[]; // No messages found
     }
 
-    return Message.fromMap(data, eventId);
+    final messages = querySnapshot.docs.map((doc) {
+      final data = doc.data();
+      return Message.fromMap(data);
+    }).toList();
+
+    return messages.reversed.toList();
+  }
+
+  Future<void> addMessage(Message message) async {
+    await _firestore.collection('Messages').add({
+      'Message': message.message,
+      'SentBy': message.sentBy,
+      'SentOn': message.sentOn == null
+          ? Timestamp.now()
+          : Timestamp.fromDate(message.sentOn!),
+      'EventId': message.eventId,
+      'UserName': message.userName,
+      'ProfilePicture': message.profilePicture ?? '',
+    });
   }
 
   Future<void> updateProfilePicture(String userId, String imagePath) async {
@@ -113,7 +146,7 @@ class FirebaseService {
       'IsReported': event.isReported,
       'CreatedAt': event.createdAt == null
           ? Timestamp.now()
-          : Timestamp.fromDate(event.createdAt!)
+          : Timestamp.fromDate(event.createdAt!),
     });
     await _addTagsToTagData(event);
   }
@@ -131,7 +164,8 @@ class FirebaseService {
       'OwnedEvents': user.ownedEvents ?? [],
       'RequestedEvents': user.requestedEvents ?? [],
       'UpvotedEvents': user.upvotedEvents ?? [],
-      'IsAdmin': user.isAdmin ?? false
+      'IsAdmin': user.isAdmin ?? false,
+      'JoinedChatGroups': user.joinedChatGroups ?? [],
     });
   }
 
@@ -157,17 +191,6 @@ class FirebaseService {
     }
   }
 
-  Future<void> addMessage(Message message) async {
-    await _firestore.collection('Messages').add({
-      'Message': message.message,
-      'SentBy': message.sentBy,
-      'SentOn': message.sentOn == null
-          ? Timestamp.now()
-          : Timestamp.fromDate(message.sentOn!),
-      'EventId': message.eventId,
-    });
-  }
-
   Future<void> reportEvent(String eventId) async {
     final eventDocument = _firestore.collection('Events').doc(eventId);
     final eventSnapshot = await eventDocument.get();
@@ -182,6 +205,24 @@ class FirebaseService {
     }
 
     await eventDocument.update({'IsReported': true});
+  }
+
+  Future<void> joinChatGroup(String userId, String eventId) async {
+    final userRef = _firestore.collection('Users').doc(userId);
+    final userDoc = await userRef.get();
+
+    if (!userDoc.exists) {
+      throw Exception('User does not exist!');
+    }
+
+    final user = AppUser.fromMap(userDoc.data()!, userId);
+    if (user.joinedChatGroups != null &&
+        user.joinedChatGroups!.contains(eventId)) {
+      return;
+    }
+
+    final updatedJoinedChatGroups = [...(user.joinedChatGroups ?? []), eventId];
+    await userRef.update({'JoinedChatGroups': updatedJoinedChatGroups});
   }
 
   Future<void> upvoteEvent(String userId, String eventId) async {

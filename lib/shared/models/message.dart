@@ -5,25 +5,28 @@ import 'package:wismod/shared/services/firebase_firestore_serivce.dart';
 class Message {
   final String message;
   final String sentBy;
-  final String? imageUrl;
+  final String userName;
+  final String? profilePicture;
   final DateTime? sentOn;
   final String? eventId;
 
   Message({
     required this.message,
     required this.sentBy,
-    this.imageUrl,
     this.sentOn,
     this.eventId,
+    required this.userName,
+    this.profilePicture,
   });
   @override
   String toString() {
     return 'Message {'
         'id: $sentBy,'
-        'imageUrl: $imageUrl,'
         'message: $message,'
         'date: $sentOn'
         'event: $eventId'
+        'userName : $userName'
+        'profilePicture : $profilePicture'
         '}';
   }
 
@@ -31,16 +34,20 @@ class Message {
     return Message(
       message: '',
       sentBy: '',
+      profilePicture: '',
+      userName: '',
     );
   }
 
-  factory Message.fromMap(Map<String, dynamic> map, String messageText) {
-    final time = map['sentOn'] as Timestamp;
+  factory Message.fromMap(Map<String, dynamic> map) {
+    final time = map['SentOn'] as Timestamp;
     return Message(
-      message: messageText,
-      sentBy: map['SentBy'] as String,  
+      message: map['Message'] as String,
+      sentBy: map['SentBy'] as String,
       sentOn: time.toDate(),
       eventId: map['EventId'] as String,
+      profilePicture: map['ProfilePicture'] as String?,
+      userName: map['UserName'] as String,
     );
   }
 }

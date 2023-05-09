@@ -1,9 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:wismod/modules/auth/controllers/auth_controller.dart';
+import 'package:wismod/modules/home/controller/all_pages_nav_controller.dart';
 import 'package:wismod/modules/home/controller/home_controller.dart';
+import 'package:wismod/routes/routes.dart';
 import 'package:wismod/shared/models/event.dart';
 import 'package:wismod/shared/services/firebase_firestore_serivce.dart';
+import 'package:wismod/utils/app_utils.dart';
 
 class EventDetailController extends GetxController {
   final firestore = FirebaseService();
@@ -55,7 +58,7 @@ class EventDetailController extends GetxController {
     try {
       await firestore.reportEvent(eventData.value.id!);
       fetchEvent();
-       Get.snackbar("Sucess!", 'You have sucessfully reported this event',
+      Get.snackbar("Sucess!", 'You have sucessfully reported this event',
           snackPosition: SnackPosition.BOTTOM, backgroundColor: Colors.green);
     } catch (e) {
       Get.snackbar("Error!", e.toString(),
@@ -70,11 +73,9 @@ class EventDetailController extends GetxController {
           _auth.firebaseUser.value!.uid, eventData.value.id!);
       await _auth.updateUser();
       setIsJoined();
-      Get.snackbar("Sucess!", 'You have sucessfully joined this event',
-          snackPosition: SnackPosition.BOTTOM, backgroundColor: Colors.green);
+      sucessSnackBar('You have sucessfully joined this event');
     } catch (e) {
-      Get.snackbar("Error!", e.toString(),
-          snackPosition: SnackPosition.BOTTOM, backgroundColor: Colors.red);
+      errorSnackBar(e.toString());
     }
   }
 
@@ -92,6 +93,22 @@ class EventDetailController extends GetxController {
       }
       updateHomeScreen();
     } finally {}
+  }
+
+  void chatGroupAdd() async {
+    try {
+      await firestore.joinChatGroup(
+          _auth.firebaseUser.value!.uid, eventData.value.id!);
+      Get.toNamed(Routes.chatting, parameters: {'id': eventData.value.id!});
+      sucessSnackBar("Joined ChatGroup Sucessfully!");
+      try {
+        //TODO: Fix no Update event when adding event through eventDetails
+        await _auth.updateUser();
+        HomeController.instance.fetchEvents();
+      } finally {}
+    } catch (e) {
+      errorSnackBar("There was an error");
+    }
   }
 
   void updateHomeScreen() {

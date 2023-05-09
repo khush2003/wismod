@@ -215,7 +215,10 @@ class ChatBox extends StatelessWidget {
               mainAxisAlignment: MainAxisAlignment.end,
               children: [
                 SecondaryButtonMedium(
-                    child: const Text("Chat"), onPressed: () {})
+                    child: const Text("Chat"),
+                    onPressed: () {
+                      controller.chatGroupAdd();
+                    })
               ],
             )
           ],

@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
 
 const double sideWidth = 20;
 
@@ -6,6 +7,19 @@ const double sideWidth = 20;
 /// By default, [gap] is set to 8.
 SizedBox addVerticalSpace([double gap = 8]) {
   return SizedBox(height: gap);
+}
+
+void sucessSnackBar(String message) {
+  Get.snackbar("Sucess", message,
+      snackPosition: SnackPosition.BOTTOM,
+      colorText: Colors.white,
+      backgroundColor: Colors.green);
+}
+void errorSnackBar(String message) {
+  Get.snackbar("Error", message,
+      snackPosition: SnackPosition.BOTTOM,
+      colorText: Colors.white,
+      backgroundColor: Colors.red);
 }
 
 const placeholderImage =

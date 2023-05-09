@@ -6,6 +6,7 @@ import 'package:wismod/modules/home/views/settings.dart';
 
 import '../controller/all_pages_nav_controller.dart';
 import 'dashboard.dart';
+import 'admin.dart';
 
 class AllPagesNav extends StatelessWidget {
   AllPagesNav({super.key});
@@ -20,22 +21,35 @@ class AllPagesNav extends StatelessWidget {
                     HomeView(),
                     ChatRoomView(),
                     DashboardView(),
-                    const SettingsView()
+                    const SettingsView(),
+                    const AdminView()
                   ],
                 ))),
-        bottomNavigationBar: Obx(
-          () => NavigationBar(
-              onDestinationSelected: k.changeTabIndex,
-              selectedIndex: k.tabIndex.value,
-              destinations: const [
-                NavigationDestination(icon: Icon(Icons.home), label: "Home"),
-                NavigationDestination(
-                    icon: Icon(Icons.chat_rounded), label: "Chat"),
-                NavigationDestination(
-                    icon: Icon(Icons.dashboard), label: "Dashboard"),
-                NavigationDestination(
-                    icon: Icon(Icons.settings), label: "Settings")
-              ]),
-        ));
+        bottomNavigationBar: Obx(() => NavigationBar(
+            onDestinationSelected: k.changeTabIndex,
+            selectedIndex: k.tabIndex.value,
+            destinations: k.checkIsAdmin()
+                ? const [
+                    NavigationDestination(
+                        icon: Icon(Icons.home), label: "Home"),
+                    NavigationDestination(
+                        icon: Icon(Icons.chat_rounded), label: "Chat"),
+                    NavigationDestination(
+                        icon: Icon(Icons.dashboard), label: "Dashboard"),
+                    NavigationDestination(
+                        icon: Icon(Icons.settings), label: "Settings"),
+                    NavigationDestination(
+                        icon: Icon(Icons.admin_panel_settings), label: "Admin"),
+                  ]
+                : const [
+                    NavigationDestination(
+                        icon: Icon(Icons.home), label: "Home"),
+                    NavigationDestination(
+                        icon: Icon(Icons.chat_rounded), label: "Chat"),
+                    NavigationDestination(
+                        icon: Icon(Icons.dashboard), label: "Dashboard"),
+                    NavigationDestination(
+                        icon: Icon(Icons.settings), label: "Settings"),
+                  ])));
   }
 }

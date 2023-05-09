@@ -73,6 +73,13 @@ class FirebaseService {
     return Message.fromMap(data, eventId);
   }
 
+  Future<void> updateProfilePicture(String userId, String imagePath) async {
+    // Update the user's profile picture in Firestore
+    await _firestore.collection('Users').doc(userId).update({
+      'ProfilePicture': imagePath,
+    });
+  }
+
   Future<AppUser?> getUserById(String userId) async {
     final docSnapshot = await _firestore.collection('Users').doc(userId).get();
     if (docSnapshot.exists) {
@@ -160,5 +167,105 @@ class FirebaseService {
           : Timestamp.fromDate(message.sentOn!),
       'EventId': message.eventId,
     });
+  }
+
+  Future<void> reportEvent(String eventId) async {
+    final eventDocument = _firestore.collection('Events').doc(eventId);
+    final eventSnapshot = await eventDocument.get();
+
+    if (!eventSnapshot.exists) {
+      throw Exception('Event does not exist!');
+    }
+
+    final event = Event.fromMap(eventSnapshot.data()!, eventSnapshot.id);
+    if (event.isReported == true) {
+      return;
+    }
+
+    await eventDocument.update({'IsReported': true});
+  }
+
+  Future<void> upvoteEvent(String userId, String eventId) async {
+    final documentUsers = _firestore.collection('Users').doc(userId);
+    final documentEvents = _firestore.collection('Events').doc(eventId);
+    var upvotedEvents = <String>[];
+    var upvotes = 0;
+
+    await documentEvents.get().then((doc) {
+      if (doc.exists) {
+        upvotes = doc['Upvotes']
+            as int; // Handle the case where upvotes is null or undefined.
+      } else {
+        throw Exception('Event does not exist!');
+      }
+    });
+
+    await documentUsers.get().then((doc) {
+      if (doc.exists) {
+        upvotedEvents = doc['UpvotedEvents'] != null
+            ? List<String>.from(doc['UpvotedEvents'] as List<dynamic>)
+            : <String>[]; // Handle the case where tags is null or undefined.
+        if (!upvotedEvents.contains(eventId)) {
+          upvotedEvents.add(eventId);
+          upvotes++;
+        } else {
+          upvotedEvents.remove(eventId);
+          upvotes--;
+        }
+      } else {
+        throw Exception('User does not exist!');
+      }
+    });
+    await _firestore
+        .collection('Users')
+        .doc(userId)
+        .update({'UpvotedEvents': upvotedEvents});
+    await _firestore
+        .collection('Events')
+        .doc(eventId)
+        .update({'Upvotes': upvotes});
+  }
+
+  Future<void> joinEvent(String userId, String eventId) async {
+    final documentUsers = _firestore.collection('Users').doc(userId);
+    final documentEvents = _firestore.collection('Events').doc(eventId);
+    var members = <String>[];
+    var joinedEvents = <String>[];
+    await documentUsers.get().then((doc) {
+      if (doc.exists) {
+        joinedEvents = doc['JoinedEvents'] != null
+            ? List<String>.from(doc['JoinedEvents'] as List<dynamic>)
+            : <String>[]; // Handle the case where tags is null or undefined.
+        if (!joinedEvents.contains(eventId)) {
+          joinedEvents.add(eventId);
+        } else {
+          throw Exception('Event joined already!');
+        }
+      } else {
+        throw Exception('User does not exist!');
+      }
+    });
+    await documentEvents.get().then((doc) {
+      if (doc.exists) {
+        members = doc['Members'] != null
+            ? List<String>.from(doc['Members'] as List<dynamic>)
+            : <String>[]; // Handle the case where tags is null or undefined.
+        if (!members.contains(userId)) {
+          members.add(userId);
+        } else {
+          throw Exception('Event joined already!');
+        }
+      } else {
+        throw Exception('Event does not exist!');
+      }
+    });
+    await _firestore
+        .collection('Users')
+        .doc(userId)
+        .update({'JoinedEvents': joinedEvents});
+    await _firestore
+        .collection('Events')
+        .doc(eventId)
+        .update({'Members': members});
   }
 }

@@ -11,18 +11,11 @@ class HomeController extends GetxController {
   final isLoading = true.obs;
   final RxList<Event> events = <Event>[].obs;
 
-  late List<String> categoryOptions = [
-    'Default',
-    'Competition',
-    'Tutoring',
-    'Sports',
-    'Hanging Out',
-    'Thesis'
-    'Other',
-  ];
+  late List<String> categoryOptions;
+  
   @override
   void onReady() async {
-    categoryOptions = await firestore.getCategories() ?? categoryOptions;
+    categoryOptions = await firestore.getCategories() ?? [];
     fetchEvents();
     super.onReady();
   }

@@ -26,20 +26,30 @@ class CreateEventController extends GetxController {
   final _imagePicker = ImagePicker();
   final _auth = AuthController.instance;
   final isOn = false.obs;
+  final isLoading = true.obs;
 
   void setSelectedCategory(String? value) {
     selectedCategory(value ?? '');
   }
 
-  late List<String> categoryOptions = [
-    'Default',
-    'Competition',
-    'Tutoring',
-    'Sports',
-    'Hanging Out',
-    'Thesis'
-        'Other',
-  ];
+  late List<String> categoryOptions;
+
+  @override
+  void onInit() async {
+    isLoading(true);
+    categoryOptions = await FirebaseService().getCategories() ??
+        [
+          'Default',
+          'Competition',
+          'Tutoring',
+          'Sports',
+          'Hanging Out',
+          'Thesis'
+              'Other',
+        ];
+    isLoading(false);
+    super.onInit();
+  }
 
   toggleSwitch(bool value) {
     isOn(isOn.value == false ? true : false);
@@ -59,7 +69,7 @@ class CreateEventController extends GetxController {
     tags.removeAt(index);
   }
 
-  //TODO: Add more validaiton functions, add tooltip for automatic join
+  //TODO: Add more validaiton functions
   String? validateTotalCapacity(int? value) {
     if (value == null || value <= 2 || value >= 500) {
       return 'Please enter a vaild amount of people';
@@ -95,7 +105,6 @@ class CreateEventController extends GetxController {
     dateTime(date ?? dateTime.value);
   }
 
-  //TODO: IMPORTANT! Category
   void createEvent() async {
     try {
       final eventOwner = _auth.appUser.value;

@@ -17,7 +17,7 @@ import 'package:get/get.dart';
 // Obx(() => Text(thc.isOn.value.toString()))]) in Scaffold body (This line shows the value)
 
 class PrimaryButtonMedium extends StatelessWidget {
-  final VoidCallback onPressed;
+  final VoidCallback? onPressed;
   final Widget child;
   final Size? size;
   final Size? maxSize;
@@ -74,7 +74,7 @@ class PrimaryButtonLarge extends StatelessWidget {
 }
 
 class OutlineButtonMedium extends StatelessWidget {
-  final VoidCallback onPressed;
+  final VoidCallback? onPressed;
   final Widget child;
   final Size? size;
   final Size? maxSize;

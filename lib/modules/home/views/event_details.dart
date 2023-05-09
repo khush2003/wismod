@@ -5,6 +5,7 @@ import 'package:wismod/theme/global_widgets.dart';
 import 'package:wismod/utils/app_utils.dart';
 
 import '../../../shared/models/event.dart';
+import '../../../theme/theme_data.dart';
 
 class EventDetailView extends StatelessWidget {
   EventDetailView({super.key});
@@ -15,7 +16,11 @@ class EventDetailView extends StatelessWidget {
     return Scaffold(
         appBar: AppBar(
           actions: [
-            IconButton(onPressed: () {}, icon: const Icon(Icons.report)),
+            IconButton(
+                onPressed: () {
+                  controller.reportEvent();
+                },
+                icon: const Icon(Icons.report)),
             IconButton(
                 onPressed: () {}, icon: const Icon(Icons.bookmark_add_outlined))
           ],
@@ -68,14 +73,15 @@ class EventDetailView extends StatelessWidget {
                       style: TextStyle(fontWeight: FontWeight.bold),
                     ),
                     addVerticalSpace(),
-                    if (eventData().tags == null) const Text("No Tags Found"),
-                    // TODO: tags
+                    if (eventData().tags == null || eventData().tags!.isEmpty)
+                      const Text("No Tags Found"),
+                    createTags(controller),
                     addVerticalSpace(20),
-                    Text("${eventData().upvotes} upvotes"),
+                    Obx(() => Text("${eventData().upvotes} upvotes")),
                     addVerticalSpace(20),
                     if (eventData().eventDate != null)
                       Text(
-                        'Date: ${eventData().eventDate}',
+                        'Date: ${formatDate(eventData().eventDate!)}',
                         style: const TextStyle(fontWeight: FontWeight.bold),
                       ),
                     addVerticalSpace(20),
@@ -92,15 +98,26 @@ class EventDetailView extends StatelessWidget {
                       mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                       children: [
                         Expanded(
-                          child: OutlineButtonMedium(
-                            child: const Text("Upvote"),
-                            onPressed: () {},
-                          ),
+                          child: Obx(() => OutlineButtonMedium(
+                                onPressed: () {
+                                  controller.upvoteEvent();
+                                },
+                                child: controller.isUpvoted.value
+                                    ? const Text("Upvoted")
+                                    : const Text("Remove Upvote"),
+                              )),
                         ),
                         addHorizontalSpace(16),
                         Expanded(
-                          child: PrimaryButtonMedium(
-                              child: const Text('Join'), onPressed: () {}),
+                          child: Obx(() => PrimaryButtonMedium(
+                              onPressed: controller.isJoined.value
+                                  ? null
+                                  : () {
+                                      controller.joinEvent();
+                                    },
+                              child: controller.isJoined.value
+                                  ? const Text('Joined')
+                                  : const Text('Join'))),
                         )
                       ],
                     ),
@@ -206,4 +223,23 @@ class ChatBox extends StatelessWidget {
       ),
     );
   }
+}
+
+Widget createTags(EventDetailController controller) {
+  final tagsWidgets = <Widget>[];
+  for (int i = 0; i < controller.tags.length; i++) {
+    tagsWidgets.add(Container(
+      decoration: BoxDecoration(
+          border: Border.all(
+              color: AppThemeData.themedata.colorScheme.primary, width: 2),
+          borderRadius: BorderRadius.circular(5)),
+      child: Text(controller.tags[i]),
+    ));
+  }
+  return Wrap(
+    direction: Axis.horizontal,
+    spacing: 10,
+    runSpacing: 10,
+    children: tagsWidgets,
+  );
 }

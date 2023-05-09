@@ -26,6 +26,23 @@ class AuthController extends GetxController {
       appUser(await _firestore.getUserById(_auth.currentUser!.uid));
     }
     firebaseUser.bindStream(_auth.userChanges());
+    ever(firebaseUser, updateUserAuto);
+  }
+
+  Future<void> updateUserAuto(User? u) async {
+    if (_auth.currentUser != null) {
+      appUser(await _firestore.getUserById(_auth.currentUser!.uid));
+    } else {
+      appUser(AppUser.empty());
+    }
+  }
+
+  Future<void> updateUser() async {
+    if (_auth.currentUser != null) {
+      appUser(await _firestore.getUserById(_auth.currentUser!.uid));
+    } else {
+      appUser(AppUser.empty());
+    }
   }
 
   /// Creates a new user account with the given email and password.

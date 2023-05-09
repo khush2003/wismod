@@ -99,9 +99,9 @@ class EventDetailView extends StatelessWidget {
                             'Location: ${eventData().location}',
                           ),
                           addVerticalSpace(20),
-                          if (eventData().description != null)
+
                             Text(
-                              '${eventData().description}',
+                              eventData().description,
                             ),
                           addVerticalSpace(20),
                           Row(
@@ -142,7 +142,7 @@ class EventDetailView extends StatelessWidget {
             addVerticalSpace(20),
             auth.appUser.value.isAdmin == true
                 ? Container(
-                    decoration: BoxDecoration(
+                    decoration: const BoxDecoration(
                       color: Color(0xffECE4FC),
                       borderRadius: BorderRadius.only(
                         topLeft: Radius.circular(20),
@@ -165,10 +165,10 @@ class EventDetailView extends StatelessWidget {
                                   : const Text('Join'))),
                           ElevatedButton(
                             onPressed: () {},
-                            child: const Text('Remove'),
                             style: ElevatedButton.styleFrom(
-                              primary: Colors.red,
+                              backgroundColor: Colors.red,
                             ),
+                            child: const Text('Remove'),
                           ),
                         ],
                       ),

@@ -122,7 +122,6 @@ class EventCard extends StatelessWidget {
                 Text('Event Owner: ${event.eventOwner.name}',
                     style: Theme.of(context).textTheme.bodyMedium),
                 addVerticalSpace(20),
-                if (event.description != null)
                   Text('Details: ${event.description}',
                       style: Theme.of(context).textTheme.bodyMedium,
                       maxLines: 3),

@@ -20,6 +20,7 @@ class HomeController extends GetxController {
   final RxList<Event> joinedChatGroupDetails = <Event>[].obs;
   final RxMap<String, Message> latestMessage = <String, Message>{}.obs;
   final TextEditingController searchController = TextEditingController();
+  final currentDateSort = 'None'.obs;
 
   @override
   void onReady() async {
@@ -28,7 +29,49 @@ class HomeController extends GetxController {
     super.onReady();
   }
 
+  void filterEventsByCategory(String category) {
+    searchController.text = '';
+    if (category == 'Default') {
+      filteredEvents(events.toList());
+    } else {
+      final lowercaseCategory = category.toLowerCase();
+      final filterEvents = events.where((event) {
+        final lowercaseEventCategory = event.category.toLowerCase();
+        return lowercaseEventCategory == lowercaseCategory;
+      }).toList();
+      filteredEvents(filterEvents);
+    }
+  }
 
+  void sortEventsByDate() {
+    if (currentDateSort.value == 'Ascending') {
+      currentDateSort('Descending');
+      filteredEvents.sort((a, b) {
+        if (a.eventDate == null && b.eventDate == null) {
+          return 0;
+        } else if (a.eventDate == null) {
+          return 1;
+        } else if (b.eventDate == null) {
+          return -1;
+        } else {
+          return b.eventDate!.compareTo(a.eventDate!);
+        }
+      });
+    } else {
+      currentDateSort('Ascending');
+      filteredEvents.sort((a, b) {
+        if (a.eventDate == null && b.eventDate == null) {
+          return 0;
+        } else if (a.eventDate == null) {
+          return 1;
+        } else if (b.eventDate == null) {
+          return -1;
+        } else {
+          return a.eventDate!.compareTo(b.eventDate!);
+        }
+      });
+    }
+  }
 
   Future<void> _addJoinedChatGroupData() async {
     if (_auth.appUser.value.joinedChatGroups != null &&
@@ -95,7 +138,8 @@ class HomeController extends GetxController {
   }
 
   void setSelectedCategory(String? value) {
-    selectedCategory(value ?? '');
+    selectedCategory(value ?? 'Default');
+    filterEventsByCategory(value ?? 'Default');
   }
 
   void logOut() {

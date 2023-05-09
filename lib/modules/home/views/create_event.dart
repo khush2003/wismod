@@ -271,7 +271,7 @@ class DropDownCustom extends StatelessWidget {
         items: controller.categoryOptions.map((category) {
           return dropdownMenuItemCustom(category);
         }).toList(),
-        onChanged: controller.selectedCategory,
+        onChanged: controller.setSelectedCategory,
         style: const TextStyle(
             fontFamily: "Gotham", fontSize: 40, fontWeight: FontWeight.w500),
         decoration: const InputDecoration(

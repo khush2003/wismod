@@ -4,6 +4,7 @@ import 'package:wismod/theme/global_widgets.dart';
 import 'package:wismod/utils/app_utils.dart';
 
 import '../controller/home_controller.dart';
+
 //TODO: Apply filter logic, change to sort by location instead since location is string
 class FilterOptionsView extends StatelessWidget {
   FilterOptionsView({super.key});
@@ -29,17 +30,21 @@ class FilterOptionsView extends StatelessWidget {
               ],
             ),
             DropDownCustom(homeController: homeController),
+            // addVerticalSpace(),
+            // SizedBox(
+            //   width: MediaQuery.of(context).size.width * 0.5,
+            //   child: OutlineButtonMedium(
+            //       child: const Text("Location"), onPressed: () {}),
+            // ),
             addVerticalSpace(),
             SizedBox(
               width: MediaQuery.of(context).size.width * 0.5,
-              child: OutlineButtonMedium(
-                  child: const Text("Location"), onPressed: () {}),
-            ),
-            addVerticalSpace(),
-            SizedBox(
-              width: MediaQuery.of(context).size.width * 0.5,
-              child: OutlineButtonMedium(
-                  child: const Text("Sort by Date"), onPressed: () {}),
+              child: Obx(() => OutlineButtonMedium(
+                  child:
+                      Text("Sort by Date : ${homeController.currentDateSort}"),
+                  onPressed: () {
+                    homeController.sortEventsByDate();
+                  })),
             ),
           ],
         ),
@@ -63,7 +68,7 @@ class DropDownCustom extends StatelessWidget {
         items: homeController.categoryOptions.map((category) {
           return dropdownMenuItemCustom(category);
         }).toList(),
-        onChanged: homeController.selectedCategory,
+        onChanged: homeController.setSelectedCategory,
         style: const TextStyle(
             fontFamily: "Gotham", fontSize: 40, fontWeight: FontWeight.w500),
         decoration: const InputDecoration(

@@ -1,33 +1,31 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:wismod/shared/models/user.dart';
-import 'package:wismod/shared/services/firebase_firestore_serivce.dart';
-import 'package:wismod/utils/app_utils.dart';
-
-import '../../../routes/routes.dart';
+import 'package:wismod/modules/auth/controllers/auth_controller.dart';
+import 'package:wismod/modules/home/controller/all_pages_nav_controller.dart';
+import 'package:wismod/routes/routes.dart';
 
 class PasswordController extends GetxController {
   var auth = FirebaseAuth.instance;
-  var currentUser = FirebaseAuth.instance.currentUser;
   final passwordController = TextEditingController();
   final confirmPasswordController = TextEditingController();
-  int checkCount = 0;
+  final TextEditingController currentPasswordController =
+      TextEditingController();
 
   final passwordError = RxString('');
   final confirmPasswordError = RxString('');
 
-  check() {
-    checkCount = checkCount + 1;
-  }
-
-  changePassword({email, currentPassword, newPassword}) async {
+  changePassword() async {
+    final currentPassword = currentPasswordController.text;
+    final newPassword = passwordController.text;
+    var currentUser = FirebaseAuth.instance.currentUser;
+    final email = AuthController.instance.firebaseUser.value!.email!;
     var cred =
         EmailAuthProvider.credential(email: email, password: currentPassword);
     if (validateInputs()) {
-      String? error =
-          await currentUser!.reauthenticateWithCredential(cred).then((value) {
-        currentUser!.updatePassword(newPassword);
+      try {
+        await currentUser!.reauthenticateWithCredential(cred);
+        currentUser.updatePassword(newPassword);
         Get.snackbar(
           'Sucess',
           "Your password has been changed",
@@ -36,15 +34,10 @@ class PasswordController extends GetxController {
           colorText: Colors.white,
           duration: const Duration(seconds: 5),
         );
-        currentUser!.reload();
-        currentUser = FirebaseAuth.instance.currentUser;
-        print("Password changed");
-        if (currentUser == null) {
-          print("Hey, you're null");
-        }
-        check();
-      }).catchError((error) {
-        print(error);
+        Get.offAllNamed(Routes.allPagesNav,
+            arguments: {'page': Pages.settingsPage});
+        Get.toNamed(Routes.accounts);
+      } catch (error) {
         Get.snackbar(
           'Error',
           "Your current password doesn't match with current password that you've typed",
@@ -53,13 +46,6 @@ class PasswordController extends GetxController {
           colorText: Colors.white,
           duration: const Duration(seconds: 10),
         );
-      });
-      if (error != null) {
-        Get.snackbar('Error', error.toString(),
-            snackPosition: SnackPosition.BOTTOM,
-            backgroundColor: Colors.red,
-            duration: const Duration(seconds: 10),
-            colorText: Colors.white);
       }
     } else {
       Get.snackbar(
@@ -82,12 +68,8 @@ class PasswordController extends GetxController {
         confirmPasswordController.text.isEmpty ||
         passwordError != null ||
         confirmPasswordError != null) {
-      print("you didn't type it at all");
-      print(passwordController.text);
-      print(confirmPasswordController.text);
       return false;
     }
-    print("you type it all");
     return true;
   }
 

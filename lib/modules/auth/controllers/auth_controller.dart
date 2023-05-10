@@ -26,10 +26,10 @@ class AuthController extends GetxController {
       appUser(await _firestore.getUserById(_auth.currentUser!.uid));
     }
     firebaseUser.bindStream(_auth.userChanges());
-    ever(firebaseUser, updateUserAuto);
+    ever(firebaseUser, _updateUserAuto);
   }
 
-  Future<void> updateUserAuto(User? u) async {
+  Future<void> _updateUserAuto(User? u) async {
     if (_auth.currentUser != null) {
       appUser(await _firestore.getUserById(_auth.currentUser!.uid));
     } else {

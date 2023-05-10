@@ -81,7 +81,7 @@ class AccountsView extends StatelessWidget {
                 ),
               ),
               Padding(
-                padding: EdgeInsets.fromLTRB(0.0, 0.0, 0.0, 20.0),
+                padding: const EdgeInsets.fromLTRB(0.0, 0.0, 0.0, 20.0),
                 child: AccountSections(
                   label: 'Year',
                   hintText: 'Your year',

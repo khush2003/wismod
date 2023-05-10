@@ -45,7 +45,7 @@ class DashboardView extends StatelessWidget {
                           errorBuilder: (context, error, stackTrace) =>
                               Image.network(
                             placeholderImage,
-                            fit: BoxFit.cover,
+                            fit: BoxFit.fitHeight,
                           ),
                         ).image,
                       ),

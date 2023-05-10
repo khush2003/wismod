@@ -4,7 +4,6 @@ import 'package:get/get.dart';
 import 'package:wismod/shared/models/user.dart';
 import 'package:wismod/shared/services/firebase_firestore_serivce.dart';
 import 'package:wismod/utils/app_utils.dart';
-import 'package:wismod/shared/models/user.dart';
 import '../../auth/controllers/auth_controller.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 

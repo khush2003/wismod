@@ -1,7 +1,5 @@
-
 import 'package:flutter/material.dart';
 import 'package:wismod/theme/global_widgets.dart';
-import '../../auth/controllers/signup_controller.dart';
 import 'package:get/get.dart';
 import '../controller/password_controller.dart';
 import 'package:firebase_auth/firebase_auth.dart';
@@ -10,13 +8,11 @@ import '../../../utils/app_utils.dart';
 
 class PassWordView extends StatelessWidget {
   PassWordView({Key? key}) : super(key: key);
-  var auth = FirebaseAuth.instance;
-  final TextEditingController currentPasswordController =
-      TextEditingController();
+  final auth = FirebaseAuth.instance;
   // final TextEditingController passwordController = TextEditingController();
   // final TextEditingController confirmPasswordController =
   //     TextEditingController();
-  final PasswordController settingController = Get.put(PasswordController());
+  final PasswordController passwordController = Get.put(PasswordController());
 
   @override
   Widget build(BuildContext context) {
@@ -31,7 +27,7 @@ class PassWordView extends StatelessWidget {
             color: Colors.black),
       )),
       body: Padding(
-        padding: EdgeInsets.fromLTRB(50.0, 20.0, 50.0, 0.0),
+        padding: const EdgeInsets.fromLTRB(50.0, 20.0, 50.0, 0.0),
         child: Align(
           alignment: Alignment.topCenter,
           child: SingleChildScrollView(
@@ -39,62 +35,44 @@ class PassWordView extends StatelessWidget {
                   autovalidateMode: AutovalidateMode.always,
                   child: Column(children: [
                     Padding(
-                      padding: EdgeInsets.fromLTRB(0.0, 0.0, 0.0, 20.0),
+                      padding: const EdgeInsets.fromLTRB(0.0, 0.0, 0.0, 20.0),
                       child: HeadAndTextField(
                         label: 'Current Password',
                         hintText: 'Type you current password',
-                        validateFunction: settingController.validatePassword,
-                        controllerFunction: currentPasswordController,
+                        validateFunction: passwordController.validatePassword,
+                        controllerFunction:
+                            passwordController.currentPasswordController,
                       ),
                     ),
                     Padding(
-                      padding: EdgeInsets.fromLTRB(0.0, 0.0, 0.0, 20.0),
+                      padding: const EdgeInsets.fromLTRB(0.0, 0.0, 0.0, 20.0),
                       child: HeadAndTextField(
                         label: 'New password',
                         hintText: 'Input your new password',
-                        validateFunction: settingController.validatePassword,
+                        validateFunction: passwordController.validatePassword,
                         controllerFunction:
-                            settingController.passwordController,
+                            passwordController.passwordController,
                       ),
                     ),
                     Padding(
-                      padding: EdgeInsets.fromLTRB(0.0, 0.0, 0.0, 20.0),
+                      padding: const EdgeInsets.fromLTRB(0.0, 0.0, 0.0, 20.0),
                       child: HeadAndTextField(
                         label: 'Confirm New password',
                         hintText: 'Retype your new password',
                         validateFunction:
-                            settingController.validateConfirmPassword,
+                            passwordController.validateConfirmPassword,
                         controllerFunction:
-                            settingController.confirmPasswordController,
+                            passwordController.confirmPasswordController,
                       ),
                     ),
                     Padding(
-                      padding: EdgeInsets.fromLTRB(0.0, 0.0, 0.0, 20.0),
+                      padding: const EdgeInsets.fromLTRB(0.0, 0.0, 0.0, 20.0),
                       child: SizedBox(
-                        width: double.infinity,
-                        child:
-                            AlertPasswordChange(onpressedYesFunction: () async {
-                          await settingController.changePassword(
-                            email: auth.currentUser?.email,
-                            currentPassword: currentPasswordController.text,
-                            newPassword:
-                                settingController.passwordController.text,
-                          );
-                          // ignore: use_build_context_synchronously
-                          Navigator.pop(context, 'Yes');
-                          if (settingController.checkCount == 1) {
-                            print(settingController.checkCount);
-                            settingController.checkCount =
-                                settingController.checkCount - 1;
-                            print(settingController.checkCount);
-                            Navigator.pop(context);
-                          }
-                        }
-
-
-                                ),
-                      ),
+                          width: double.infinity,
+                          child: AlertPasswordChange(
+                              controller: passwordController)),
                     ),
+
                     // Padding(
                     //   padding: const EdgeInsets.fromLTRB(0.0, 0.0, 0.0, 20.0),
                     //   child: SizedBox(
@@ -115,7 +93,7 @@ class HeadAndTextField extends StatelessWidget {
   final String? Function(String?)? validateFunction;
   final TextEditingController? controllerFunction;
 
-  HeadAndTextField({
+  const HeadAndTextField({
     Key? key,
     required this.label,
     required this.hintText,
@@ -130,7 +108,7 @@ class HeadAndTextField extends StatelessWidget {
     return null;
   }
 
-  final validate = (String? value) =>
+  String? validate(String? value) =>
       value == null || value.isEmpty ? 'This field cannot be empty' : null;
 
   @override
@@ -166,11 +144,10 @@ class HeadAndTextField extends StatelessWidget {
 
 class AlertPasswordChange extends StatelessWidget {
   // final Future<void> Function() onpressedYesFunction;
-  final VoidCallback onpressedYesFunction;
-
+  final PasswordController controller;
   const AlertPasswordChange({
     Key? key,
-    required this.onpressedYesFunction,
+    required this.controller,
   }) : super(key: key);
 
   @override
@@ -207,13 +184,16 @@ class AlertPasswordChange extends StatelessWidget {
                   Padding(
                       padding: const EdgeInsets.fromLTRB(0.0, 0.0, 0.0, 20.0),
                       child: OutlineButtonMedium(
+                          onPressed: () {
+                            controller.changePassword();
+                            Navigator.of(context).pop();
+                          },
                           child: const Text('Yes',
                               style: TextStyle(
                                   fontFamily: "Gotham",
                                   fontWeight: FontWeight.bold,
                                   fontSize: 32,
-                                  color: Color.fromRGBO(123, 56, 255, 1))),
-                          onPressed: onpressedYesFunction
+                                  color: Color.fromRGBO(123, 56, 255, 1)))
                           // print("Password changed");
                           // Get.back();
 

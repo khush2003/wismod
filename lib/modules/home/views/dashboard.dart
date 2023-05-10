@@ -221,7 +221,8 @@ class DashboardView extends StatelessWidget {
                       children: [
                         FourButtonsWidget(
                           activityType: 'Upcoming Activities',
-                          activityNumber: 1,
+                          activityNumber:
+                              auth.appUser.value.joinedEvents!.length,
                           onPressed: fourButtonsController.toggleUpcoming,
                           showSizeBox: fourButtonsController.showUpcoming,
                         ),
@@ -460,7 +461,6 @@ class OtherActivityBox extends StatelessWidget {
     return Padding(
       padding: const EdgeInsets.only(bottom: 15.0),
       child: Container(
-        width: MediaQuery.of(context).size.width,
         decoration: BoxDecoration(
           color: Colors.white,
           borderRadius: BorderRadius.circular(5),
@@ -494,13 +494,13 @@ class OtherActivityBox extends StatelessWidget {
               Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
-                  Expanded(
-                    child: Text(
-                      event.title,
-                      style: const TextStyle(
-                        fontSize: 24,
-                        fontWeight: FontWeight.w500,
-                      ),
+                  Text(
+                    event.title.length <= 20
+                        ? event.title
+                        : '${event.title.substring(0, 20)}...',
+                    style: const TextStyle(
+                      fontSize: 24,
+                      fontWeight: FontWeight.w500,
                     ),
                   ),
                 ],
@@ -510,7 +510,9 @@ class OtherActivityBox extends StatelessWidget {
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
                   Text(
-                    event.location,
+                    event.location.length <= 30
+                        ? event.location
+                        : '${event.location.substring(0, 30)}...',
                     style: const TextStyle(
                       fontSize: 16,
                       fontWeight: FontWeight.normal,

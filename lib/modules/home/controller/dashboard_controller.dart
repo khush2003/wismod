@@ -69,9 +69,11 @@ class FourButtonsController extends GetxController {
   final RxList<Event> events = <Event>[].obs;
   final List<Event> _ownedEvents = [];
   final List<Event> _bookmarkedEvents = [];
+  final List<Event> _upcomingEvents = [];
   final auth = AuthController.instance;
 
   List<Event> get ownedEvents => _ownedEvents;
+  List<Event> get upcomingEvents => _upcomingEvents;
   List<Event> get bookmarkedEvents => _bookmarkedEvents;
 
   void toggleUpcoming() {
@@ -103,12 +105,12 @@ class FourButtonsController extends GetxController {
     } finally {}
   }
 
-  void fetchBookmarkEvents() async {
+  Future<void> fetchBookmarkEvents() async {
     try {
       isLoading(true);
       final tempBookmarkedEvents = auth.appUser.value.bookmarkedEvents;
       print(
-          'tempBookmarkedEvents: ${auth.appUser.value.bookmarkedEvents?.first}');
+          'tempBookmarkedEventsLength: ${auth.appUser.value.bookmarkedEvents!.length}');
       if (tempBookmarkedEvents != null) {
         for (final eventId in tempBookmarkedEvents) {
           final event = await firestore.getEvent(eventId);

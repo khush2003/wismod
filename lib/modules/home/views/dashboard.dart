@@ -15,360 +15,387 @@ class DashboardView extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Center(
-      child: Scaffold(
-        body: SingleChildScrollView(
-          child: Column(
-            children: [
-              Container(
-                decoration: const BoxDecoration(
-                  color: Color(0xFFEAF4F4),
-                  borderRadius: BorderRadius.only(
-                    bottomLeft: Radius.circular(30),
-                    bottomRight: Radius.circular(30),
-                  ),
-                ),
+        child: Scaffold(
+      body: Obx(
+        () => fourButtonsController.isLoading.value
+            ? const LoadingWidget()
+            : SingleChildScrollView(
                 child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.stretch,
-                    children: [
-                      addVerticalSpace(24),
-                      const Text('Profile',
-                          textAlign: TextAlign.center,
-                          style: TextStyle(
-                              fontSize: 32,
-                              color: Color.fromRGBO(123, 56, 255, 1),
-                              fontWeight: FontWeight.bold)),
-                      addVerticalSpace(16),
-                      CircleAvatar(
-                        radius: 90,
-                        backgroundImage: Image.network(
-                          auth.appUser.value.profilePicture ?? placeholderImage,
-                          errorBuilder: (context, error, stackTrace) =>
-                              Image.network(
-                            placeholderImage,
-                            fit: BoxFit.fitHeight,
-                          ),
-                        ).image,
+                  children: [
+                    Container(
+                      decoration: const BoxDecoration(
+                        color: Color(0xFFEAF4F4),
+                        borderRadius: BorderRadius.only(
+                          bottomLeft: Radius.circular(30),
+                          bottomRight: Radius.circular(30),
+                        ),
                       ),
-                      addVerticalSpace(20),
-                      Column(
-                        children: [
-                          Text(
-                            auth.appUser.value.getName(),
-                            textAlign: TextAlign.center,
-                            style: Theme.of(context).textTheme.displayLarge,
-                          ),
-                          addVerticalSpace(),
-                          Text(
-                            auth.appUser.value.department,
-                            textAlign: TextAlign.center,
-                            style: Theme.of(context).textTheme.bodyMedium,
-                          ),
-                          addVerticalSpace(),
-                          Text(
-                            'Year ${auth.appUser.value.year}',
-                            textAlign: TextAlign.center,
-                            style: Theme.of(context).textTheme.bodyMedium,
-                          ),
-                          addVerticalSpace(),
-                          OutlineButtonMedium(
-                            onPressed: () {
-                              showDialog(
-                                context: context,
-                                builder: (BuildContext context) {
-                                  return AlertDialog(
-                                    title: const Text("Choose Profile Picture"),
-                                    content: Padding(
-                                      padding: const EdgeInsets.fromLTRB(
-                                          14.0, 0.0, 14.0, 16.0),
-                                      child: SizedBox(
-                                        width: double.infinity,
-                                        // Button Height Change Here
-                                        height: 250,
-                                        child: Obx(
-                                          () => OutlinedButton.icon(
-                                            icon: profilePictureController
-                                                        .imageUrl.value ==
-                                                    ''
-                                                ? const Icon(
-                                                    Icons.image_outlined)
-                                                : Image.network(
-                                                    profilePictureController
-                                                        .imageUrl.value,
-                                                    fit: BoxFit.cover,
+                      child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.stretch,
+                          children: [
+                            addVerticalSpace(24),
+                            const Text('Profile',
+                                textAlign: TextAlign.center,
+                                style: TextStyle(
+                                    fontSize: 32,
+                                    color: Color.fromRGBO(123, 56, 255, 1),
+                                    fontWeight: FontWeight.bold)),
+                            addVerticalSpace(16),
+                            CircleAvatar(
+                              radius: 90,
+                              backgroundImage: Image.network(
+                                      auth.appUser.value.profilePicture ??
+                                          placeholderImage,
+                                      errorBuilder:
+                                          (context, error, stackTrace) =>
+                                              Image.network(
+                                                placeholderImage,
+                                                fit: BoxFit.cover,
+                                              ),
+                                      fit: BoxFit.cover)
+                                  .image,
+                            ),
+                            addVerticalSpace(20),
+                            Column(
+                              children: [
+                                Text(
+                                  auth.appUser.value.getName(),
+                                  textAlign: TextAlign.center,
+                                  style:
+                                      Theme.of(context).textTheme.displayLarge,
+                                ),
+                                addVerticalSpace(),
+                                Text(
+                                  auth.appUser.value.department,
+                                  textAlign: TextAlign.center,
+                                  style: Theme.of(context).textTheme.bodyMedium,
+                                ),
+                                addVerticalSpace(),
+                                Text(
+                                  'Year ${auth.appUser.value.year}',
+                                  textAlign: TextAlign.center,
+                                  style: Theme.of(context).textTheme.bodyMedium,
+                                ),
+                                addVerticalSpace(),
+                                OutlineButtonMedium(
+                                  onPressed: () {
+                                    showDialog(
+                                      context: context,
+                                      builder: (BuildContext context) {
+                                        return AlertDialog(
+                                          title: const Text(
+                                              "Choose Profile Picture"),
+                                          content: Padding(
+                                            padding: const EdgeInsets.fromLTRB(
+                                                14.0, 0.0, 14.0, 16.0),
+                                            child: SizedBox(
+                                              width: double.infinity,
+                                              // Button Height Change Here
+                                              height: 250,
+                                              child: Obx(
+                                                () => OutlinedButton.icon(
+                                                  icon: profilePictureController
+                                                              .imageUrl.value ==
+                                                          ''
+                                                      ? const Icon(
+                                                          Icons.image_outlined)
+                                                      : Image.network(
+                                                          profilePictureController
+                                                              .imageUrl.value,
+                                                          fit: BoxFit.cover,
+                                                        ),
+                                                  onPressed: () =>
+                                                      profilePictureController
+                                                          .uploadImage(),
+                                                  label: const Text(''),
+                                                  style:
+                                                      ElevatedButton.styleFrom(
+                                                    side: const BorderSide(
+                                                      color: Colors
+                                                          .black, //Set border color
+                                                      width:
+                                                          1, //Set border width
+                                                    ),
                                                   ),
-                                            onPressed: () =>
-                                                profilePictureController
-                                                    .uploadImage(),
-                                            label: const Text(''),
-                                            style: ElevatedButton.styleFrom(
-                                              side: const BorderSide(
-                                                color: Colors
-                                                    .black, //Set border color
-                                                width: 1, //Set border width
+                                                ),
                                               ),
                                             ),
                                           ),
-                                        ),
-                                      ),
-                                    ),
-                                    actions: <Widget>[
-                                      OutlineButtonMedium(
-                                          child: const Text("Cancel"),
-                                          onPressed: () {
-                                            Navigator.pop(context);
-                                          }),
-                                      SecondaryButtonMedium(
-                                        child: const Text("Save"),
-                                        onPressed: () {
-                                          profilePictureController
-                                              .setProfilePicture();
-                                          Navigator.pop(context);
-                                        },
-                                      ),
-                                    ],
-                                  );
-                                },
-                              );
-                            },
-                            child: const Padding(
-                              padding: EdgeInsets.symmetric(horizontal: 38.0),
-                              child: Text('Change Profile Picture'),
-                              // color: Color(0xFFEAF4F4),
-                              // borderRadius: BorderRadius.circular(10),
-                            ),
-                          ),
-                          addVerticalSpace(20),
-                        ],
-                      ),
-                    ]),
-              ),
-              Padding(
-                padding: const EdgeInsets.all(sideWidth),
-                child: Column(
-                  children: [
-                    Row(
-                      children: [
-                        Text(
-                          'Dashboard',
-                          textAlign: TextAlign.center,
-                          style: Theme.of(context).textTheme.titleMedium,
-                        ),
-                      ],
-                    ),
-                    addVerticalSpace(),
-                    Wrap(
-                      direction: Axis.horizontal,
-                      alignment: WrapAlignment.spaceEvenly,
-                      spacing: 16,
-                      runSpacing: 16,
-                      children: [
-                        Container(
-                          decoration: BoxDecoration(
-                            color: Colors.white,
-                            borderRadius: BorderRadius.circular(10),
-                            border: Border.all(
-                              color: const Color.fromRGBO(123, 56, 255, 1),
-                              width: 2.0,
-                            ),
-                          ),
-                          padding: const EdgeInsets.all(16),
-                          child: Column(
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            children: [
-                              Text(
-                                'Total Joined Activities',
-                                style:
-                                    Theme.of(context).textTheme.displayMedium,
-                              ),
-                              addVerticalSpace(),
-                              Text(
-                                '${auth.appUser.value.joinedEvents != null ? auth.appUser.value.joinedEvents!.length : 0} Activities',
-                                style: Theme.of(context).textTheme.bodyMedium,
-                              ),
-                            ],
-                          ),
-                        ),
-                        Container(
-                          decoration: BoxDecoration(
-                            color: Colors.white,
-                            borderRadius: BorderRadius.circular(10),
-                            border: Border.all(
-                              color: const Color.fromRGBO(123, 56, 255, 1),
-                              width: 2.0,
-                            ),
-                          ),
-                          padding: const EdgeInsets.all(16),
-                          child: Column(
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            children: [
-                              Text(
-                                'Total Upvote Activities',
-                                style:
-                                    Theme.of(context).textTheme.displayMedium,
-                              ),
-                              addVerticalSpace(),
-                              Text(
-                                '${auth.appUser.value.upvotedEvents != null ? auth.appUser.value.upvotedEvents!.length : 0} Upvotes',
-                                style: Theme.of(context).textTheme.bodyMedium,
-                              ),
-                            ],
-                          ),
-                        ),
-                      ],
-                    ),
-                    addVerticalSpace(20),
-                    Column(
-                      children: [
-                        FourButtonsWidget(
-                          activityType: 'Upcoming Activities',
-                          activityNumber:
-                              auth.appUser.value.joinedEvents!.length,
-                          onPressed: fourButtonsController.toggleUpcoming,
-                          showSizeBox: fourButtonsController.showUpcoming,
-                        ),
-                        Obx(() => fourButtonsController.showUpcoming.value
-                            ? SizedBox(
-                                height: 230,
-                                child: Container(
-                                  padding: const EdgeInsets.all(10),
-                                  decoration: const BoxDecoration(
-                                    color: Color(0xffEAF4F4),
-                                    borderRadius: BorderRadius.only(
-                                      bottomLeft: Radius.circular(10),
-                                      bottomRight: Radius.circular(10),
-                                    ),
-                                  ),
-                                  child: ListView.builder(
-                                    itemCount: fourButtonsController
-                                        .ownedEvents.length,
-                                    itemBuilder: (context, index) {
-                                      return OtherActivityBox(
-                                          event: fourButtonsController
-                                              .ownedEvents[index]);
-                                    },
-                                  ),
-                                ),
-                              )
-                            : const SizedBox()),
-                        addVerticalSpace(16),
-                        FourButtonsWidget(
-                          activityType: 'Requested Activities',
-                          activityNumber: 1,
-                          onPressed: fourButtonsController.toggleRequested,
-                          showSizeBox: fourButtonsController.showRequested,
-                        ),
-                        Obx(() => fourButtonsController.showRequested.value
-                            ? SizedBox(
-                                height: 230,
-                                child: Container(
-                                  padding: const EdgeInsets.all(10),
-                                  decoration: const BoxDecoration(
-                                    color: Color(0xffEAF4F4),
-                                    borderRadius: BorderRadius.only(
-                                      bottomLeft: Radius.circular(10),
-                                      bottomRight: Radius.circular(10),
-                                    ),
-                                  ),
-                                  child: ListView.builder(
-                                    itemCount: 3,
-                                    itemBuilder:
-                                        (BuildContext context, int index) {
-                                      return Padding(
-                                        padding: const EdgeInsets.all(5.0),
-                                        child: Column(
-                                          children: [
-                                            _requestedActivityBox(
-                                                'Activity Name',
-                                                DateTime.now(),
-                                                'Jane Vive'),
-                                            const SizedBox(
-                                              height: 7,
+                                          actions: <Widget>[
+                                            OutlineButtonMedium(
+                                                child: const Text("Cancel"),
+                                                onPressed: () {
+                                                  Navigator.pop(context);
+                                                }),
+                                            SecondaryButtonMedium(
+                                              child: const Text("Save"),
+                                              onPressed: () {
+                                                profilePictureController
+                                                    .setProfilePicture();
+                                                Navigator.pop(context);
+                                              },
                                             ),
                                           ],
+                                        );
+                                      },
+                                    );
+                                  },
+                                  child: const Padding(
+                                    padding:
+                                        EdgeInsets.symmetric(horizontal: 38.0),
+                                    child: Text('Change Profile Picture'),
+                                    // color: Color(0xFFEAF4F4),
+                                    // borderRadius: BorderRadius.circular(10),
+                                  ),
+                                ),
+                                addVerticalSpace(20),
+                              ],
+                            ),
+                          ]),
+                    ),
+                    Padding(
+                      padding: const EdgeInsets.all(sideWidth),
+                      child: Column(
+                        children: [
+                          Row(
+                            children: [
+                              Text(
+                                'Dashboard',
+                                textAlign: TextAlign.center,
+                                style: Theme.of(context).textTheme.titleMedium,
+                              ),
+                            ],
+                          ),
+                          addVerticalSpace(),
+                          Wrap(
+                            direction: Axis.horizontal,
+                            alignment: WrapAlignment.spaceEvenly,
+                            spacing: 16,
+                            runSpacing: 16,
+                            children: [
+                              Container(
+                                decoration: BoxDecoration(
+                                  color: Colors.white,
+                                  borderRadius: BorderRadius.circular(10),
+                                  border: Border.all(
+                                    color:
+                                        const Color.fromRGBO(123, 56, 255, 1),
+                                    width: 2.0,
+                                  ),
+                                ),
+                                padding: const EdgeInsets.all(16),
+                                child: Column(
+                                  crossAxisAlignment: CrossAxisAlignment.start,
+                                  children: [
+                                    Text(
+                                      'Total Joined Activities',
+                                      style: Theme.of(context)
+                                          .textTheme
+                                          .displayMedium,
+                                    ),
+                                    addVerticalSpace(),
+                                    Text(
+                                      '${auth.appUser.value.joinedEvents != null ? auth.appUser.value.joinedEvents!.length : 0} Activities',
+                                      style: Theme.of(context)
+                                          .textTheme
+                                          .bodyMedium,
+                                    ),
+                                  ],
+                                ),
+                              ),
+                              Container(
+                                decoration: BoxDecoration(
+                                  color: Colors.white,
+                                  borderRadius: BorderRadius.circular(10),
+                                  border: Border.all(
+                                    color:
+                                        const Color.fromRGBO(123, 56, 255, 1),
+                                    width: 2.0,
+                                  ),
+                                ),
+                                padding: const EdgeInsets.all(16),
+                                child: Column(
+                                  crossAxisAlignment: CrossAxisAlignment.start,
+                                  children: [
+                                    Text(
+                                      'Total Upvote Activities',
+                                      style: Theme.of(context)
+                                          .textTheme
+                                          .displayMedium,
+                                    ),
+                                    addVerticalSpace(),
+                                    Text(
+                                      '${auth.appUser.value.upvotedEvents != null ? auth.appUser.value.upvotedEvents!.length : 0} Upvotes',
+                                      style: Theme.of(context)
+                                          .textTheme
+                                          .bodyMedium,
+                                    ),
+                                  ],
+                                ),
+                              ),
+                            ],
+                          ),
+                          addVerticalSpace(20),
+                          Column(
+                            children: [
+                              FourButtonsWidget(
+                                activityType: 'Upcoming Activities',
+                                activityNumber:
+                                    auth.appUser.value.joinedEvents!.length,
+                                onPressed: fourButtonsController.toggleUpcoming,
+                                showSizeBox: fourButtonsController.showUpcoming,
+                              ),
+                              Obx(() => fourButtonsController.showUpcoming.value
+                                  ? SizedBox(
+                                      height: 230,
+                                      child: Container(
+                                        padding: const EdgeInsets.all(10),
+                                        decoration: const BoxDecoration(
+                                          color: Color(0xffEAF4F4),
+                                          borderRadius: BorderRadius.only(
+                                            bottomLeft: Radius.circular(10),
+                                            bottomRight: Radius.circular(10),
+                                          ),
                                         ),
-                                      );
-                                    },
-                                  ),
-                                ),
-                              )
-                            : const SizedBox()),
-                        addVerticalSpace(16),
-                        FourButtonsWidget(
-                          activityType: 'Bookmarked Activities',
-                          activityNumber:
-                              auth.appUser.value.bookmarkedEvents != null
-                                  ? auth.appUser.value.bookmarkedEvents!.length
-                                  : 0,
-                          onPressed: fourButtonsController.toggleBookmarked,
-                          showSizeBox: fourButtonsController.showBookmarked,
-                        ),
-                        Obx(() => fourButtonsController.showBookmarked.value
-                            ? SizedBox(
-                                height: 230,
-                                child: Container(
-                                  padding: const EdgeInsets.all(10),
-                                  decoration: const BoxDecoration(
-                                    color: Color(0xffEAF4F4),
-                                    borderRadius: BorderRadius.only(
-                                      bottomLeft: Radius.circular(10),
-                                      bottomRight: Radius.circular(10),
-                                    ),
-                                  ),
-                                  child: ListView.builder(
-                                    itemCount: fourButtonsController
-                                        .ownedEvents.length,
-                                    itemBuilder: (context, index) {
-                                      return OtherActivityBox(
-                                          event: fourButtonsController
-                                              .ownedEvents[index]);
-                                    },
-                                  ),
-                                ),
-                              )
-                            : const SizedBox()),
-                        addVerticalSpace(),
-                        FourButtonsWidget(
-                          activityType: 'Activities You Own',
-                          activityNumber:
-                              fourButtonsController.ownedEvents.length,
-                          onPressed: fourButtonsController.toggleOwn,
-                          showSizeBox: fourButtonsController.showOwn,
-                        ),
-                        Obx(() => fourButtonsController.showOwn.value
-                            ? SizedBox(
-                                height: 230,
-                                child: Container(
-                                  padding: const EdgeInsets.all(10),
-                                  decoration: const BoxDecoration(
-                                    color: Color(0xffEAF4F4),
-                                    borderRadius: BorderRadius.only(
-                                      bottomLeft: Radius.circular(10),
-                                      bottomRight: Radius.circular(10),
-                                    ),
-                                  ),
-                                  child: ListView.builder(
-                                    itemCount: fourButtonsController
-                                        .ownedEvents.length,
-                                    itemBuilder: (context, index) {
-                                      return OtherActivityBox(
-                                          event: fourButtonsController
-                                              .ownedEvents[index]);
-                                    },
-                                  ),
-                                ),
-                              )
-                            : const SizedBox()),
-                        addVerticalSpace(16),
-                      ],
-                    )
+                                        child: ListView.builder(
+                                          itemCount: fourButtonsController
+                                              .ownedEvents.length,
+                                          itemBuilder: (context, index) {
+                                            return OtherActivityBox(
+                                                event: fourButtonsController
+                                                    .ownedEvents[index]);
+                                          },
+                                        ),
+                                      ),
+                                    )
+                                  : const SizedBox()),
+                              addVerticalSpace(16),
+                              FourButtonsWidget(
+                                activityType: 'Requested Activities',
+                                activityNumber: 1,
+                                onPressed:
+                                    fourButtonsController.toggleRequested,
+                                showSizeBox:
+                                    fourButtonsController.showRequested,
+                              ),
+                              Obx(() => fourButtonsController
+                                      .showRequested.value
+                                  ? SizedBox(
+                                      height: 230,
+                                      child: Container(
+                                        padding: const EdgeInsets.all(10),
+                                        decoration: const BoxDecoration(
+                                          color: Color(0xffEAF4F4),
+                                          borderRadius: BorderRadius.only(
+                                            bottomLeft: Radius.circular(10),
+                                            bottomRight: Radius.circular(10),
+                                          ),
+                                        ),
+                                        child: ListView.builder(
+                                          itemCount: 3,
+                                          itemBuilder: (BuildContext context,
+                                              int index) {
+                                            return Padding(
+                                              padding:
+                                                  const EdgeInsets.all(5.0),
+                                              child: Column(
+                                                children: [
+                                                  _requestedActivityBox(
+                                                      'Activity Name',
+                                                      DateTime.now(),
+                                                      'Jane Vive'),
+                                                  const SizedBox(
+                                                    height: 7,
+                                                  ),
+                                                ],
+                                              ),
+                                            );
+                                          },
+                                        ),
+                                      ),
+                                    )
+                                  : const SizedBox()),
+                              addVerticalSpace(16),
+                              FourButtonsWidget(
+                                activityType: 'Bookmarked Activities',
+                                activityNumber:
+                                    auth.appUser.value.bookmarkedEvents != null
+                                        ? auth.appUser.value.bookmarkedEvents!
+                                            .length
+                                        : 0,
+                                onPressed:
+                                    fourButtonsController.toggleBookmarked,
+                                showSizeBox:
+                                    fourButtonsController.showBookmarked,
+                              ),
+                              Obx(() => fourButtonsController
+                                      .showBookmarked.value
+                                  ? SizedBox(
+                                      height: 230,
+                                      child: Container(
+                                        padding: const EdgeInsets.all(10),
+                                        decoration: const BoxDecoration(
+                                          color: Color(0xffEAF4F4),
+                                          borderRadius: BorderRadius.only(
+                                            bottomLeft: Radius.circular(10),
+                                            bottomRight: Radius.circular(10),
+                                          ),
+                                        ),
+                                        child: ListView.builder(
+                                          itemCount: fourButtonsController
+                                              .ownedEvents.length,
+                                          itemBuilder: (context, index) {
+                                            return OtherActivityBox(
+                                                event: fourButtonsController
+                                                    .ownedEvents[index]);
+                                          },
+                                        ),
+                                      ),
+                                    )
+                                  : const SizedBox()),
+                              addVerticalSpace(),
+                              FourButtonsWidget(
+                                activityType: 'Activities You Own',
+                                activityNumber:
+                                    fourButtonsController.ownedEvents.length,
+                                onPressed: fourButtonsController.toggleOwn,
+                                showSizeBox: fourButtonsController.showOwn,
+                              ),
+                              Obx(() => fourButtonsController.showOwn.value
+                                  ? SizedBox(
+                                      height: 230,
+                                      child: Container(
+                                        padding: const EdgeInsets.all(10),
+                                        decoration: const BoxDecoration(
+                                          color: Color(0xffEAF4F4),
+                                          borderRadius: BorderRadius.only(
+                                            bottomLeft: Radius.circular(10),
+                                            bottomRight: Radius.circular(10),
+                                          ),
+                                        ),
+                                        child: ListView.builder(
+                                          itemCount: fourButtonsController
+                                              .ownedEvents.length,
+                                          itemBuilder: (context, index) {
+                                            return OtherActivityBox(
+                                                event: fourButtonsController
+                                                    .ownedEvents[index]);
+                                          },
+                                        ),
+                                      ),
+                                    )
+                                  : const SizedBox()),
+                              addVerticalSpace(16),
+                            ],
+                          )
+                        ],
+                      ),
+                    ),
                   ],
                 ),
               ),
-            ],
-          ),
-        ),
       ),
-    );
+    ));
   }
 }
 

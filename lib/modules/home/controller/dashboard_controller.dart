@@ -1,5 +1,8 @@
+import 'dart:developer';
+
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:wismod/modules/home/controller/home_controller.dart';
 import '../../../shared/models/event.dart';
 
 import 'dart:io';
@@ -52,13 +55,6 @@ class ProfilePictureController extends GetxController {
 }
 
 class FourButtonsController extends GetxController {
-  @override
-  void onInit() {
-    super.onInit();
-    fetchOwnedEvents();
-    fetchBookmarkEvents();
-  }
-
   var showUpcoming = false.obs;
   var showRequested = false.obs;
   var showBookmarked = false.obs;
@@ -67,14 +63,41 @@ class FourButtonsController extends GetxController {
   final firestore = FirebaseService();
   final isLoading = true.obs;
   final RxList<Event> events = <Event>[].obs;
-  final List<Event> _ownedEvents = [];
-  final List<Event> _bookmarkedEvents = [];
-  final List<Event> _upcomingEvents = [];
+  final RxList<Event> _ownedEvents = <Event>[].obs;
+  final RxList<Event> _bookmarkedEvents = <Event>[].obs;
+  final RxList<Event> _upcomingEvents = <Event>[].obs;
   final auth = AuthController.instance;
 
   List<Event> get ownedEvents => _ownedEvents;
   List<Event> get upcomingEvents => _upcomingEvents;
   List<Event> get bookmarkedEvents => _bookmarkedEvents;
+
+  @override
+  void onInit() {
+    super.onInit();
+    initializeData(); //Wait till you get all the data from database (Using this )
+    ever(HomeController.instance.events,
+        _setEvents); //Whenever events in home changes, this also changes
+  }
+
+  Future<void> initializeData() async {
+    try {
+      isLoading(true);
+      final eventsTemp = await firestore
+          .getEvents(); // Get events to make sure all data like user data is gotten from firebase
+      if (eventsTemp.isNotEmpty) {
+        _setEvents(eventsTemp);
+      }
+    } finally {}
+  }
+
+  void _setEvents(List<Event> eventList) {
+    isLoading(true); // Set Is loading to make sure ui refresh
+    events(eventList);
+    setOwnedEvents();
+    setBookmarkEvents();
+    isLoading(false);
+  }
 
   void toggleUpcoming() {
     showUpcoming.value = !showUpcoming.value;
@@ -92,53 +115,22 @@ class FourButtonsController extends GetxController {
     showOwn.value = !showOwn.value;
   }
 
-  void fetchOwnedEvents() async {
-    try {
-      isLoading(true);
-      final eventsTemp = await firestore.getEvents();
-      if (eventsTemp.isNotEmpty) {
-        _ownedEvents.clear();
-        _ownedEvents.addAll(eventsTemp
-            .where((event) => event.eventOwner.uid == auth.appUser.value.uid));
-        isLoading(false);
-      }
-    } finally {}
-  }
-
-  Future<void> fetchBookmarkEvents() async {
-    try {
-      isLoading(true);
-      final tempBookmarkedEvents = auth.appUser.value.bookmarkedEvents;
-      print(
-          'tempBookmarkedEventsLength: ${auth.appUser.value.bookmarkedEvents!.length}');
-      if (tempBookmarkedEvents != null) {
-        for (final eventId in tempBookmarkedEvents) {
-          final event = await firestore.getEvent(eventId);
-          if (event != null) {
-            _bookmarkedEvents.add(event);
-          }
-        }
-      }
-    } finally {
-      isLoading(false);
+  void setOwnedEvents() {
+    if (events.isNotEmpty) {
+      _ownedEvents.clear();
+      _ownedEvents.addAll(events.where(
+          (event) => event.eventOwner.uid == auth.firebaseUser.value!.uid));
     }
   }
-//   void fetchBookmarkEvents() async {
-//   try {
-//     isLoading(true);
-//     final tempBookmarkedEvents = <Event>[];
-//     if (auth.appUser.value.bookmarkedEvents != null) {
-//       for (final eventId in auth.appUser.value.bookmarkedEvents) {
-//         final event = await firestore.getEvent(eventId);
-//         if (event != null) {
-//           tempBookmarkedEvents.add(event);
-//         }
-//       }
-//     }
-//     print('tempBookmarkedEvents: $tempBookmarkedEvents');
-//     _bookmarkedEvents = tempBookmarkedEvents;
-//   } finally {
-//     isLoading(false);
-//   }
-// }
+
+  void setBookmarkEvents() {
+    final tempBookmarkedEvents = auth.appUser.value.bookmarkedEvents;
+    if (tempBookmarkedEvents != null && tempBookmarkedEvents.isNotEmpty) {
+      for (Event e in events) {
+        if (tempBookmarkedEvents.contains(e.id)) {
+          _bookmarkedEvents.add(e);
+        }
+      }
+    }
+  }
 }

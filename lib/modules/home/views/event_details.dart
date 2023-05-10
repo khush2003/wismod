@@ -99,10 +99,9 @@ class EventDetailView extends StatelessWidget {
                             'Location: ${eventData().location}',
                           ),
                           addVerticalSpace(20),
-
-                            Text(
-                              eventData().description,
-                            ),
+                          Text(
+                            eventData().description,
+                          ),
                           addVerticalSpace(20),
                           Row(
                             mainAxisAlignment: MainAxisAlignment.spaceEvenly,

@@ -122,9 +122,8 @@ class EventCard extends StatelessWidget {
                 Text('Event Owner: ${event.eventOwner.name}',
                     style: Theme.of(context).textTheme.bodyMedium),
                 addVerticalSpace(20),
-                  Text('Details: ${event.description}',
-                      style: Theme.of(context).textTheme.bodyMedium,
-                      maxLines: 3),
+                Text('Details: ${event.description}',
+                    style: Theme.of(context).textTheme.bodyMedium, maxLines: 3),
               ]),
               addVerticalSpace(20),
               OutlineButtonMedium(

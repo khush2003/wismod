@@ -1,4 +1,3 @@
-
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:wismod/modules/auth/controllers/auth_controller.dart';
@@ -73,6 +72,7 @@ class HomeController extends GetxController {
   }
 
   Future<void> _addJoinedChatGroupData() async {
+    joinedChatGroupDetails([]);
     if (_auth.appUser.value.joinedChatGroups != null &&
         _auth.appUser.value.joinedChatGroups!.isNotEmpty) {
       for (String eventId in _auth.appUser.value.joinedChatGroups!) {
@@ -131,6 +131,7 @@ class HomeController extends GetxController {
         filteredEvents(eventsTemp);
         searchController.text = '';
         await _addJoinedChatGroupData();
+        await _auth.updateUser();
         isLoading(false);
       }
     } finally {}

@@ -114,7 +114,7 @@ class EventDetailController extends GetxController {
         tags(eventData.value.tags);
         isLoading(false);
       }
-      updateHomeScreen();
+      await HomeController.instance.fetchEvents();
     } finally {}
   }
 
@@ -127,17 +127,14 @@ class EventDetailController extends GetxController {
       try {
         //TODO: Fix no Update event when adding event through eventDetails
         await _auth.updateUser();
-        updateHomeScreen();
+        await HomeController.instance.fetchEvents();
       } finally {}
     } catch (e) {
       errorSnackBar("There was an error");
     }
   }
 
-  void updateHomeScreen() {
-    try {
-      final c = HomeController.instance;
-      c.fetchEvents();
-    } finally {}
+  Future<void> updateHomeScreen() async {
+    await HomeController.instance.fetchEvents();
   }
 }

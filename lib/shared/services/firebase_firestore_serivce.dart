@@ -1,5 +1,3 @@
-//import 'dart:html';
-
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:wismod/shared/models/message.dart';
 import 'package:wismod/shared/models/user.dart';
@@ -125,8 +123,8 @@ class FirebaseService {
     return null;
   }
 
-  Future<void> addEvent(Event event) async {
-    await _firestore.collection('Events').add({
+  Future<void> addEvent(Event event, AppUser user) async {
+    final doc = await _firestore.collection('Events').add({
       'Title': event.title,
       'Category': event.category,
       'Upvotes': event.upvotes,
@@ -149,6 +147,48 @@ class FirebaseService {
           : Timestamp.fromDate(event.createdAt!),
     });
     await _addTagsToTagData(event);
+    final eventId = doc.id;
+    try {
+      await joinChatGroup(user.uid!, eventId);
+    } on Exception catch (_) {
+      throw Exception('User is not logged in or event id is not provided');
+    }
+  }
+
+  /// Fixes the chat group join for all users by adding them to the chat group
+  /// of the event they own.
+  /// This method iterates over all events and checks the owner of each event.
+  /// If the owner exists and has not already joined the chat group of the event,
+  /// the owner is added to the chat group.
+  /// This ensures that event owners are included in the chat group of their events.
+  Future<void> fixChatGroupJoin() async {
+    final eventsSnapshot = await _firestore.collection('Events').get();
+    final events = eventsSnapshot.docs;
+
+    for (var eventDoc in events) {
+      final event = Event.fromMap(eventDoc.data(), eventDoc.id);
+      final ownerId = event.eventOwner.uid;
+
+      // Check if the user exists
+      final ownerDoc = await _firestore.collection('Users').doc(ownerId).get();
+      if (!ownerDoc.exists) {
+        continue; // Skip if user doesn't exist
+      }
+
+      final user = AppUser.fromMap(ownerDoc.data()!, ownerId);
+      if (user.joinedChatGroups != null &&
+          user.joinedChatGroups!.contains(event.id)) {
+        continue; // Skip if user already joined the chat group
+      }
+
+      final updatedJoinedChatGroups = [
+        ...(user.joinedChatGroups ?? []),
+        event.id
+      ];
+      await _firestore.collection('Users').doc(ownerId).update({
+        'JoinedChatGroups': updatedJoinedChatGroups,
+      });
+    }
   }
 
   Future<void> addUser(AppUser user) async {

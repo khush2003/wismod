@@ -63,7 +63,7 @@ class AuthController extends GetxController {
           lastName: user.lastName,
           department: user.department,
           year: user.year,
-          blockedUsers: [],
+          blockedChatGroups: [],
           bookmarkedEvents: [],
           joinedEvents: [],
           ownedEvents: [],

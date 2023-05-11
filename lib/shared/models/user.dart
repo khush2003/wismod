@@ -6,7 +6,7 @@ class AppUser {
   final String? profilePicture;
   final int year;
   final bool? isAdmin;
-  final List<String>? blockedUsers;
+  final List<String>? blockedChatGroups;
   final List<String>? bookmarkedEvents;
   final List<String>? joinedEvents;
   final List<String>? ownedEvents;
@@ -22,7 +22,7 @@ class AppUser {
     required this.department,
     this.profilePicture,
     required this.year,
-    this.blockedUsers,
+    this.blockedChatGroups,
     this.bookmarkedEvents,
     this.joinedEvents,
     this.ownedEvents,
@@ -33,7 +33,7 @@ class AppUser {
   @override
   String toString() {
     return 'AppUser{uid: $uid, firstName: $firstName, lastName: $lastName, department: $department, '
-        'profilePicture: $profilePicture, year: $year, blockedUsers: $blockedUsers, '
+        'profilePicture: $profilePicture, year: $year, blockedChatGroups: $blockedChatGroups, '
         'bookmarkedEvents: $bookmarkedEvents, joinedEvents: $joinedEvents, ownedEvents: $ownedEvents, '
         'requestedEvents: $requestedEvents, upvotedEvents: $upvotedEvents, joinedChatGroups: $joinedChatGroups, isAdmin: $isAdmin}';
   }
@@ -65,7 +65,7 @@ class AppUser {
       department: map['Department'],
       profilePicture: map['ProfilePicture'],
       year: map['Year'] as int,
-      blockedUsers: List<String>.from(map['BlockedUsers'] ?? []),
+      blockedChatGroups: List<String>.from(map['BlockedChatGroups'] ?? []),
       bookmarkedEvents: List<String>.from(map['BookmarkedEvents'] ?? []),
       joinedEvents: List<String>.from(map['JoinedEvents'] ?? []),
       ownedEvents: List<String>.from(map['OwnedEvents'] ?? []),

@@ -1,8 +1,12 @@
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
+import 'package:wismod/modules/home/controller/block_list_controller.dart';
+import 'package:wismod/shared/models/event.dart';
 import 'package:wismod/utils/app_utils.dart';
 
 class BlockListView extends StatelessWidget {
-  const BlockListView({super.key});
+  BlockListView({super.key});
+  final controller = Get.put(BlockListController());
 
   @override
   Widget build(BuildContext context) {
@@ -19,45 +23,23 @@ class BlockListView extends StatelessWidget {
       body: Padding(
         padding: const EdgeInsets.fromLTRB(20.0, 20.0, 20.0, 0.0),
         child: Align(
-          alignment: Alignment.topCenter,
-          child: SingleChildScrollView(
-            child: Column(children: const [
-              Padding(
-                  padding: EdgeInsets.fromLTRB(0, 0, 0, 20),
-                  child: BlockedPerson(
-                    personPortraitUrl:
-                        'https://images.unsplash.com/photo-1575936123452-b67c3203c357?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxzZWFyY2h8Mnx8aW1hZ2V8ZW58MHx8MHx8&w=1000&q=80',
-                    personName: 'Phongsaphak Fongsamut',
-                    blockId: 5,
-                  )),
-              Padding(
-                  padding: EdgeInsets.fromLTRB(0, 0, 0, 20),
-                  child: BlockedPerson(
-                    personPortraitUrl:
-                        'https://pbs.twimg.com/media/EQn2_t5U8AITpgl.jpg',
-                    personName: 'Arthun Jeezsprout',
-                    blockId: 2,
-                  )),
-            ]),
-          ),
-        ),
+            alignment: Alignment.topCenter,
+            child: Obx(() => ListView.separated(
+                itemCount: controller.blockedChatGroupEventData.length,
+                itemBuilder: (context, index) {
+                  return BlockedPerson(
+                      event: controller.blockedChatGroupEventData[index]);
+                },
+                separatorBuilder: (context, index) => addVerticalSpace()))),
       ),
     );
   }
 }
 
 class BlockedPerson extends StatelessWidget {
-  final String? personPortraitUrl;
-  final String personName;
+  final Event event;
 
-  final int blockId;
-
-  const BlockedPerson(
-      {super.key,
-      this.personPortraitUrl,
-      required this.personName,
-      // required this.latestChat,
-      required this.blockId});
+  const BlockedPerson({super.key, required this.event});
 
   @override
   Widget build(BuildContext context) {
@@ -75,69 +57,68 @@ class BlockedPerson extends StatelessWidget {
       ),
       child: Padding(
         padding: const EdgeInsets.all(sideWidth),
-        child: Column(
-          children: <Widget>[
-            Row(
+        child: Row(
+          crossAxisAlignment: CrossAxisAlignment.center,
+          children: [
+            Column(
+              mainAxisAlignment: MainAxisAlignment.start,
               crossAxisAlignment: CrossAxisAlignment.center,
+              mainAxisSize: MainAxisSize.min,
               children: [
-                Column(
-                  mainAxisAlignment: MainAxisAlignment.start,
-                  crossAxisAlignment: CrossAxisAlignment.center,
-                  mainAxisSize: MainAxisSize.min,
-                  children: [
-                    if (personPortraitUrl != null)
-                      ClipRRect(
-                        borderRadius: BorderRadius.circular(50.0),
-                        child: Image.network(
-                          personPortraitUrl!,
-                          // Image size adjustment here
-                          width: 100,
-                          height: 100,
-                          fit: BoxFit.cover,
-                        ),
+                if (event.imageUrl != null)
+                  ClipRRect(
+                    borderRadius: BorderRadius.circular(50.0),
+                    child: Image.network(
+                      event.imageUrl!,
+                      width: 100,
+                      height: 100,
+                      fit: BoxFit.cover,
+                      errorBuilder: (context, error, stackTrace) =>
+                          Image.network(
+                        placeholderImage,
+                        width: 100,
+                        height: 100,
+                        fit: BoxFit.cover,
                       ),
-                  ],
-                ),
-                addHorizontalSpace(10),
-                Expanded(
-                  child: Column(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    crossAxisAlignment: CrossAxisAlignment.stretch,
-                    mainAxisSize: MainAxisSize.min,
-                    children: [
-                      Text(
-                        personName,
-                        style: const TextStyle(
-                            fontFamily: "Gotham",
-                            fontWeight: FontWeight.bold,
-                            color: Colors.black,
-                            fontSize: 22),
-                        maxLines: 1,
-                        softWrap: false,
-                        overflow: TextOverflow.fade,
-                      ),
-                      addVerticalSpace(5),
-                    ],
+                    ),
                   ),
-                ),
-                //Icon
-                const CancelBlock(),
               ],
             ),
-            addVerticalSpace(8),
-            Row(
-              crossAxisAlignment: CrossAxisAlignment.center,
-              children: [
-                Expanded(
-                  child: Column(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    mainAxisSize: MainAxisSize.min,
-                    children: const [],
+            addHorizontalSpace(10),
+            Expanded(
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.center,
+                crossAxisAlignment: CrossAxisAlignment.stretch,
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  Text(
+                    event.title,
+                    style: const TextStyle(
+                        fontFamily: "Gotham",
+                        fontWeight: FontWeight.bold,
+                        color: Colors.black,
+                        fontSize: 22),
+                    maxLines: 1,
+                    softWrap: false,
+                    overflow: TextOverflow.ellipsis,
                   ),
-                ),
-              ],
+                  addVerticalSpace(5),
+                  Text(
+                    event.eventOwner.name,
+                    style: const TextStyle(
+                        fontFamily: "Gotham",
+                        fontWeight: FontWeight.w500,
+                        color: Colors.black,
+                        fontSize: 16),
+                    maxLines: 1,
+                    softWrap: false,
+                    overflow: TextOverflow.ellipsis,
+                  ),
+                ],
+              ),
             ),
+            //Icon
+            CancelBlock(eventId: event.id!),
           ],
         ),
       ),
@@ -148,7 +129,9 @@ class BlockedPerson extends StatelessWidget {
 // double _volume = 0.0;
 
 class CancelBlock extends StatelessWidget {
-  const CancelBlock({super.key});
+  final String eventId;
+  final controller = Get.find<BlockListController>();
+  CancelBlock({super.key, required this.eventId});
   @override
   Widget build(BuildContext context) {
     return IconButton(
@@ -156,9 +139,7 @@ class CancelBlock extends StatelessWidget {
       iconSize: 50.0,
       tooltip: 'Remove from block list',
       color: Theme.of(context).colorScheme.secondary,
-      onPressed: () {
-        // todo
-      },
+      onPressed: () => controller.unblockChatGroup(eventId),
     );
   }
 }

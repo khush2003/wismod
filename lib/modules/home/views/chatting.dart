@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:wismod/modules/auth/controllers/auth_controller.dart';
 import 'dart:ui' as ui;
 import 'package:wismod/shared/models/message.dart';
+import 'package:wismod/theme/global_widgets.dart';
 import 'package:wismod/theme/theme_data.dart';
 import 'package:wismod/utils/app_utils.dart';
 import 'package:get/get.dart';
@@ -17,58 +18,46 @@ class ChattingView extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Row(
-          mainAxisAlignment: MainAxisAlignment.center,
-          crossAxisAlignment: CrossAxisAlignment.center,
-          mainAxisSize: MainAxisSize.max,
-          children: <Widget>[
-            Expanded(
-              child: Obx(() => controller.isLoading.value
-                  ? const Center(child: CircularProgressIndicator())
-                  : Column(
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      crossAxisAlignment: CrossAxisAlignment.center,
-                      mainAxisSize: MainAxisSize.min,
-                      children: [
-                        Text(
-                          controller.eventData.value.title,
-                          style: const TextStyle(
-                            fontSize: 28,
-                            color: Color.fromRGBO(0, 0, 0, 1),
-                            fontWeight: FontWeight.bold,
-                          ),
-                          maxLines: 1,
-                          overflow: TextOverflow.ellipsis,
-                        ),
-                        addVerticalSpace(5),
-                        Text(
-                          controller.eventData.value.eventOwner.name,
-                          style: const TextStyle(
-                            fontSize: 20,
-                            color: Color.fromRGBO(0, 0, 0, 1),
-                            fontWeight: FontWeight.w400,
-                          ),
-                          maxLines: 1,
-                          overflow: TextOverflow.ellipsis,
-                        ),
-                      ],
-                    )),
-            ),
-            Column(
-              mainAxisAlignment: MainAxisAlignment.center,
-              crossAxisAlignment: CrossAxisAlignment.end,
-              mainAxisSize: MainAxisSize.max,
-              children: [
-                IconButton(
-                  onPressed: () {
-                    //Todo: Block user
-                  },
-                  icon: const Icon(Icons.block),
-                ),
-              ],
-            ),
-          ],
+        title: Expanded(
+          child: Obx(() => controller.isLoading.value
+              ? const LoadingWidget()
+              : Column(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  crossAxisAlignment: CrossAxisAlignment.center,
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    Text(
+                      controller.eventData.value.title,
+                      style: const TextStyle(
+                        fontSize: 28,
+                        color: Color.fromRGBO(0, 0, 0, 1),
+                        fontWeight: FontWeight.bold,
+                      ),
+                      maxLines: 1,
+                      overflow: TextOverflow.ellipsis,
+                    ),
+                    addVerticalSpace(5),
+                    Text(
+                      controller.eventData.value.eventOwner.name,
+                      style: const TextStyle(
+                        fontSize: 20,
+                        color: Color.fromRGBO(0, 0, 0, 1),
+                        fontWeight: FontWeight.w400,
+                      ),
+                      maxLines: 1,
+                      overflow: TextOverflow.ellipsis,
+                    ),
+                  ],
+                )),
         ),
+        actions: [
+          IconButton(
+            onPressed: () {
+              controller.blockChatGroup();
+            },
+            icon: const Icon(Icons.block),
+          ),
+        ],
         centerTitle: true,
         backgroundColor: const Color.fromRGBO(201, 173, 255, 1),
         toolbarHeight: 100,
@@ -79,7 +68,7 @@ class ChattingView extends StatelessWidget {
         ),
       ),
       body: Obx(() => controller.isLoading.value
-          ? const Center(child: CircularProgressIndicator())
+          ? const LoadingWidget()
           : Padding(
               padding: const EdgeInsets.all(sideWidth),
               child: Align(

@@ -3,6 +3,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:get/get.dart';
 
+import '../utils/app_utils.dart';
+
 // PrimaryButtonMedium = Button with primary color medium size
 // PrimaryButtonLarge = Button with primary color Large size
 // SecondaryButtonMedium = Button with Secondary color medium size
@@ -79,6 +81,29 @@ class LoadingWidget extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return const Center(child: CircularProgressIndicator());
+  }
+}
+
+class ImageWithErrorHandling extends StatelessWidget {
+  final String? imageUrl;
+  const ImageWithErrorHandling({super.key, required this.imageUrl});
+
+   ImageProvider<Object> image () => Image.network(imageUrl ?? placeholderImage,
+          errorBuilder: (context, error, stackTrace) => Image.network(
+                placeholderImage,
+                fit: BoxFit.cover,
+              ),
+          fit: BoxFit.cover)
+      .image;
+      
+  @override
+  Widget build(BuildContext context) {
+    return Image.network(imageUrl ?? placeholderImage,
+        errorBuilder: (context, error, stackTrace) => Image.network(
+              placeholderImage,
+              fit: BoxFit.cover,
+            ),
+        fit: BoxFit.cover);
   }
 }
 

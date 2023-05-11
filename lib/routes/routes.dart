@@ -44,7 +44,7 @@ final getPages = [
   GetPage(name: Routes.accounts, page: () => AccountsView()),
   GetPage(name: Routes.password, page: () => PassWordView()),
   GetPage(name: Routes.notficaition, page: () => NotificationView()),
-  GetPage(name: Routes.blockList, page: () => const BlockListView()),
+  GetPage(name: Routes.blockList, page: () => BlockListView()),
   GetPage(name: Routes.adminEventDetials, page: () => AdminEventDetailView()),
   GetPage(name: Routes.eventDetials, page: () => EventDetailView()),
   //

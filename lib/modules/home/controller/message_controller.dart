@@ -1,4 +1,3 @@
-
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:wismod/modules/home/controller/home_controller.dart';
@@ -6,6 +5,7 @@ import 'package:wismod/shared/models/event.dart';
 import 'package:wismod/shared/models/message.dart';
 import 'package:wismod/shared/services/firebase_firestore_serivce.dart';
 import 'package:wismod/modules/auth/controllers/auth_controller.dart';
+import 'package:wismod/utils/app_utils.dart';
 
 class MessageController extends GetxController {
   final firestore = FirebaseService();
@@ -20,6 +20,18 @@ class MessageController extends GetxController {
   void onInit() async {
     fetchMessages();
     super.onInit();
+  }
+
+  void blockChatGroup() async {
+    try {
+      final eventId = Get.parameters['id'] ?? '2l8UVLQgFin3dthssdlI';
+      await firestore.blockChatGroup(_auth.firebaseUser.value!.uid, eventId);
+      await HomeController.instance.fetchEvents();
+      Get.back();
+      sucessSnackBar("Sucessfully blocked this chat group!");
+    } on Exception catch (e) {
+      errorSnackBar(e.toString());
+    }
   }
 
   void fetchMessages() async {

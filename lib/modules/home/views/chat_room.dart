@@ -14,7 +14,6 @@ import '../../../shared/models/event.dart';
 class ChatRoomView extends StatelessWidget {
   ChatRoomView({super.key});
   final homeController = Get.put(HomeController());
-  final _auth = AuthController.instance;
 
   @override
   Widget build(BuildContext context) {
@@ -40,8 +39,8 @@ class ChatRoomView extends StatelessWidget {
                   padding: const EdgeInsets.all(sideWidth),
                   child: SizedBox(
                     child: ListView.builder(
-                      itemCount: _auth.appUser.value.joinedChatGroups != null
-                          ? _auth.appUser.value.joinedChatGroups!.length
+                      itemCount: homeController.joinedChatGroupDetails.isNotEmpty
+                          ? homeController.joinedChatGroupDetails.length
                           : 0,
                       itemBuilder: (context, index) {
                         return ChatEvent(

@@ -72,17 +72,21 @@ class HomeController extends GetxController {
   }
 
   Future<void> _addJoinedChatGroupData() async {
+    final user = _auth.appUser.value;
+    final blockedChatGroups = user.blockedChatGroups ?? [];
     joinedChatGroupDetails([]);
-    if (_auth.appUser.value.joinedChatGroups != null &&
-        _auth.appUser.value.joinedChatGroups!.isNotEmpty) {
-      for (String eventId in _auth.appUser.value.joinedChatGroups!) {
-        for (Event e in events) {
-          if (e.id == eventId) {
-            joinedChatGroupDetails.add(e);
-            final latestMessageEvent =
-                await firestore.getLatestMessage(eventId) ?? Message.empty();
-            latestMessage.addAll({eventId: latestMessageEvent});
-          }
+
+    if (user.joinedChatGroups != null && user.joinedChatGroups!.isNotEmpty) {
+      final eventsToProcess = events
+          .where((event) => user.joinedChatGroups!.contains(event.id))
+          .toList(); // Get the event data for list of chat groups which are joined
+
+      for (final event in eventsToProcess) {
+        if (!blockedChatGroups.contains(event.id)) {
+          joinedChatGroupDetails.add(event);
+          final latestMessageEvent =
+              await firestore.getLatestMessage(event.id!) ?? Message.empty();
+          latestMessage.addAll({event.id!: latestMessageEvent});
         }
       }
     }

@@ -198,7 +198,7 @@ class FirebaseService {
       'Department': user.department,
       'ProfilePicture': user.profilePicture,
       'Year': user.year,
-      'BlockedUsers': user.blockedUsers ?? [],
+      'BlockedChatGroups': user.blockedChatGroups ?? [],
       'BookmarkedEvents': user.bookmarkedEvents ?? [],
       'JoinedEvents': user.joinedEvents ?? [],
       'OwnedEvents': user.ownedEvents ?? [],
@@ -372,4 +372,58 @@ class FirebaseService {
 
     await userRef.update({'BookmarkedEvents': updatedBookmarkedEvents});
   }
+
+  Future<void> blockChatGroup(String userId, String eventId) async {
+    final userRef = _firestore.collection('Users').doc(userId);
+    final userDoc = await userRef.get();
+
+    if (!userDoc.exists) {
+      throw Exception('User does not exist!');
+    }
+
+    final user = AppUser.fromMap(userDoc.data()!, userId);
+    final blockedChatGroups = user.blockedChatGroups ?? [];
+
+    if (blockedChatGroups.contains(eventId)) {
+      return; // Event already blocked
+    }
+
+    final updatedBlockedChatGroups = [...blockedChatGroups, eventId];
+    await userRef.update({'BlockedChatGroups': updatedBlockedChatGroups});
+  }
+
+  Future<void> unblockChatGroup(String userId, String eventId) async {
+    final userRef = _firestore.collection('Users').doc(userId);
+    final userDoc = await userRef.get();
+
+    if (!userDoc.exists) {
+      throw Exception('User does not exist!');
+    }
+
+    final user = AppUser.fromMap(userDoc.data()!, userId);
+    final blockedChatGroups = user.blockedChatGroups ?? [];
+
+    if (!blockedChatGroups.contains(eventId)) {
+      return; // Event not blocked
+    }
+
+    final updatedBlockedChatGroups =
+        blockedChatGroups.where((id) => id != eventId).toList();
+    await userRef.update({'BlockedChatGroups': updatedBlockedChatGroups});
+  }
+
+  Future<List<Event>> getBlockedChatGroups(String userId) async {
+    final user = await getUserById(userId);
+    final events = await getEvents();
+    if (user != null) {
+      final blockedEvents = events
+          .where((event) => user.blockedChatGroups?.contains(event.id) ?? false)
+          .toList();
+      return blockedEvents;
+    } else {
+      throw Exception('User does not exists!');
+    }
+  }
+
+  // Add functions here
 }

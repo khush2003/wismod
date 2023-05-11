@@ -64,6 +64,7 @@ class FourButtonsController extends GetxController {
   final isLoading = true.obs;
   final RxList<Event> events = <Event>[].obs;
   final RxList<Event> _ownedEvents = <Event>[].obs;
+  RxList<Event> _joinedEvents = <Event>[].obs;
   final RxList<Event> _bookmarkedEvents = <Event>[].obs;
   final RxList<Event> _upcomingEvents = <Event>[].obs;
   final auth = AuthController.instance;
@@ -71,6 +72,7 @@ class FourButtonsController extends GetxController {
   List<Event> get ownedEvents => _ownedEvents;
   List<Event> get upcomingEvents => _upcomingEvents;
   List<Event> get bookmarkedEvents => _bookmarkedEvents;
+  List<Event> get joinedEvents => _joinedEvents;
 
   @override
   void onInit() {
@@ -95,7 +97,8 @@ class FourButtonsController extends GetxController {
     isLoading(true); // Set Is loading to make sure ui refresh
     events(eventList);
     setOwnedEvents();
-    setBookmarkEvents();
+    setBookmarkedEvents();
+    setUpcomingEvents();
     isLoading(false);
   }
 
@@ -123,14 +126,41 @@ class FourButtonsController extends GetxController {
     }
   }
 
-  void setBookmarkEvents() {
-    final tempBookmarkedEvents = auth.appUser.value.bookmarkedEvents;
-    if (tempBookmarkedEvents != null && tempBookmarkedEvents.isNotEmpty) {
+  void setUpcomingEvents() {
+    final tempUpcomingEvents = auth.appUser.value.joinedEvents;
+    if (tempUpcomingEvents != null && tempUpcomingEvents.isNotEmpty) {
+      final List<Event> eventsToUpdate = [];
       for (Event e in events) {
-        if (tempBookmarkedEvents.contains(e.id)) {
-          _bookmarkedEvents.add(e);
+        if (tempUpcomingEvents.contains(e.id)) {
+          eventsToUpdate.add(e);
         }
       }
+      // So many events are added up to eventsToUpdate.
+      //Idk what kinds of error is that.
+      //So only the first auth.appUser.value.joinedEvents!.length number of events
+      //are correct and i cut them off as follow
+
+      _joinedEvents.assignAll(
+          eventsToUpdate.take(auth.appUser.value.joinedEvents!.length));
+
+      // This one is sorting events by date
+
+      _joinedEvents.sort(
+          (a, b) => a.eventDate?.compareTo(b.eventDate ?? DateTime.now()) ?? 0);
+    }
+  }
+
+  void setBookmarkedEvents() {
+    final tempBookmarkedEvents = auth.appUser.value.bookmarkedEvents;
+    if (tempBookmarkedEvents != null && tempBookmarkedEvents.isNotEmpty) {
+      final List<Event> eventsToUpdate = [];
+      for (Event e in events) {
+        if (tempBookmarkedEvents.contains(e.id)) {
+          eventsToUpdate.add(e);
+        }
+      }
+      _bookmarkedEvents.assignAll(
+          eventsToUpdate.take(auth.appUser.value.bookmarkedEvents!.length));
     }
   }
 }

@@ -4,6 +4,7 @@ import 'package:wismod/modules/auth/controllers/auth_controller.dart';
 import 'package:wismod/utils/app_utils.dart';
 import 'package:wismod/modules/home/controller/dashboard_controller.dart';
 
+import '../../../routes/routes.dart';
 import '../../../theme/global_widgets.dart';
 import '../../../shared/models/event.dart';
 
@@ -170,7 +171,7 @@ class DashboardView extends StatelessWidget {
                           Wrap(
                             direction: Axis.horizontal,
                             alignment: WrapAlignment.spaceEvenly,
-                            spacing: 16,
+                            spacing: 4,
                             runSpacing: 16,
                             children: [
                               Container(
@@ -183,23 +184,25 @@ class DashboardView extends StatelessWidget {
                                     width: 2.0,
                                   ),
                                 ),
-                                padding: const EdgeInsets.all(16),
+                                padding: const EdgeInsets.all(8),
                                 child: Column(
                                   crossAxisAlignment: CrossAxisAlignment.start,
                                   children: [
-                                    Text(
+                                    const Text(
                                       'Total Joined Activities',
-                                      style: Theme.of(context)
-                                          .textTheme
-                                          .displayMedium,
+                                      style: TextStyle(
+                                        fontWeight: FontWeight.bold,
+                                        fontSize: 13,
+                                      ),
                                     ),
                                     addVerticalSpace(),
                                     Text(
                                       '${auth.appUser.value.joinedEvents != null ? auth.appUser.value.joinedEvents!.length : 0} Activities',
-                                      style: Theme.of(context)
-                                          .textTheme
-                                          .bodyMedium,
-                                    ),
+                                      style: const TextStyle(
+                                        fontWeight: FontWeight.normal,
+                                        fontSize: 10,
+                                      ),
+                                    )
                                   ],
                                 ),
                               ),
@@ -213,22 +216,24 @@ class DashboardView extends StatelessWidget {
                                     width: 2.0,
                                   ),
                                 ),
-                                padding: const EdgeInsets.all(16),
+                                padding: const EdgeInsets.all(8),
                                 child: Column(
                                   crossAxisAlignment: CrossAxisAlignment.start,
                                   children: [
-                                    Text(
+                                    const Text(
                                       'Total Upvote Activities',
-                                      style: Theme.of(context)
-                                          .textTheme
-                                          .displayMedium,
+                                      style: TextStyle(
+                                        fontWeight: FontWeight.bold,
+                                        fontSize: 13,
+                                      ),
                                     ),
                                     addVerticalSpace(),
                                     Text(
                                       '${auth.appUser.value.upvotedEvents != null ? auth.appUser.value.upvotedEvents!.length : 0} Upvotes',
-                                      style: Theme.of(context)
-                                          .textTheme
-                                          .bodyMedium,
+                                      style: const TextStyle(
+                                        fontWeight: FontWeight.normal,
+                                        fontSize: 10,
+                                      ),
                                     ),
                                   ],
                                 ),
@@ -241,7 +246,7 @@ class DashboardView extends StatelessWidget {
                               FourButtonsWidget(
                                 activityType: 'Upcoming Activities',
                                 activityNumber:
-                                    auth.appUser.value.joinedEvents!.length,
+                                    fourButtonsController.joinedEvents.length,
                                 onPressed: fourButtonsController.toggleUpcoming,
                                 showSizeBox: fourButtonsController.showUpcoming,
                               ),
@@ -259,11 +264,21 @@ class DashboardView extends StatelessWidget {
                                         ),
                                         child: ListView.builder(
                                           itemCount: fourButtonsController
-                                              .ownedEvents.length,
+                                              .joinedEvents.length,
                                           itemBuilder: (context, index) {
-                                            return OtherActivityBox(
-                                                event: fourButtonsController
-                                                    .ownedEvents[index]);
+                                            final event = fourButtonsController
+                                                .joinedEvents[index];
+                                            return GestureDetector(
+                                              onTap: () {
+                                                Get.toNamed(Routes.eventDetials,
+                                                    parameters: {
+                                                      'id': event.id!
+                                                    });
+                                              },
+                                              child: OtherActivityBox(
+                                                event: event,
+                                              ),
+                                            );
                                           },
                                         ),
                                       ),
@@ -318,11 +333,8 @@ class DashboardView extends StatelessWidget {
                               addVerticalSpace(16),
                               FourButtonsWidget(
                                 activityType: 'Bookmarked Activities',
-                                activityNumber:
-                                    auth.appUser.value.bookmarkedEvents != null
-                                        ? auth.appUser.value.bookmarkedEvents!
-                                            .length
-                                        : 0,
+                                activityNumber: fourButtonsController
+                                    .bookmarkedEvents.length,
                                 onPressed:
                                     fourButtonsController.toggleBookmarked,
                                 showSizeBox:
@@ -343,11 +355,21 @@ class DashboardView extends StatelessWidget {
                                         ),
                                         child: ListView.builder(
                                           itemCount: fourButtonsController
-                                              .ownedEvents.length,
+                                              .bookmarkedEvents.length,
                                           itemBuilder: (context, index) {
-                                            return OtherActivityBox(
-                                                event: fourButtonsController
-                                                    .ownedEvents[index]);
+                                            final event = fourButtonsController
+                                                .bookmarkedEvents[index];
+                                            return GestureDetector(
+                                              onTap: () {
+                                                Get.toNamed(Routes.eventDetials,
+                                                    parameters: {
+                                                      'id': event.id!
+                                                    });
+                                              },
+                                              child: OtherActivityBox(
+                                                event: event,
+                                              ),
+                                            );
                                           },
                                         ),
                                       ),
@@ -377,9 +399,19 @@ class DashboardView extends StatelessWidget {
                                           itemCount: fourButtonsController
                                               .ownedEvents.length,
                                           itemBuilder: (context, index) {
-                                            return OtherActivityBox(
-                                                event: fourButtonsController
-                                                    .ownedEvents[index]);
+                                            final event = fourButtonsController
+                                                .ownedEvents[index];
+                                            return GestureDetector(
+                                              onTap: () {
+                                                Get.toNamed(Routes.eventDetials,
+                                                    parameters: {
+                                                      'id': event.id!
+                                                    });
+                                              },
+                                              child: OtherActivityBox(
+                                                event: event,
+                                              ),
+                                            );
                                           },
                                         ),
                                       ),

@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:get/get.dart';
 import 'package:wismod/theme/global_widgets.dart';
 import '../controller/account_controller.dart';
@@ -11,7 +12,6 @@ import '../../../utils/app_utils.dart';
 class AccountsView extends StatelessWidget {
   AccountsView({super.key});
   final AccountController accountController = Get.put(AccountController());
-  
 
   @override
   Widget build(BuildContext context) {
@@ -34,11 +34,11 @@ class AccountsView extends StatelessWidget {
               Padding(
                 padding: const EdgeInsets.fromLTRB(0.0, 0.0, 0.0, 20.0),
                 child: AccountSections(
-                  label: 'First name',
-                  hintText: 'Your first name',
+                  label: 'Name',
+                  hintText: 'Your Name',
                   controllerFunction: accountController.firstNameController,
                   trailingWidget: const Text(
-                    'Change first name',
+                    'Change Name',
                     style: TextStyle(
                       fontFamily: "Gotham",
                       fontWeight: FontWeight.w500,
@@ -48,23 +48,23 @@ class AccountsView extends StatelessWidget {
                   ),
                 ),
               ),
-              Padding(
-                padding: const EdgeInsets.fromLTRB(0.0, 0.0, 0.0, 20.0),
-                child: AccountSections(
-                  label: 'Last name',
-                  hintText: 'Your last name',
-                  controllerFunction: accountController.lastNameController,
-                  trailingWidget: const Text(
-                    'Change last name',
-                    style: TextStyle(
-                      fontFamily: "Gotham",
-                      fontWeight: FontWeight.w500,
-                      fontSize: 20,
-                      color: Color.fromRGBO(123, 56, 255, 1),
-                    ),
-                  ),
-                ),
-              ),
+              // Padding(
+              //   padding: const EdgeInsets.fromLTRB(0.0, 0.0, 0.0, 20.0),
+              //   child: AccountSections(
+              //     label: 'Last name',
+              //     hintText: 'Your last name',
+              //     controllerFunction: accountController.lastNameController,
+              //     trailingWidget: const Text(
+              //       'Change last name',
+              //       style: TextStyle(
+              //         fontFamily: "Gotham",
+              //         fontWeight: FontWeight.w500,
+              //         fontSize: 20,
+              //         color: Color.fromRGBO(123, 56, 255, 1),
+              //       ),
+              //     ),
+              //   ),
+              // ),
               Padding(
                 padding: const EdgeInsets.fromLTRB(0.0, 0.0, 0.0, 20.0),
                 child: DepartmentSections(
@@ -83,6 +83,7 @@ class AccountsView extends StatelessWidget {
               Padding(
                 padding: const EdgeInsets.fromLTRB(0.0, 0.0, 0.0, 20.0),
                 child: AccountSections(
+                  isNumeric: true,
                   label: 'Year',
                   hintText: 'Your year',
                   controllerFunction: accountController.yearController,
@@ -127,6 +128,7 @@ class AccountSections extends StatelessWidget {
   final String hintText;
   final Widget trailingWidget;
   final TextEditingController controllerFunction;
+  final bool isNumeric;
 
   const AccountSections({
     Key? key,
@@ -134,6 +136,7 @@ class AccountSections extends StatelessWidget {
     required this.hintText,
     required this.trailingWidget,
     required this.controllerFunction,
+    this.isNumeric = false,
   }) : super(key: key);
 
   @override
@@ -155,6 +158,10 @@ class AccountSections extends StatelessWidget {
           child: SizedBox(
             width: double.infinity,
             child: TextFormFeildThemed(
+              keyboardType: isNumeric ? TextInputType.number : null,
+              inputFormatters: isNumeric
+                  ? <TextInputFormatter>[FilteringTextInputFormatter.digitsOnly]
+                  : null,
               hintText: hintText,
               controller: controllerFunction,
             ),
@@ -205,7 +212,7 @@ class DepartmentSections extends StatelessWidget {
             child: DropDownCustom(signUpController: signUpController)),
         SizedBox(
           width: double.infinity,
-          child: OutlineButtonMedium(
+          child: OutlineButtonLarge(
             child: trailingWidget,
             onPressed: () {
               // Pressed effect here

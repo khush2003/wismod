@@ -17,9 +17,8 @@ class AccountController extends GetxController {
   String yearUser = '';
 
   final TextEditingController firstNameController =
-      TextEditingController(text: 'Test1');
+      TextEditingController(text: '');
   final TextEditingController lastNameController =
-      TextEditingController(text: 'Test2');
-  final TextEditingController yearController =
-      TextEditingController(text: 'Test3');
+      TextEditingController(text: '');
+  final TextEditingController yearController = TextEditingController(text: '');
 }

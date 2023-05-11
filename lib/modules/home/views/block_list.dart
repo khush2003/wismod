@@ -30,7 +30,7 @@ class BlockListView extends StatelessWidget {
                   return BlockedPerson(
                       event: controller.blockedChatGroupEventData[index]);
                 },
-                separatorBuilder: (context, index) => addVerticalSpace()))),
+                separatorBuilder: (context, index) => addVerticalSpace(20)))),
       ),
     );
   }
@@ -60,36 +60,27 @@ class BlockedPerson extends StatelessWidget {
         child: Row(
           crossAxisAlignment: CrossAxisAlignment.center,
           children: [
-            Column(
-              mainAxisAlignment: MainAxisAlignment.start,
-              crossAxisAlignment: CrossAxisAlignment.center,
-              mainAxisSize: MainAxisSize.min,
-              children: [
-                if (event.imageUrl != null)
-                  ClipRRect(
-                    borderRadius: BorderRadius.circular(50.0),
-                    child: Image.network(
-                      event.imageUrl!,
-                      width: 100,
-                      height: 100,
-                      fit: BoxFit.cover,
-                      errorBuilder: (context, error, stackTrace) =>
-                          Image.network(
-                        placeholderImage,
-                        width: 100,
-                        height: 100,
-                        fit: BoxFit.cover,
-                      ),
-                    ),
+            if (event.imageUrl != null)
+              ClipRRect(
+                borderRadius: BorderRadius.circular(50.0),
+                child: Image.network(
+                  event.imageUrl!,
+                  width: 100,
+                  height: 100,
+                  fit: BoxFit.cover,
+                  errorBuilder: (context, error, stackTrace) => Image.network(
+                    placeholderImage,
+                    width: 100,
+                    height: 100,
+                    fit: BoxFit.cover,
                   ),
-              ],
-            ),
+                ),
+              ),
             addHorizontalSpace(10),
             Expanded(
               child: Column(
                 mainAxisAlignment: MainAxisAlignment.center,
                 crossAxisAlignment: CrossAxisAlignment.stretch,
-                mainAxisSize: MainAxisSize.min,
                 children: [
                   Text(
                     event.title,

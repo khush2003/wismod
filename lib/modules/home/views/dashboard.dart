@@ -375,7 +375,7 @@ class DashboardView extends StatelessWidget {
                                       ),
                                     )
                                   : const SizedBox()),
-                              addVerticalSpace(),
+                              addVerticalSpace(16),
                               FourButtonsWidget(
                                 activityType: 'Activities You Own',
                                 activityNumber:
@@ -465,6 +465,15 @@ class FourButtonsWidget extends StatelessWidget {
                       topRight: Radius.circular(10),
                     )
                   : BorderRadius.circular(10),
+              boxShadow: [
+                BoxShadow(
+                  color: Colors.grey.withOpacity(0.5),
+                  spreadRadius: 1,
+                  blurRadius: 1,
+                  offset:
+                      const Offset(0, 3), // changes the position of the shadow
+                ),
+              ],
             ),
             child: Row(
               mainAxisAlignment: MainAxisAlignment.center,

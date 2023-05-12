@@ -162,7 +162,41 @@ class EventDetailView extends StatelessWidget {
                                   ? const Text('Joined')
                                   : const Text('Join'))),
                           ElevatedButton(
-                            onPressed: () {},
+                            onPressed: () {
+                              showDialog(
+                                context: context,
+                                builder: (BuildContext context) {
+                                  return AlertDialog(
+                                    title: Text('Confirmation'),
+                                    content: const Text(
+                                        'Are you sure you want to remove this event?',
+                                        style: TextStyle(
+                                            fontWeight: FontWeight.normal)),
+                                    actions: [
+                                      OutlineButtonMedium(
+                                        child: const Padding(
+                                          padding: EdgeInsets.symmetric(
+                                              vertical: 3.0),
+                                          child: Text('Cancel'),
+                                        ),
+                                        onPressed: () {
+                                          Navigator.of(context).pop();
+                                        },
+                                      ),
+                                      ElevatedButton(
+                                        child: const Text('Remove'),
+                                        style: ElevatedButton.styleFrom(
+                                          backgroundColor: Colors.red,
+                                        ),
+                                        onPressed: () {
+                                          Navigator.of(context).pop();
+                                        },
+                                      ),
+                                    ],
+                                  );
+                                },
+                              );
+                            },
                             style: ElevatedButton.styleFrom(
                               backgroundColor: Colors.red,
                             ),

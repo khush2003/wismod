@@ -247,6 +247,22 @@ class FirebaseService {
     await eventDocument.update({'IsReported': true});
   }
 
+  Future<void> reportEventDeny(String eventId) async {
+    final eventDocument = _firestore.collection('Events').doc(eventId);
+    final eventSnapshot = await eventDocument.get();
+
+    if (!eventSnapshot.exists) {
+      throw Exception('Event does not exist!');
+    }
+
+    final event = Event.fromMap(eventSnapshot.data()!, eventSnapshot.id);
+    if (event.isReported == false) {
+      return;
+    }
+
+    await eventDocument.update({'IsReported': false});
+  }
+
   Future<void> joinChatGroup(String userId, String eventId) async {
     final userRef = _firestore.collection('Users').doc(userId);
     final userDoc = await userRef.get();

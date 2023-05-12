@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:wismod/modules/home/controller/admin_controller.dart';
 import 'package:wismod/modules/home/controller/event_detail_controller.dart';
+import 'package:wismod/modules/home/views/admin.dart';
 import 'package:wismod/theme/global_widgets.dart';
 import 'package:wismod/utils/app_utils.dart';
 
@@ -10,6 +12,7 @@ import '../../../theme/theme_data.dart';
 class AdminEventDetailView extends StatelessWidget {
   AdminEventDetailView({super.key});
   final controller = Get.put(EventDetailController());
+  final adminController = Get.put(AdminController());
   Event eventData() => controller.eventData.value;
   @override
   Widget build(BuildContext context) {
@@ -112,9 +115,9 @@ class AdminEventDetailView extends StatelessWidget {
                                     fontWeight: FontWeight.bold),
                               ),
                             addVerticalSpace(20),
-                              Text(
-                                eventData().description,
-                              ),
+                            Text(
+                              eventData().description,
+                            ),
                           ],
                         ),
                       ),
@@ -134,7 +137,11 @@ class AdminEventDetailView extends StatelessWidget {
                   mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                   children: [
                     ElevatedButton(
-                      onPressed: () {},
+                      onPressed: () {
+                        controller.reportEventDeny();
+                        adminController.fetchEvents();
+                        Navigator.pop(context, 'Done');
+                      },
                       child: const Text('Deny'),
                     ),
                     ElevatedButton(

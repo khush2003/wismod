@@ -75,6 +75,18 @@ class EventDetailController extends GetxController {
     }
   }
 
+  void reportEventDeny() async {
+    try {
+      await firestore.reportEventDeny(eventData.value.id!);
+      fetchEvent();
+      Get.snackbar("Sucess!", 'You have sucessfully deny this reported event!',
+          snackPosition: SnackPosition.BOTTOM, backgroundColor: Colors.green);
+    } catch (e) {
+      Get.snackbar("Error!", e.toString(),
+          snackPosition: SnackPosition.BOTTOM, backgroundColor: Colors.red);
+    }
+  }
+
   void joinEvent() async {
     try {
       //todo: Check if user exists

@@ -30,13 +30,19 @@ class AdminView extends StatelessWidget {
             ),
             const SizedBox(height: 20),
             Flexible(
-              child: ListView.builder(
-                itemCount: adminController.reportedEvents.length,
-                itemBuilder: (context, index) {
-                  return EventCard(
-                      event: adminController.reportedEvents[index]);
-                },
-              ),
+              child: Obx(() {
+                if (adminController.isLoading.value) {
+                  return CircularProgressIndicator();
+                }
+                return ListView.builder(
+                  itemCount: adminController.reportedEvents.length,
+                  itemBuilder: (context, index) {
+                    return EventCard(
+                      event: adminController.reportedEvents[index],
+                    );
+                  },
+                );
+              }),
             )
           ],
         ),
@@ -71,7 +77,7 @@ class EventCard extends StatelessWidget {
                       padding: const EdgeInsets.only(right: 16.0),
                       child: SizedBox(
                         width: MediaQuery.of(context).size.width * 2 / 7,
-                        height: MediaQuery.of(context).size.height * 0.15,
+                        height: MediaQuery.of(context).size.height * 0.12,
                         child: ClipRRect(
                           borderRadius: BorderRadius.circular(10.0),
                           child: Image.network(
@@ -143,7 +149,10 @@ class EventCard extends StatelessWidget {
               Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
-                  Text('${event.upvotes}'),
+                  Padding(
+                    padding: const EdgeInsets.all(3.0),
+                    child: Text('${event.upvotes} upvotes'),
+                  ),
                   OutlineButtonMedium(
                     onPressed: () => {
                       Get.toNamed(Routes.adminEventDetials,

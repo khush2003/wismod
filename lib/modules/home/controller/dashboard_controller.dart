@@ -64,7 +64,7 @@ class FourButtonsController extends GetxController {
   final isLoading = true.obs;
   final RxList<Event> events = <Event>[].obs;
   final RxList<Event> _ownedEvents = <Event>[].obs;
-  RxList<Event> _joinedEvents = <Event>[].obs;
+  final RxList<Event> _joinedEvents = <Event>[].obs;
   final RxList<Event> _bookmarkedEvents = <Event>[].obs;
   final RxList<Event> _upcomingEvents = <Event>[].obs;
   final auth = AuthController.instance;

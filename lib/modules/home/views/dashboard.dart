@@ -262,25 +262,30 @@ class DashboardView extends StatelessWidget {
                                             bottomRight: Radius.circular(10),
                                           ),
                                         ),
-                                        child: ListView.builder(
-                                          itemCount: fourButtonsController
-                                              .joinedEvents.length,
-                                          itemBuilder: (context, index) {
-                                            final event = fourButtonsController
-                                                .joinedEvents[index];
-                                            return GestureDetector(
-                                              onTap: () {
-                                                Get.toNamed(Routes.eventDetials,
-                                                    parameters: {
-                                                      'id': event.id!
-                                                    });
-                                              },
-                                              child: OtherActivityBox(
-                                                event: event,
-                                              ),
-                                            );
-                                          },
-                                        ),
+                                        child: fourButtonsController
+                                                .upcomingEvents.isNotEmpty
+                                            ? ListView.builder(
+                                                itemCount: fourButtonsController
+                                                    .joinedEvents.length,
+                                                itemBuilder: (context, index) {
+                                                  final event =
+                                                      fourButtonsController
+                                                          .joinedEvents[index];
+                                                  return GestureDetector(
+                                                    onTap: () {
+                                                      Get.toNamed(
+                                                          Routes.eventDetials,
+                                                          parameters: {
+                                                            'id': event.id!
+                                                          });
+                                                    },
+                                                    child: OtherActivityBox(
+                                                      event: event,
+                                                    ),
+                                                  );
+                                                },
+                                              )
+                                            : const EmptyActivitiesList(),
                                       ),
                                     )
                                   : const SizedBox()),
@@ -340,41 +345,50 @@ class DashboardView extends StatelessWidget {
                                 showSizeBox:
                                     fourButtonsController.showBookmarked,
                               ),
-                              Obx(() => fourButtonsController
-                                      .showBookmarked.value
-                                  ? SizedBox(
-                                      height: 230,
-                                      child: Container(
-                                        padding: const EdgeInsets.all(10),
-                                        decoration: const BoxDecoration(
-                                          color: Color(0xffEAF4F4),
-                                          borderRadius: BorderRadius.only(
-                                            bottomLeft: Radius.circular(10),
-                                            bottomRight: Radius.circular(10),
+                              Obx(
+                                () => fourButtonsController.showBookmarked.value
+                                    ? SizedBox(
+                                        height: 230,
+                                        child: Container(
+                                          padding: const EdgeInsets.all(10),
+                                          decoration: const BoxDecoration(
+                                            color: Color(0xffEAF4F4),
+                                            borderRadius: BorderRadius.only(
+                                              bottomLeft: Radius.circular(10),
+                                              bottomRight: Radius.circular(10),
+                                            ),
                                           ),
-                                        ),
-                                        child: ListView.builder(
-                                          itemCount: fourButtonsController
-                                              .bookmarkedEvents.length,
-                                          itemBuilder: (context, index) {
-                                            final event = fourButtonsController
-                                                .bookmarkedEvents[index];
-                                            return GestureDetector(
-                                              onTap: () {
-                                                Get.toNamed(Routes.eventDetials,
-                                                    parameters: {
-                                                      'id': event.id!
-                                                    });
-                                              },
-                                              child: OtherActivityBox(
-                                                event: event,
-                                              ),
-                                            );
-                                          },
-                                        ),
-                                      ),
-                                    )
-                                  : const SizedBox()),
+                                          child: fourButtonsController
+                                                  .bookmarkedEvents.isNotEmpty
+                                              ? ListView.builder(
+                                                  itemCount:
+                                                      fourButtonsController
+                                                          .bookmarkedEvents
+                                                          .length,
+                                                  itemBuilder:
+                                                      (context, index) {
+                                                    final event =
+                                                        fourButtonsController
+                                                                .bookmarkedEvents[
+                                                            index];
+                                                    return GestureDetector(
+                                                      onTap: () {
+                                                        Get.toNamed(
+                                                            Routes.eventDetials,
+                                                            parameters: {
+                                                              'id': event.id!
+                                                            });
+                                                      },
+                                                      child: OtherActivityBox(
+                                                        event: event,
+                                                      ),
+                                                    );
+                                                  },
+                                                )
+                                              : const EmptyActivitiesList(),
+                                        ))
+                                    : SizedBox(),
+                              ),
                               addVerticalSpace(16),
                               FourButtonsWidget(
                                 activityType: 'Activities You Own',
@@ -395,25 +409,30 @@ class DashboardView extends StatelessWidget {
                                             bottomRight: Radius.circular(10),
                                           ),
                                         ),
-                                        child: ListView.builder(
-                                          itemCount: fourButtonsController
-                                              .ownedEvents.length,
-                                          itemBuilder: (context, index) {
-                                            final event = fourButtonsController
-                                                .ownedEvents[index];
-                                            return GestureDetector(
-                                              onTap: () {
-                                                Get.toNamed(Routes.eventDetials,
-                                                    parameters: {
-                                                      'id': event.id!
-                                                    });
-                                              },
-                                              child: OtherActivityBox(
-                                                event: event,
-                                              ),
-                                            );
-                                          },
-                                        ),
+                                        child: fourButtonsController
+                                                .ownedEvents.isNotEmpty
+                                            ? ListView.builder(
+                                                itemCount: fourButtonsController
+                                                    .ownedEvents.length,
+                                                itemBuilder: (context, index) {
+                                                  final event =
+                                                      fourButtonsController
+                                                          .ownedEvents[index];
+                                                  return GestureDetector(
+                                                    onTap: () {
+                                                      Get.toNamed(
+                                                          Routes.eventDetials,
+                                                          parameters: {
+                                                            'id': event.id!
+                                                          });
+                                                    },
+                                                    child: OtherActivityBox(
+                                                      event: event,
+                                                    ),
+                                                  );
+                                                },
+                                              )
+                                            : const EmptyActivitiesList(),
                                       ),
                                     )
                                   : const SizedBox()),
@@ -428,6 +447,32 @@ class DashboardView extends StatelessWidget {
               ),
       ),
     ));
+  }
+}
+
+class EmptyActivitiesList extends StatelessWidget {
+  const EmptyActivitiesList({Key? key}) : super(key: key);
+
+  @override
+  Widget build(BuildContext context) {
+    return ListView.builder(
+      itemCount: 1,
+      itemBuilder: (context, index) {
+        return const Padding(
+          padding: EdgeInsets.only(top: 107.0),
+          child: Center(
+            child: Text(
+              'You do not have any activities.',
+              style: TextStyle(
+                fontSize: 16,
+                fontWeight: FontWeight.bold,
+                color: Colors.red,
+              ),
+            ),
+          ),
+        );
+      },
+    );
   }
 }
 
@@ -455,6 +500,7 @@ class FourButtonsWidget extends StatelessWidget {
             )
           : BorderRadius.circular(10),
     );
+
     return InkWell(
       onTap: onPressed,
       child: Obx(() => Container(
@@ -466,13 +512,15 @@ class FourButtonsWidget extends StatelessWidget {
                     )
                   : BorderRadius.circular(10),
               boxShadow: [
-                BoxShadow(
-                  color: Colors.grey.withOpacity(0.5),
-                  spreadRadius: 1,
-                  blurRadius: 1,
-                  offset:
-                      const Offset(0, 3), // changes the position of the shadow
-                ),
+                !showSizeBox.value
+                    ? BoxShadow(
+                        color: Colors.grey.withOpacity(0.5),
+                        spreadRadius: 1,
+                        blurRadius: 1,
+                        offset: const Offset(
+                            0, 3), // changes the position of the shadow
+                      )
+                    : const BoxShadow(),
               ],
             ),
             child: Row(

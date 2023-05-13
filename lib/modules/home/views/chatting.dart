@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:wismod/modules/auth/controllers/auth_controller.dart';
-import 'dart:ui' as ui;
 import 'package:wismod/shared/models/message.dart';
 import 'package:wismod/theme/global_widgets.dart';
 import 'package:wismod/theme/theme_data.dart';
@@ -10,6 +9,7 @@ import 'package:wismod/modules/home/controller/message_controller.dart';
 
 const double textTimeMargin = 30;
 
+//TODO: Add a listener to subscibe to the changes in messages. (Show new meessage when another user sends a message)
 class ChattingView extends StatelessWidget {
   ChattingView({super.key});
   final controller = Get.put(MessageController());
@@ -18,38 +18,36 @@ class ChattingView extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Expanded(
-          child: Obx(() => controller.isLoading.value
-              ? const LoadingWidget()
-              : Column(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  crossAxisAlignment: CrossAxisAlignment.center,
-                  mainAxisSize: MainAxisSize.min,
-                  children: [
-                    Text(
-                      controller.eventData.value.title,
-                      style: const TextStyle(
-                        fontSize: 28,
-                        color: Color.fromRGBO(0, 0, 0, 1),
-                        fontWeight: FontWeight.bold,
-                      ),
-                      maxLines: 1,
-                      overflow: TextOverflow.ellipsis,
+        title: Obx(() => controller.isLoading.value
+            ? const LoadingWidget()
+            : Column(
+                mainAxisAlignment: MainAxisAlignment.center,
+                crossAxisAlignment: CrossAxisAlignment.center,
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  Text(
+                    controller.eventData.value.title,
+                    style: const TextStyle(
+                      fontSize: 28,
+                      color: Color.fromRGBO(0, 0, 0, 1),
+                      fontWeight: FontWeight.bold,
                     ),
-                    addVerticalSpace(5),
-                    Text(
-                      controller.eventData.value.eventOwner.name,
-                      style: const TextStyle(
-                        fontSize: 20,
-                        color: Color.fromRGBO(0, 0, 0, 1),
-                        fontWeight: FontWeight.w400,
-                      ),
-                      maxLines: 1,
-                      overflow: TextOverflow.ellipsis,
+                    maxLines: 1,
+                    overflow: TextOverflow.ellipsis,
+                  ),
+                  addVerticalSpace(5),
+                  Text(
+                    controller.eventData.value.eventOwner.name,
+                    style: const TextStyle(
+                      fontSize: 20,
+                      color: Color.fromRGBO(0, 0, 0, 1),
+                      fontWeight: FontWeight.w400,
                     ),
-                  ],
-                )),
-        ),
+                    maxLines: 1,
+                    overflow: TextOverflow.ellipsis,
+                  ),
+                ],
+              )),
         actions: [
           IconButton(
             onPressed: () {
@@ -180,7 +178,7 @@ class ChatBoxEventHost extends StatelessWidget {
                         color: Colors.black,
                         fontSize: 20,
                       ),
-                      textDirection: ui.TextDirection.ltr,
+                      textDirection: TextDirection.ltr,
                       maxLines: 1,
                       overflow: TextOverflow.ellipsis,
                     ),
@@ -270,7 +268,7 @@ class ChatBoxEventHost extends StatelessWidget {
                                     color: Colors.black,
                                     fontSize: 18,
                                   ),
-                                  textDirection: ui.TextDirection.ltr,
+                                  textDirection: TextDirection.ltr,
                                 )
                               ],
                             ),
@@ -345,7 +343,7 @@ class ChatBoxUser extends StatelessWidget {
                   color: Colors.black,
                   fontSize: 20,
                 ),
-                textDirection: ui.TextDirection.rtl,
+                textDirection: TextDirection.rtl,
                 maxLines: 1,
                 overflow: TextOverflow.ellipsis,
               ),
@@ -411,7 +409,7 @@ class ChatBoxUser extends StatelessWidget {
                                 color: Colors.black,
                                 fontSize: 18,
                               ),
-                              textDirection: ui.TextDirection.rtl,
+                              textDirection: TextDirection.rtl,
                             )
                           ],
                         ),

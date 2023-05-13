@@ -3,7 +3,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 class Event {
   final String category;
   final String title;
-  final int upvotes;
+  int upvotes;
   final String? imageUrl;
   final DateTime? eventDate;
   final EventOwner eventOwner;
@@ -13,7 +13,7 @@ class Event {
   final List<String>? members;
   final String location;
   final List<String>? tags;
-  final bool? isReported;
+  bool? isReported;
   final DateTime? createdAt;
   final bool allowAutomaticJoin;
 
@@ -37,20 +37,20 @@ class Event {
   String toString() {
     return 'Event {'
         ' id: $id,'
-        ' category: $category,'
-        ' title: $title,'
-        ' upvotes: $upvotes,'
-        ' imageUrl: $imageUrl,'
-        ' eventDate: $eventDate,'
-        ' eventOwner: $eventOwner,'
-        ' description: $description,'
-        ' totalCapacity: $totalCapacity,'
-        ' members: $members,'
-        ' location: $location,'
-        ' tags: $tags,'
-        ' isReported: $isReported'
-        ' createdAt: $createdAt'
-        ' allowAutomaticJoin: $allowAutomaticJoin'
+        // ' category: $category,'
+        // ' title: $title,'
+        // ' upvotes: $upvotes,'
+        // ' imageUrl: $imageUrl,'
+        // ' eventDate: $eventDate,'
+        // ' eventOwner: $eventOwner,'
+        // ' description: $description,'
+        // ' totalCapacity: $totalCapacity,'
+        // ' members: $members,'
+        // ' location: $location,'
+        // ' tags: $tags,'
+        // ' isReported: $isReported'
+        // ' createdAt: $createdAt'
+        // ' allowAutomaticJoin: $allowAutomaticJoin'
         '}';
   }
 
@@ -62,7 +62,8 @@ class Event {
           EventOwner(name: 'Loading', department: 'Loading', uid: '1', year: 0),
       id: '1',
       title: "Loading",
-      upvotes: 0, description: '',
+      upvotes: 0,
+      description: '',
     );
   }
   factory Event.fromMap(Map<String, dynamic> map, String documentId) {
@@ -94,6 +95,22 @@ class Event {
       isReported: map['IsReported'] as bool?,
     );
   }
+}
+
+bool checkEventInList(String eventId, List<Event> list) {
+  return list.any((event) => event.id == eventId);
+}
+
+Event? getEventInList(String eventId, List<Event> list) {
+  try {
+    return list.where((event) => event.id == eventId).first;
+  } catch (e) {
+    return null;
+  }
+}
+
+int getIndexOfEvent(Event event, List<Event> list) {
+  return list.indexWhere((element) => element.id == event.id);
 }
 
 class EventOwner {

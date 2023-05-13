@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:wismod/modules/auth/controllers/auth_controller.dart';
+import 'package:wismod/modules/home/controller/events_controller.dart';
 import 'package:wismod/shared/models/message.dart';
 import 'package:wismod/shared/services/firebase_firestore_serivce.dart';
 
@@ -8,32 +9,36 @@ import '../../../shared/models/event.dart';
 
 class HomeController extends GetxController {
   static HomeController get instance => Get.find();
+
   final _auth = AuthController.instance;
+  final _firestore = FirebaseService();
+  final _event = EventsController.instance;
+
   final selectedCategory = 'Default'.obs;
-  final firestore = FirebaseService();
+
   final isLoading = true.obs;
-  final RxList<Event> events = <Event>[].obs;
+  // final RxList<Event> events = <Event>[].obs;
   final RxList<Event> filteredEvents = <Event>[].obs;
   late List<String> categoryOptions;
-  final RxList<Event> joinedChatGroupDetails = <Event>[].obs;
   final RxMap<String, Message> latestMessage = <String, Message>{}.obs;
   final TextEditingController searchController = TextEditingController();
   final currentDateSort = 'None'.obs;
 
   @override
-  void onReady() async {
-    categoryOptions = await firestore.getCategories() ?? [];
-    fetchEvents();
-    super.onReady();
+  void onInit() async {
+    categoryOptions = await _firestore.getCategories() ?? [];
+    filteredEvents(_event.events);
+    isLoading(false);
+    super.onInit();
   }
 
   void filterEventsByCategory(String category) {
     searchController.text = '';
     if (category == 'Default') {
-      filteredEvents(events.toList());
+      filteredEvents(_event.events.toList());
     } else {
       final lowercaseCategory = category.toLowerCase();
-      final filterEvents = events.where((event) {
+      final filterEvents = _event.events.where((event) {
         final lowercaseEventCategory = event.category.toLowerCase();
         return lowercaseEventCategory == lowercaseCategory;
       }).toList();
@@ -71,35 +76,14 @@ class HomeController extends GetxController {
     }
   }
 
-  Future<void> _addJoinedChatGroupData() async {
-    final user = _auth.appUser.value;
-    final blockedChatGroups = user.blockedChatGroups ?? [];
-    joinedChatGroupDetails([]);
-
-    if (user.joinedChatGroups != null && user.joinedChatGroups!.isNotEmpty) {
-      final eventsToProcess = events
-          .where((event) => user.joinedChatGroups!.contains(event.id))
-          .toList(); // Get the event data for list of chat groups which are joined
-
-      for (final event in eventsToProcess) {
-        if (!blockedChatGroups.contains(event.id)) {
-          joinedChatGroupDetails.add(event);
-          final latestMessageEvent =
-              await firestore.getLatestMessage(event.id!) ?? Message.empty();
-          latestMessage.addAll({event.id!: latestMessageEvent});
-        }
-      }
-    }
-  }
-
   void searchEvents() {
     if (searchController.text.isEmpty) {
-      filteredEvents(events.toList());
+      filteredEvents(_event.events.toList());
     }
 
     final lowercaseSearchString = searchController.text.toLowerCase();
 
-    final filterEvents = events.where((event) {
+    final filterEvents = _event.events.where((event) {
       final lowercaseTitle = event.title.toLowerCase();
       final lowercaseDescription = event.description.toLowerCase();
       final lowercaseCategory = event.category.toLowerCase();
@@ -124,21 +108,6 @@ class HomeController extends GetxController {
     }).toList();
 
     filteredEvents(filterEvents);
-  }
-
-  Future<void> fetchEvents() async {
-    try {
-      isLoading(true);
-      final eventsTemp = await firestore.getEvents();
-      if (eventsTemp.isNotEmpty) {
-        events(eventsTemp);
-        filteredEvents(eventsTemp);
-        searchController.text = '';
-        await _addJoinedChatGroupData();
-        await _auth.updateUser();
-        isLoading(false);
-      }
-    } finally {}
   }
 
   void setSelectedCategory(String? value) {

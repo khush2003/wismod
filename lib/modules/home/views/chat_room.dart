@@ -1,7 +1,6 @@
 // ignore_for_file: prefer_const_constructors_in_immutables
 
 import 'package:flutter/material.dart';
-import 'package:wismod/modules/auth/controllers/auth_controller.dart';
 import 'package:wismod/utils/app_utils.dart';
 import 'package:get/get.dart';
 
@@ -10,10 +9,12 @@ import 'package:wismod/routes/routes.dart';
 import 'package:wismod/modules/home/controller/home_controller.dart';
 
 import '../../../shared/models/event.dart';
+import '../controller/chat_controller.dart';
 
 class ChatRoomView extends StatelessWidget {
   ChatRoomView({super.key});
   final homeController = Get.put(HomeController());
+  final _chat = ChatController.instance;
 
   @override
   Widget build(BuildContext context) {
@@ -38,17 +39,14 @@ class ChatRoomView extends StatelessWidget {
               : Padding(
                   padding: const EdgeInsets.all(sideWidth),
                   child: SizedBox(
-                    child: ListView.builder(
-                      itemCount: homeController.joinedChatGroupDetails.isNotEmpty
-                          ? homeController.joinedChatGroupDetails.length
-                          : 0,
-                      itemBuilder: (context, index) {
-                        return ChatEvent(
-                            controller: homeController,
-                            event:
-                                homeController.joinedChatGroupDetails[index]);
-                      },
-                    ),
+                    child: Obx(() => ListView.builder(
+                          itemCount: _chat.joinedChatGroupsWithoutBlocks.length,
+                          itemBuilder: (context, index) {
+                            return ChatEvent(
+                                event:
+                                    _chat.joinedChatGroupsWithoutBlocks[index]);
+                          },
+                        )),
                   ),
                 ),
         ));
@@ -57,8 +55,8 @@ class ChatRoomView extends StatelessWidget {
 
 class ChatEvent extends StatelessWidget {
   final Event event;
-  final HomeController controller;
-  ChatEvent({super.key, required this.event, required this.controller});
+  final _chat = ChatController.instance;
+  ChatEvent({super.key, required this.event});
 
   @override
   Widget build(BuildContext context) {
@@ -128,20 +126,22 @@ class ChatEvent extends StatelessWidget {
               ],
             ),
             addVerticalSpace(10),
-            Text(
-              controller.latestMessage[event.id!]!.userName != ''
-                  ? '${controller.latestMessage[event.id!]!.userName}: ${controller.latestMessage[event.id!]!.message}'
-                  : '',
-              style: const TextStyle(
-                fontFamily: "Gotham",
-                fontWeight: FontWeight.w400,
-                color: Colors.black,
-                fontSize: 16,
-              ),
-              maxLines: 1,
-              softWrap: false,
-              overflow: TextOverflow.ellipsis,
-            ),
+            Obx(() => _chat.latestMessages[event.id!] != null
+                ? Text(
+                    _chat.latestMessages[event.id!]!.userName != ''
+                        ? '${_chat.latestMessages[event.id!]!.userName}: ${_chat.latestMessages[event.id!]!.message}'
+                        : '',
+                    style: const TextStyle(
+                      fontFamily: "Gotham",
+                      fontWeight: FontWeight.w400,
+                      color: Colors.black,
+                      fontSize: 16,
+                    ),
+                    maxLines: 1,
+                    softWrap: false,
+                    overflow: TextOverflow.ellipsis,
+                  )
+                : Container()),
             addVerticalSpace(10),
           ],
         ),

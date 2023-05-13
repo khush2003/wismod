@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:wismod/modules/home/controller/events_controller.dart';
 import 'package:wismod/utils/app_utils.dart';
 import 'package:wismod/modules/home/controller/admin_controller.dart';
 import '../../../shared/models/event.dart';
@@ -9,6 +10,7 @@ import '../../../theme/global_widgets.dart';
 class AdminView extends StatelessWidget {
   AdminView({Key? key}) : super(key: key);
   final adminController = Get.put(AdminController());
+  final _event = EventsController.instance;
 
   @override
   Widget build(BuildContext context) {
@@ -34,14 +36,14 @@ class AdminView extends StatelessWidget {
                 if (adminController.isLoading.value) {
                   return CircularProgressIndicator();
                 }
-                return ListView.builder(
-                  itemCount: adminController.reportedEvents.length,
-                  itemBuilder: (context, index) {
-                    return EventCard(
-                      event: adminController.reportedEvents[index],
-                    );
-                  },
-                );
+                return Obx(() => ListView.builder(
+                      itemCount: _event.reportedEvents.length,
+                      itemBuilder: (context, index) {
+                        return EventCard(
+                          event: _event.reportedEvents[index],
+                        );
+                      },
+                    ));
               }),
             )
           ],
@@ -144,23 +146,21 @@ class EventCard extends StatelessWidget {
                       ],
                     ),
                   ),
-                ],
-              ),
-              Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: [
-                  Padding(
-                    padding: const EdgeInsets.all(3.0),
-                    child: Text('${event.upvotes} upvotes'),
-                  ),
-                  OutlineButtonMedium(
-                    onPressed: () => {
-                      Get.toNamed(Routes.adminEventDetials,
-                          parameters: {'id': event.id!})
-                    },
-                    child: const Padding(
-                      padding: EdgeInsets.symmetric(horizontal: 5.0),
-                      child: Text('More'),
+                  Expanded(
+                    child: Column(
+                      mainAxisAlignment: MainAxisAlignment.end,
+                      children: [
+                        OutlineButtonMedium(
+                          onPressed: () => {
+                            Get.toNamed(Routes.eventDetials,
+                                parameters: {'id': event.id!})
+                          },
+                          child: const Padding(
+                            padding: EdgeInsets.symmetric(horizontal: 5.0),
+                            child: Text('More'),
+                          ),
+                        ),
+                      ],
                     ),
                   ),
                 ],

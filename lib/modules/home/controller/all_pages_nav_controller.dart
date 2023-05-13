@@ -5,7 +5,6 @@ enum Pages { homePage, chatPage, dashboardPage, settingsPage, adminPage }
 
 class AllPagesNavController extends GetxController {
   final _auth = AuthController.instance;
-
   late final Rx<int> tabIndex = 0.obs;
   @override
   void onInit() {

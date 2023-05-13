@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:wismod/modules/home/controller/home_controller.dart';
+import 'package:wismod/modules/home/controller/chat_controller.dart';
+import 'package:wismod/modules/home/controller/events_controller.dart';
 import 'package:wismod/modules/home/views/chat_room.dart';
 import 'package:wismod/modules/home/views/home.dart';
 import 'package:wismod/modules/home/views/settings.dart';
@@ -12,7 +13,8 @@ import 'admin.dart';
 class AllPagesNav extends StatelessWidget {
   AllPagesNav({super.key});
   final k = Get.put(AllPagesNavController());
-  final h = Get.put(HomeController());
+  final h = Get.put(EventsController());
+  final i = Get.put(ChatController());
   @override
   Widget build(BuildContext context) {
     return Scaffold(

@@ -138,78 +138,119 @@ class EventDetailView extends StatelessWidget {
                       ),
                     ))),
             ),
-            auth.appUser.value.isAdmin == true
-                ? Container(
-                    decoration: const BoxDecoration(
-                      color: Color(0xffECE4FC),
-                      borderRadius: BorderRadius.only(
-                        topLeft: Radius.circular(20),
-                        topRight: Radius.circular(20),
-                      ),
-                    ),
-                    child: Padding(
-                      padding: const EdgeInsets.all(16),
-                      child: Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                        children: [
-                          Obx(() => ElevatedButton(
-                              onPressed: controller.isJoined.value
-                                  ? null
-                                  : () {
-                                      controller.joinEvent();
-                                    },
-                              child: controller.isJoined.value
-                                  ? const Text('Joined')
-                                  : const Text('Join'))),
-                          ElevatedButton(
-                            onPressed: () {
-                              showDialog(
-                                context: context,
-                                builder: (BuildContext context) {
-                                  return AlertDialog(
-                                    title: Text('Confirmation'),
-                                    content: const Text(
-                                        'Are you sure you want to remove this event?',
-                                        style: TextStyle(
-                                            fontWeight: FontWeight.normal)),
-                                    actions: [
-                                      OutlineButtonMedium(
-                                        child: const Padding(
-                                          padding: EdgeInsets.symmetric(
-                                              vertical: 3.0),
-                                          child: Text('Cancel'),
-                                        ),
-                                        onPressed: () {
-                                          Navigator.of(context).pop();
-                                        },
-                                      ),
-                                      ElevatedButton(
-                                        child: const Text('Remove'),
-                                        style: ElevatedButton.styleFrom(
-                                          backgroundColor: Colors.red,
-                                        ),
-                                        onPressed: () {
-                                          Navigator.of(context).pop();
-                                        },
-                                      ),
-                                    ],
-                                  );
-                                },
-                              );
-                            },
-                            style: ElevatedButton.styleFrom(
-                              backgroundColor: Colors.red,
-                            ),
-                            child: const Text('Remove'),
-                          ),
-                        ],
-                      ),
-                    ),
-                  )
-                : Container(),
+            showAdminBottomBar(controller, context)
           ],
         ));
   }
+}
+
+Widget showAdminBottomBar(
+    EventDetailController controller, BuildContext context) {
+  final auth = AuthController.instance;
+  print("A " + auth.appUser.value.isAdmin.toString());
+  print(controller.eventData.value.isReported);
+  if (auth.appUser.value.isAdmin == true &&
+      controller.eventData.value.isReported == false) {
+    return Container(
+      decoration: const BoxDecoration(
+        color: Color(0xffECE4FC),
+        borderRadius: BorderRadius.only(
+          topLeft: Radius.circular(20),
+          topRight: Radius.circular(20),
+        ),
+      ),
+      child: Padding(
+        padding: const EdgeInsets.all(16),
+        child: Row(
+          mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+          children: [
+            Obx(() => ElevatedButton(
+                onPressed: controller.isJoined.value
+                    ? null
+                    : () {
+                        controller.joinEvent();
+                      },
+                child: controller.isJoined.value
+                    ? const Text('Joined')
+                    : const Text('Join'))),
+            ElevatedButton(
+              onPressed: () {
+                showDialog(
+                  context: context,
+                  builder: (BuildContext context) {
+                    return AlertDialog(
+                      title: const Text('Confirmation'),
+                      content: const Text(
+                          'Are you sure you want to remove this event?',
+                          style: TextStyle(fontWeight: FontWeight.normal)),
+                      actions: [
+                        OutlineButtonMedium(
+                          child: const Padding(
+                            padding: EdgeInsets.symmetric(vertical: 3.0),
+                            child: Text('Cancel'),
+                          ),
+                          onPressed: () {
+                            Navigator.of(context).pop();
+                          },
+                        ),
+                        ElevatedButton(
+                          child: const Text('Remove'),
+                          style: ElevatedButton.styleFrom(
+                            backgroundColor: Colors.red,
+                          ),
+                          onPressed: () {
+                            Navigator.of(context).pop();
+                          },
+                        ),
+                      ],
+                    );
+                  },
+                );
+              },
+              style: ElevatedButton.styleFrom(
+                backgroundColor: Colors.red,
+              ),
+              child: const Text('Remove'),
+            ),
+          ],
+        ),
+      ),
+    );
+  } else if (auth.appUser.value.isAdmin == true &&
+      controller.eventData.value.isReported == true) {
+    return Container(
+      decoration: const BoxDecoration(
+        color: Color(0xffECE4FC),
+        borderRadius: BorderRadius.only(
+          topLeft: Radius.circular(20),
+          topRight: Radius.circular(20),
+        ),
+      ),
+      child: Padding(
+        padding: const EdgeInsets.all(16),
+        child: Row(
+          mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+          children: [
+            ElevatedButton(
+              onPressed: () {
+                controller.reportEventDeny();
+                Navigator.pop(context, 'Done');
+              },
+              child: const Text('Deny'),
+            ),
+            ElevatedButton(
+              onPressed: () {},
+              style: ElevatedButton.styleFrom(
+                backgroundColor: Colors.red,
+              ),
+              child: const Text('Remove'),
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+  return Container();
 }
 
 class ChatBox extends StatelessWidget {
@@ -271,7 +312,7 @@ class ChatBox extends StatelessWidget {
                             fontSize: 22),
                         maxLines: 1,
                         softWrap: false,
-                        overflow: TextOverflow.fade,
+                        overflow: TextOverflow.ellipsis,
                       ),
                       addVerticalSpace(5),
                       Text(
@@ -279,7 +320,7 @@ class ChatBox extends StatelessWidget {
                         style: Theme.of(context).textTheme.bodyMedium,
                         maxLines: 1,
                         softWrap: false,
-                        overflow: TextOverflow.fade,
+                        overflow: TextOverflow.ellipsis,
                       ),
                       addVerticalSpace(5),
                       Text(
@@ -287,7 +328,7 @@ class ChatBox extends StatelessWidget {
                         style: Theme.of(context).textTheme.bodyMedium,
                         maxLines: 1,
                         softWrap: false,
-                        overflow: TextOverflow.fade,
+                        overflow: TextOverflow.ellipsis,
                       ),
                     ],
                   ),

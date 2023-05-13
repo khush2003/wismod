@@ -1,56 +1,52 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:wismod/modules/home/controller/home_controller.dart';
+import 'package:wismod/modules/home/controller/chat_controller.dart';
+import 'package:wismod/modules/home/controller/events_controller.dart';
 import 'package:wismod/shared/models/event.dart';
 import 'package:wismod/shared/models/message.dart';
 import 'package:wismod/shared/services/firebase_firestore_serivce.dart';
 import 'package:wismod/modules/auth/controllers/auth_controller.dart';
-import 'package:wismod/utils/app_utils.dart';
 
 class MessageController extends GetxController {
-  final firestore = FirebaseService();
   final RxList<Message> messages = <Message>[].obs;
   final isLoading = true.obs;
   final _auth = AuthController.instance;
+  final _event = EventsController.instance;
+  final _chat = ChatController.instance;
+  final _firestore = FirebaseService();
   final Rx<Event> eventData = Event.empty().obs;
 
   final TextEditingController messageTextController = TextEditingController();
 
   @override
   void onInit() async {
-    fetchMessages();
+    await _initialize();
     super.onInit();
   }
 
-  void blockChatGroup() async {
+  Future<void> fetchMessages(Event event) async {
+    messages.clear();
     try {
-      final eventId = Get.parameters['id'] ?? '2l8UVLQgFin3dthssdlI';
-      await firestore.blockChatGroup(_auth.firebaseUser.value!.uid, eventId);
-      await HomeController.instance.fetchEvents();
-      Get.back();
-      sucessSnackBar("Sucessfully blocked this chat group!");
-    } on Exception catch (e) {
-      errorSnackBar(e.toString());
-    }
+      var messageTemp = await _firestore.getMessages(event.id!);
+      messages(messageTemp);
+    } finally {}
   }
 
-  void fetchMessages() async {
-    try {
-      final eventId = Get.parameters['id'] ?? '2l8UVLQgFin3dthssdlI';
-      isLoading(true);
-      var messageTemp = await firestore.getMessages(eventId);
-      var eventTemp = await firestore.getEvent(eventId);
-      if (eventTemp != null) {
-        eventData(eventTemp);
-        messages(messageTemp);
-        isLoading(false);
-      }
-    } finally {}
+  Future<void> _initialize() async {
+    isLoading(true);
+    final eventId = Get.parameters['id'] ?? '2l8UVLQgFin3dthssdlI';
+    eventData(_event.events.where((event) => event.id == eventId).first);
+    await fetchMessages(eventData.value);
+    isLoading(false);
+  }
+
+  void blockChatGroup() async {
+    _chat.blockChatGroup(eventData.value);
+    Get.back();
   }
 
   void createMessage() async {
     try {
-      isLoading(true);
       final message = Message(
         profilePicture: _auth.appUser.value.profilePicture,
         userName: _auth.appUser.value.getName(),
@@ -60,13 +56,13 @@ class MessageController extends GetxController {
         sentBy: _auth.firebaseUser.value!.uid,
       );
       await FirebaseService().addMessage(message);
-      fetchMessages();
       messageTextController.text = "";
-      await HomeController.instance.fetchEvents();
+      messages.add(message);
+      ChatController.instance.latestMessages
+          .addAll({eventData.value.id!: message});
     } catch (e) {
       Get.snackbar('Error', 'Message has not been sent!',
           backgroundColor: Colors.red, snackPosition: SnackPosition.BOTTOM);
     }
-    isLoading(false);
   }
 }

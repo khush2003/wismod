@@ -1,152 +1,89 @@
-import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:wismod/modules/auth/controllers/auth_controller.dart';
-import 'package:wismod/modules/home/controller/all_pages_nav_controller.dart';
-import 'package:wismod/modules/home/controller/home_controller.dart';
-import 'package:wismod/routes/routes.dart';
+import 'package:wismod/modules/home/controller/events_controller.dart';
 import 'package:wismod/shared/models/event.dart';
-import 'package:wismod/shared/services/firebase_firestore_serivce.dart';
-import 'package:wismod/utils/app_utils.dart';
+import 'chat_controller.dart';
 
 class EventDetailController extends GetxController {
-  final firestore = FirebaseService();
   final Rx<Event> eventData = Event.empty().obs;
   final isLoading = true.obs;
-  final _auth = AuthController.instance;
+
+  final _event = EventsController.instance;
+  final _chat = ChatController.instance;
+
   final Rx<bool> isJoined = false.obs;
   final Rx<bool> isUpvoted = false.obs;
   final Rx<bool> isBookmarked = false.obs;
+
   final tags = <String>[].obs;
 
   @override
-  void onReady() async {
-    fetchEvent();
+  void onInit() async {
+    setEvent();
+    super.onInit();
+  }
 
-    super.onReady();
+  void setEvent() {
+    isLoading(true);
+    var eventId = Get.parameters['id'] ?? '2l8UVLQgFin3dthssdlI';
+    eventData(_event.events.where((event) => event.id == eventId).first);
+    setIsJoined();
+    setIsUpvoted();
+    setIsBookmarked();
+    tags(eventData.value.tags);
+    isLoading(false);
   }
 
   void setIsUpvoted() {
-    if (_auth.appUser.value.upvotedEvents != null) {
-      _auth.appUser.value.upvotedEvents!.contains(eventData.value.id)
-          ? isUpvoted(true)
-          : isUpvoted(false);
+    if (checkEventInList(eventData.value.id!, _event.upvotedEvents)) {
+      print('eventInList');
+      isUpvoted(true);
+    } else {
+      print('eventNotInList');
+      isUpvoted(false);
     }
   }
 
   void setIsJoined() {
-    if (_auth.appUser.value.joinedEvents != null) {
-      _auth.appUser.value.joinedEvents!.contains(eventData.value.id)
-          ? isJoined(true)
-          : isJoined(false);
+    if (checkEventInList(eventData.value.id!, _event.joinedEvents)) {
+      isJoined(true);
+    } else {
+      isJoined(false);
     }
   }
 
   void setIsBookmarked() {
-    if (_auth.appUser.value.bookmarkedEvents != null) {
-      _auth.appUser.value.bookmarkedEvents!.contains(eventData.value.id)
-          ? isBookmarked(true)
-          : isBookmarked(false);
+    if (_event.bookmarkedEvents
+        .any((event) => event.id == eventData.value.id)) {
+      isBookmarked(true);
+    } else {
+      isBookmarked(false);
     }
   }
 
   void upvoteEvent() async {
-    try {
-      await firestore.upvoteEvent(
-          _auth.firebaseUser.value!.uid, eventData.value.id!);
-      await _auth.updateUser();
-      fetchEvent(); //TODO: try to make it faster
-      Get.snackbar("Sucess!", 'You have sucessfully upvoted this event',
-          snackPosition: SnackPosition.BOTTOM, backgroundColor: Colors.green);
-    } catch (e) {
-      Get.snackbar("Error!", e.toString(),
-          snackPosition: SnackPosition.BOTTOM, backgroundColor: Colors.red);
-    }
+    _event.upvoteEvent(eventData.value);
+    setIsUpvoted();
   }
 
   void reportEvent() async {
-    try {
-      await firestore.reportEvent(eventData.value.id!);
-      fetchEvent();
-      Get.snackbar("Sucess!", 'You have sucessfully reported this event!',
-          snackPosition: SnackPosition.BOTTOM, backgroundColor: Colors.green);
-    } catch (e) {
-      Get.snackbar("Error!", e.toString(),
-          snackPosition: SnackPosition.BOTTOM, backgroundColor: Colors.red);
-    }
+    _event.reportEvent(eventData.value);
   }
 
   void reportEventDeny() async {
-    try {
-      await firestore.reportEventDeny(eventData.value.id!);
-      fetchEvent();
-      Get.snackbar("Sucess!", 'You have sucessfully deny this reported event!',
-          snackPosition: SnackPosition.BOTTOM, backgroundColor: Colors.green);
-    } catch (e) {
-      Get.snackbar("Error!", e.toString(),
-          snackPosition: SnackPosition.BOTTOM, backgroundColor: Colors.red);
-    }
+    _event.reportEventDeny(eventData.value);
   }
 
   void joinEvent() async {
-    try {
-      //todo: Check if user exists
-      await firestore.joinEvent(
-          _auth.firebaseUser.value!.uid, eventData.value.id!);
-      await _auth.updateUser();
-      setIsJoined();
-      sucessSnackBar('You have sucessfully joined this event');
-    } catch (e) {
-      errorSnackBar(e.toString());
-    }
+    _event.joinEvent(eventData.value);
+    setIsJoined();
   }
 
   void bookmarkEvent() async {
-    try {
-      //todo: Check if user exists
-      await firestore.bookmarkEvent(
-          _auth.firebaseUser.value!.uid, eventData.value.id!);
-      await _auth.updateUser();
-      setIsBookmarked();
-      sucessSnackBar('You have sucessfully bookmarked this event');
-    } catch (e) {
-      errorSnackBar(e.toString());
-    }
-  }
-
-  void fetchEvent() async {
-    try {
-      isLoading(true);
-      var eventTemp = await firestore
-          .getEvent(Get.parameters['id'] ?? '2l8UVLQgFin3dthssdlI');
-      if (eventTemp != null) {
-        eventData(eventTemp);
-        setIsJoined();
-        setIsUpvoted();
-        setIsBookmarked();
-        tags(eventData.value.tags);
-        isLoading(false);
-      }
-      await HomeController.instance.fetchEvents();
-    } finally {}
+    _event.bookmarkEvent(eventData.value);
+    setIsBookmarked();
   }
 
   void chatGroupAdd() async {
-    try {
-      await firestore.joinChatGroup(
-          _auth.firebaseUser.value!.uid, eventData.value.id!);
-      Get.toNamed(Routes.chatting, parameters: {'id': eventData.value.id!});
-      sucessSnackBar("Joined ChatGroup Sucessfully!");
-      try {
-        //TODO: Fix no Update event when adding event through eventDetails
-        await _auth.updateUser();
-        await HomeController.instance.fetchEvents();
-      } finally {}
-    } catch (e) {
-      errorSnackBar("There was an error");
-    }
-  }
-
-  Future<void> updateHomeScreen() async {
-    await HomeController.instance.fetchEvents();
+    _chat.joinChatGroup(eventData.value);
   }
 }

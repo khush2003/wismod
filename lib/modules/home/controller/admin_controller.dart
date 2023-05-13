@@ -9,30 +9,14 @@ class AdminController extends GetxController {
   final selectedCategory = 'Default'.obs;
   final firestore = FirebaseService();
   final isLoading = true.obs;
-  final RxList<Event> events = <Event>[].obs;
-  final List<Event> _reportedEvents = [];
 
-  List<Event> get reportedEvents => _reportedEvents;
   late List<String> categoryOptions;
 
   @override
   void onReady() async {
     categoryOptions = await firestore.getCategories() ?? [];
-    fetchEvents();
+    isLoading(false);
     super.onReady();
-  }
-
-  void fetchEvents() async {
-    try {
-      isLoading(true);
-      final eventsTemp = await firestore.getEvents();
-      if (eventsTemp.isNotEmpty) {
-        _reportedEvents.clear();
-        _reportedEvents
-            .addAll(eventsTemp.where((event) => event.isReported == true));
-        isLoading(false);
-      }
-    } finally {}
   }
 
   void logOut() {

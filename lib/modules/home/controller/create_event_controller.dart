@@ -4,6 +4,7 @@ import 'package:get/get.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:flutter/material.dart';
 import 'package:wismod/modules/auth/controllers/auth_controller.dart';
+import 'package:wismod/modules/home/controller/events_controller.dart';
 import 'package:wismod/shared/models/event.dart';
 import 'package:wismod/shared/services/firebase_firestore_serivce.dart';
 
@@ -132,6 +133,8 @@ class CreateEventController extends GetxController {
     Get.snackbar('Sucess', 'Event was created sucessfulyy!',
         backgroundColor: Colors.green, snackPosition: SnackPosition.BOTTOM);
     Get.offAllNamed(Routes.allPagesNav);
+    EventsController.instance.events.add(event);
+    EventsController.instance.initializeLists();
     // } catch (e) {
     //   print(e);
     //   Get.snackbar('Error',

@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:wismod/modules/auth/controllers/auth_controller.dart';
+import 'package:wismod/modules/home/controller/events_controller.dart';
 import 'package:wismod/utils/app_utils.dart';
 import 'package:wismod/modules/home/controller/dashboard_controller.dart';
 
@@ -12,7 +13,8 @@ class DashboardView extends StatelessWidget {
   DashboardView({super.key});
   final profilePictureController = Get.put(ProfilePictureController());
   final fourButtonsController = Get.put(FourButtonsController());
-  final auth = AuthController.instance;
+  final _auth = AuthController.instance;
+  final _event = EventsController.instance;
   @override
   Widget build(BuildContext context) {
     return Center(
@@ -45,7 +47,7 @@ class DashboardView extends StatelessWidget {
                             CircleAvatar(
                               radius: 90,
                               backgroundImage: Image.network(
-                                      auth.appUser.value.profilePicture ??
+                                      _auth.appUser.value.profilePicture ??
                                           placeholderImage,
                                       errorBuilder:
                                           (context, error, stackTrace) =>
@@ -60,20 +62,20 @@ class DashboardView extends StatelessWidget {
                             Column(
                               children: [
                                 Text(
-                                  auth.appUser.value.getName(),
+                                  _auth.appUser.value.getName(),
                                   textAlign: TextAlign.center,
                                   style:
                                       Theme.of(context).textTheme.displayLarge,
                                 ),
                                 addVerticalSpace(),
                                 Text(
-                                  auth.appUser.value.department,
+                                  _auth.appUser.value.department,
                                   textAlign: TextAlign.center,
                                   style: Theme.of(context).textTheme.bodyMedium,
                                 ),
                                 addVerticalSpace(),
                                 Text(
-                                  'Year ${auth.appUser.value.year}',
+                                  'Year ${_auth.appUser.value.year}',
                                   textAlign: TextAlign.center,
                                   style: Theme.of(context).textTheme.bodyMedium,
                                 ),
@@ -189,20 +191,19 @@ class DashboardView extends StatelessWidget {
                                   crossAxisAlignment: CrossAxisAlignment.start,
                                   children: [
                                     const Text(
-                                      'Total Joined Activities',
+                                      'Joined Events',
                                       style: TextStyle(
                                         fontWeight: FontWeight.bold,
-                                        fontSize: 13,
+                                        fontSize: 18,
                                       ),
                                     ),
                                     addVerticalSpace(),
                                     Text(
-                                      '${auth.appUser.value.joinedEvents != null ? auth.appUser.value.joinedEvents!.length : 0} Activities',
-                                      style: const TextStyle(
-                                        fontWeight: FontWeight.normal,
-                                        fontSize: 10,
-                                      ),
-                                    )
+                                      '${_event.joinedEvents.length} Events',
+                                      style: Theme.of(context)
+                                          .textTheme
+                                          .bodyMedium,
+                                    ),
                                   ],
                                 ),
                               ),
@@ -220,20 +221,17 @@ class DashboardView extends StatelessWidget {
                                 child: Column(
                                   crossAxisAlignment: CrossAxisAlignment.start,
                                   children: [
-                                    const Text(
-                                      'Total Upvote Activities',
-                                      style: TextStyle(
-                                        fontWeight: FontWeight.bold,
-                                        fontSize: 13,
-                                      ),
-                                    ),
+                                    const Text('Upvoted Events',
+                                        style: TextStyle(
+                                          fontWeight: FontWeight.bold,
+                                          fontSize: 18,
+                                        )),
                                     addVerticalSpace(),
                                     Text(
-                                      '${auth.appUser.value.upvotedEvents != null ? auth.appUser.value.upvotedEvents!.length : 0} Upvotes',
-                                      style: const TextStyle(
-                                        fontWeight: FontWeight.normal,
-                                        fontSize: 10,
-                                      ),
+                                      '${_event.upvotedEvents.length} Upvotes',
+                                      style: Theme.of(context)
+                                          .textTheme
+                                          .bodyMedium,
                                     ),
                                   ],
                                 ),
@@ -244,13 +242,12 @@ class DashboardView extends StatelessWidget {
                           Column(
                             children: [
                               FourButtonsWidget(
-                                activityType: 'Upcoming Activities',
-                                activityNumber:
-                                    fourButtonsController.joinedEvents.length,
-                                onPressed: fourButtonsController.toggleUpcoming,
-                                showSizeBox: fourButtonsController.showUpcoming,
+                                activityType: 'Joined Events',
+                                activityNumber: _event.joinedEvents.length,
+                                onPressed: fourButtonsController.toggleJoined,
+                                showSizeBox: fourButtonsController.showJoined,
                               ),
-                              Obx(() => fourButtonsController.showUpcoming.value
+                              Obx(() => fourButtonsController.showJoined.value
                                   ? SizedBox(
                                       height: 230,
                                       child: Container(
@@ -262,15 +259,13 @@ class DashboardView extends StatelessWidget {
                                             bottomRight: Radius.circular(10),
                                           ),
                                         ),
-                                        child: fourButtonsController
-                                                .upcomingEvents.isNotEmpty
+                                        child: _event.joinedEvents.isNotEmpty
                                             ? ListView.builder(
-                                                itemCount: fourButtonsController
-                                                    .joinedEvents.length,
+                                                itemCount:
+                                                    _event.joinedEvents.length,
                                                 itemBuilder: (context, index) {
-                                                  final event =
-                                                      fourButtonsController
-                                                          .joinedEvents[index];
+                                                  final event = _event
+                                                      .joinedEvents[index];
                                                   return GestureDetector(
                                                     onTap: () {
                                                       Get.toNamed(
@@ -285,13 +280,13 @@ class DashboardView extends StatelessWidget {
                                                   );
                                                 },
                                               )
-                                            : const EmptyActivitiesList(),
+                                            : const EmptyEventsList(),
                                       ),
                                     )
                                   : const SizedBox()),
                               addVerticalSpace(16),
                               FourButtonsWidget(
-                                activityType: 'Requested Activities',
+                                activityType: 'Requested Events',
                                 activityNumber: 1,
                                 onPressed:
                                     fourButtonsController.toggleRequested,
@@ -337,9 +332,8 @@ class DashboardView extends StatelessWidget {
                                   : const SizedBox()),
                               addVerticalSpace(16),
                               FourButtonsWidget(
-                                activityType: 'Bookmarked Activities',
-                                activityNumber: fourButtonsController
-                                    .bookmarkedEvents.length,
+                                activityType: 'Bookmarked Events',
+                                activityNumber: _event.bookmarkedEvents.length,
                                 onPressed:
                                     fourButtonsController.toggleBookmarked,
                                 showSizeBox:
@@ -358,18 +352,15 @@ class DashboardView extends StatelessWidget {
                                               bottomRight: Radius.circular(10),
                                             ),
                                           ),
-                                          child: fourButtonsController
+                                          child: _event
                                                   .bookmarkedEvents.isNotEmpty
                                               ? ListView.builder(
-                                                  itemCount:
-                                                      fourButtonsController
-                                                          .bookmarkedEvents
-                                                          .length,
+                                                  itemCount: _event
+                                                      .bookmarkedEvents.length,
                                                   itemBuilder:
                                                       (context, index) {
                                                     final event =
-                                                        fourButtonsController
-                                                                .bookmarkedEvents[
+                                                        _event.bookmarkedEvents[
                                                             index];
                                                     return GestureDetector(
                                                       onTap: () {
@@ -385,15 +376,14 @@ class DashboardView extends StatelessWidget {
                                                     );
                                                   },
                                                 )
-                                              : const EmptyActivitiesList(),
+                                              : const EmptyEventsList(),
                                         ))
                                     : SizedBox(),
                               ),
                               addVerticalSpace(16),
                               FourButtonsWidget(
-                                activityType: 'Activities You Own',
-                                activityNumber:
-                                    fourButtonsController.ownedEvents.length,
+                                activityType: 'Events You Own',
+                                activityNumber: _event.ownedEvents.length,
                                 onPressed: fourButtonsController.toggleOwn,
                                 showSizeBox: fourButtonsController.showOwn,
                               ),
@@ -409,15 +399,13 @@ class DashboardView extends StatelessWidget {
                                             bottomRight: Radius.circular(10),
                                           ),
                                         ),
-                                        child: fourButtonsController
-                                                .ownedEvents.isNotEmpty
+                                        child: _event.ownedEvents.isNotEmpty
                                             ? ListView.builder(
-                                                itemCount: fourButtonsController
-                                                    .ownedEvents.length,
+                                                itemCount:
+                                                    _event.ownedEvents.length,
                                                 itemBuilder: (context, index) {
                                                   final event =
-                                                      fourButtonsController
-                                                          .ownedEvents[index];
+                                                      _event.ownedEvents[index];
                                                   return GestureDetector(
                                                     onTap: () {
                                                       Get.toNamed(
@@ -432,7 +420,7 @@ class DashboardView extends StatelessWidget {
                                                   );
                                                 },
                                               )
-                                            : const EmptyActivitiesList(),
+                                            : const EmptyEventsList(),
                                       ),
                                     )
                                   : const SizedBox()),
@@ -450,8 +438,8 @@ class DashboardView extends StatelessWidget {
   }
 }
 
-class EmptyActivitiesList extends StatelessWidget {
-  const EmptyActivitiesList({Key? key}) : super(key: key);
+class EmptyEventsList extends StatelessWidget {
+  const EmptyEventsList({Key? key}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -462,7 +450,7 @@ class EmptyActivitiesList extends StatelessWidget {
           padding: EdgeInsets.only(top: 107.0),
           child: Center(
             child: Text(
-              'You do not have any activities.',
+              'You do not have any Events.',
               style: TextStyle(
                 fontSize: 16,
                 fontWeight: FontWeight.bold,

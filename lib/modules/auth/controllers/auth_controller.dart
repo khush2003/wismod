@@ -13,6 +13,8 @@ class AuthController extends GetxController {
   final _firestore = FirebaseService();
   final appUser = AppUser.empty().obs;
 
+  AppUser get user => appUser.value;
+
   /// A reactive variable that holds the currently signed-in user
   late Rx<User?> firebaseUser;
 

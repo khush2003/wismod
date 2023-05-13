@@ -1,8 +1,5 @@
-import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:wismod/modules/home/controller/home_controller.dart';
 import 'package:wismod/utils/app_utils.dart';
-import '../../../shared/models/event.dart';
 
 import 'dart:io';
 import 'package:firebase_storage/firebase_storage.dart';

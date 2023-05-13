@@ -378,7 +378,7 @@ class DashboardView extends StatelessWidget {
                                                 )
                                               : const EmptyEventsList(),
                                         ))
-                                    : SizedBox(),
+                                    : const SizedBox(),
                               ),
                               addVerticalSpace(16),
                               FourButtonsWidget(

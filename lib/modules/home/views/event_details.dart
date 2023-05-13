@@ -147,8 +147,7 @@ class EventDetailView extends StatelessWidget {
 Widget showAdminBottomBar(
     EventDetailController controller, BuildContext context) {
   final auth = AuthController.instance;
-  print("A " + auth.appUser.value.isAdmin.toString());
-  print(controller.eventData.value.isReported);
+
   if (auth.appUser.value.isAdmin == true &&
       controller.eventData.value.isReported == false) {
     return Container(
@@ -194,13 +193,13 @@ Widget showAdminBottomBar(
                           },
                         ),
                         ElevatedButton(
-                          child: const Text('Remove'),
                           style: ElevatedButton.styleFrom(
                             backgroundColor: Colors.red,
                           ),
                           onPressed: () {
                             Navigator.of(context).pop();
                           },
+                          child: const Text('Remove'),
                         ),
                       ],
                     );

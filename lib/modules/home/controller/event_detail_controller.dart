@@ -35,10 +35,8 @@ class EventDetailController extends GetxController {
 
   void setIsUpvoted() {
     if (checkEventInList(eventData.value.id!, _event.upvotedEvents)) {
-      print('eventInList');
       isUpvoted(true);
     } else {
-      print('eventNotInList');
       isUpvoted(false);
     }
   }

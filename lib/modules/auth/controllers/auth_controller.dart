@@ -1,5 +1,4 @@
 import 'package:firebase_auth/firebase_auth.dart';
-import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:wismod/shared/models/user.dart';
 import 'package:wismod/shared/services/firebase_firestore_serivce.dart';

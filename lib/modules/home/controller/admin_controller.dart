@@ -2,7 +2,6 @@ import 'package:get/get.dart';
 import 'package:wismod/modules/auth/controllers/auth_controller.dart';
 import 'package:wismod/shared/services/firebase_firestore_serivce.dart';
 
-import '../../../shared/models/event.dart';
 
 class AdminController extends GetxController {
   final _auth = AuthController.instance;

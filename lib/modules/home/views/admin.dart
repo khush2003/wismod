@@ -34,7 +34,7 @@ class AdminView extends StatelessWidget {
             Flexible(
               child: Obx(() {
                 if (adminController.isLoading.value) {
-                  return CircularProgressIndicator();
+                  return const LoadingWidget();
                 }
                 return Obx(() => ListView.builder(
                       itemCount: _event.reportedEvents.length,

@@ -42,6 +42,12 @@ class EventsController extends GetxController {
     try {
       final eventsTemp = await _firestore.getEvents();
       if (eventsTemp.isNotEmpty) {
+        // For now removing every event whose deadline has passed
+        final currentDate = DateTime.now();
+        final today =
+            DateTime(currentDate.year, currentDate.month, currentDate.day);
+        eventsTemp
+            .removeWhere((event) => event.eventDate?.isBefore(today) ?? false);
         events(eventsTemp);
       }
     } finally {}
@@ -63,7 +69,6 @@ class EventsController extends GetxController {
           events.where((event) => tempBookmarkedEvents.contains(event.id)));
     }
   }
-
 
   void _setRequestedEvents(AppUser user) {
     requestedEvents.clear();

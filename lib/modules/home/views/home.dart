@@ -6,6 +6,7 @@ import 'package:wismod/utils/app_utils.dart';
 import '../../../routes/routes.dart';
 import '../../../shared/models/event.dart';
 import '../../../theme/global_widgets.dart';
+import 'filter_options.dart';
 
 class HomeView extends StatelessWidget {
   HomeView({super.key});
@@ -149,9 +150,7 @@ class FilterButton extends StatelessWidget {
     return IconButton(
         padding: const EdgeInsets.all(0),
         onPressed: () {
-          Get.toNamed(
-            Routes.filterOptions,
-          );
+          Get.bottomSheet(FilterOptionsView());
         },
         icon: const Icon(
           Icons.filter_alt_outlined,

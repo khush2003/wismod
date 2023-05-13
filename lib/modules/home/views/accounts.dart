@@ -6,7 +6,6 @@ import '../controller/account_controller.dart';
 import '../../../routes/routes.dart';
 import '../../../utils/app_utils.dart';
 
-//TODO: Form validation
 class AccountsView extends StatelessWidget {
   AccountsView({super.key});
   final AccountController accountController = Get.put(AccountController());

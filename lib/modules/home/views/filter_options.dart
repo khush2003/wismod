@@ -5,40 +5,25 @@ import 'package:wismod/utils/app_utils.dart';
 
 import '../controller/home_controller.dart';
 
-
 class FilterOptionsView extends StatelessWidget {
   FilterOptionsView({super.key});
   final homeController = Get.find<HomeController>();
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-        body: SingleChildScrollView(
-            child: Padding(
+    return Container(
+      height: 250,
       padding: const EdgeInsets.all(sideWidth),
+      decoration: const BoxDecoration(
+          color: Colors.white,
+          borderRadius: BorderRadius.vertical(top: Radius.circular(30))),
       child: Center(
         child: Column(
           children: [
-            Row(
-              mainAxisAlignment: MainAxisAlignment.end,
-              children: [
-                IconButton(
-                    onPressed: () {
-                      Get.back();
-                    },
-                    icon: const Icon(Icons.close)),
-              ],
-            ),
             DropDownCustom(homeController: homeController),
-            // addVerticalSpace(),
-            // SizedBox(
-            //   width: MediaQuery.of(context).size.width * 0.5,
-            //   child: OutlineButtonMedium(
-            //       child: const Text("Location"), onPressed: () {}),
-            // ),
             addVerticalSpace(),
             SizedBox(
-              width: MediaQuery.of(context).size.width * 0.5,
+              width: MediaQuery.of(context).size.width * 0.7,
               child: Obx(() => OutlineButtonMedium(
                   child:
                       Text("Sort by Date : ${homeController.currentDateSort}"),
@@ -46,10 +31,13 @@ class FilterOptionsView extends StatelessWidget {
                     homeController.sortEventsByDate();
                   })),
             ),
+            const Spacer(),
+            PrimaryButtonMedium(
+                child: const Text("Apply"), onPressed: () => Get.back())
           ],
         ),
       ),
-    )));
+    );
   }
 }
 
@@ -62,7 +50,7 @@ class DropDownCustom extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return SizedBox(
-      width: MediaQuery.of(context).size.width * 0.5,
+      width: MediaQuery.of(context).size.width * 0.7,
       child: DropdownButtonFormField<String>(
         value: homeController.selectedCategory.value,
         items: homeController.categoryOptions.map((category) {

@@ -25,7 +25,6 @@ abstract class Routes {
   static const String notficaition = '/notficaition';
   static const String blockList = '/blockList';
   static const String eventDetials = '/eventDetails';
-  static const String filterOptions = '/filterOptions';
   static const String chatting = '/chatting';
   // Add page string (route) here
 }
@@ -44,11 +43,6 @@ final getPages = [
   GetPage(name: Routes.notficaition, page: () => NotificationView()),
   GetPage(name: Routes.blockList, page: () => BlockListView()),
   GetPage(name: Routes.eventDetials, page: () => EventDetailView()),
-  //
-  GetPage(
-      name: Routes.filterOptions,
-      page: () => FilterOptionsView(),
-      transition: Transition.rightToLeft),
   GetPage(name: Routes.chatting, page: () => ChattingView()),
   // Initialize route here
 ];

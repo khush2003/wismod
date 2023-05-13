@@ -45,7 +45,6 @@ class HomeController extends GetxController {
       filteredEvents(filterEvents);
     }
   }
-  //TODO: Change cross to save
   void sortEventsByDate() {
     if (currentDateSort.value == 'Ascending') {
       currentDateSort('Descending');

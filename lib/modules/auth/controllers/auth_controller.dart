@@ -74,10 +74,7 @@ class AuthController extends GetxController {
       _firestore.addUser(confirmedUser);
       appUser(confirmedUser);
       Get.offAllNamed(Routes.allPagesNav);
-      Get.snackbar("Sucess", "Account Created Sucessfully!",
-          snackPosition: SnackPosition.BOTTOM,
-          backgroundColor: Colors.green,
-          colorText: Colors.white);
+      sucessSnackBar("Account Created Sucessfully!");
     } on FirebaseAuthException catch (e) {
       return getAuthErrorMessage(e.code);
     } catch (_) {
@@ -102,11 +99,7 @@ class AuthController extends GetxController {
       } else {
         throw Exception();
       }
-      Get.snackbar("Sucess", "Login Sucessful",
-          snackPosition: SnackPosition.BOTTOM,
-          backgroundColor: Colors.green,
-          colorText: Colors.white);
-      Get.offAllNamed(Routes.allPagesNav);
+      sucessSnackBar("Login Sucess!");
     } on FirebaseAuthException catch (e) {
       return getAuthErrorMessage(e.code);
     } catch (_) {
@@ -126,8 +119,7 @@ class AuthController extends GetxController {
 
   Future<void> sendEmailVerification() async {
     await _auth.currentUser?.sendEmailVerification();
-    Get.snackbar("Sucess", "Email Verification Sent! Please Check your Email",
-        backgroundColor: Colors.green, colorText: Colors.white);
+    sucessSnackBar("Email verification sent!");
   }
 
   /// Checks whether there is a currently signed-in user

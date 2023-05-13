@@ -45,7 +45,8 @@ class SignUpController extends GetxController {
   @override
   void onInit() async {
     super.onInit();
-    departmentOptions(await FirebaseService().getDepartments() ?? departmentOptions);
+    departmentOptions(
+        await FirebaseService().getDepartments() ?? departmentOptions);
   }
 
   Future<void>? registerUser() async {
@@ -59,19 +60,11 @@ class SignUpController extends GetxController {
           year: int.parse(yearController.text));
       String? error = await _auth.createUser(email, password, user);
       if (error != null) {
-        Get.snackbar('Error', error.toString(),
-            snackPosition: SnackPosition.BOTTOM,
-            backgroundColor: Colors.red,
-            colorText: Colors.white);
+        errorSnackBar(error.toString());
       }
     } else {
-      Get.snackbar(
-        'Error',
-        'Please fill in all the fields correctly to create an account.',
-        snackPosition: SnackPosition.BOTTOM,
-        backgroundColor: Colors.red,
-        colorText: Colors.white,
-      );
+      errorSnackBar(
+          'Please fill in all the fields correctly to create an account.');
     }
   }
 

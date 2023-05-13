@@ -6,6 +6,7 @@ import 'package:wismod/shared/models/event.dart';
 import 'package:wismod/shared/models/message.dart';
 import 'package:wismod/shared/services/firebase_firestore_serivce.dart';
 import 'package:wismod/modules/auth/controllers/auth_controller.dart';
+import 'package:wismod/utils/app_utils.dart';
 
 class MessageController extends GetxController {
   final RxList<Message> messages = <Message>[].obs;
@@ -61,8 +62,7 @@ class MessageController extends GetxController {
       ChatController.instance.latestMessages
           .addAll({eventData.value.id!: message});
     } catch (e) {
-      Get.snackbar('Error', 'Message has not been sent!',
-          backgroundColor: Colors.red, snackPosition: SnackPosition.BOTTOM);
+      errorSnackBar('Message has not been sent!');
     }
   }
 }

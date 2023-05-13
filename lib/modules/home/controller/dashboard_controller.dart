@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:wismod/modules/home/controller/home_controller.dart';
+import 'package:wismod/utils/app_utils.dart';
 import '../../../shared/models/event.dart';
 
 import 'dart:io';
@@ -27,9 +28,8 @@ class ProfilePictureController extends GetxController {
           _auth.firebaseUser.value!.uid, imageUrl.value);
       return !isPassed;
     } catch (e) {
-      Get.snackbar("Error",
-          "An unknown error occured! Please make sure to login and select a proper image file!",
-          snackPosition: SnackPosition.BOTTOM, backgroundColor: Colors.red);
+      errorSnackBar(
+          "An unknown error occured! Please make sure to login and select a proper image file!");
       return isPassed;
     }
   }
@@ -48,7 +48,7 @@ class ProfilePictureController extends GetxController {
       var downloadUrl = await snapshot.ref.getDownloadURL();
       imageUrl(downloadUrl);
     } else {
-      Get.snackbar("Error!", "No image chosen or image corrupted");
+      errorSnackBar("No image chosen or image corrupted");
       return;
     }
   }

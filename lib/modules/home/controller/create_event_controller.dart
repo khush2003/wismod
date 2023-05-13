@@ -7,6 +7,7 @@ import 'package:wismod/modules/auth/controllers/auth_controller.dart';
 import 'package:wismod/modules/home/controller/events_controller.dart';
 import 'package:wismod/shared/models/event.dart';
 import 'package:wismod/shared/services/firebase_firestore_serivce.dart';
+import 'package:wismod/utils/app_utils.dart';
 
 import '../../../routes/routes.dart';
 
@@ -92,7 +93,7 @@ class CreateEventController extends GetxController {
       var downloadUrl = await snapshot.ref.getDownloadURL();
       imageUrl(downloadUrl);
     } else {
-      Get.snackbar("Error!", "No image chosen or image corrupted");
+      errorSnackBar("No image chosen or image corrupted");
       return;
     }
   }
@@ -108,38 +109,35 @@ class CreateEventController extends GetxController {
   }
 
   void createEvent() async {
-    // try {
-    final eventOwner = _auth.appUser.value;
-    final event = Event(
-      createdAt: DateTime.now(),
-      description: eventDetailController.text.trim(),
-      eventDate: dateTime.value,
-      imageUrl: imageUrl.value,
-      members: [],
-      tags: tags,
-      totalCapacity: int.parse(eventAmountOfNumberController.text.trim()),
-      location: eventLocationController.text.trim(),
-      category: selectedCategory.value,
-      title: eventNameController.text.trim(),
-      upvotes: 0,
-      allowAutomaticJoin: isOn.value,
-      eventOwner: EventOwner(
-          name: eventOwner.getName(),
-          department: eventOwner.department,
-          year: eventOwner.year,
-          uid: eventOwner.uid!),
-    );
-    await FirebaseService().addEvent(event, _auth.appUser.value);
-    Get.snackbar('Sucess', 'Event was created sucessfulyy!',
-        backgroundColor: Colors.green, snackPosition: SnackPosition.BOTTOM);
-    Get.offAllNamed(Routes.allPagesNav);
-    EventsController.instance.events.add(event);
-    EventsController.instance.initializeLists();
-    // } catch (e) {
-    //   print(e);
-    //   Get.snackbar('Error',
-    //       'There was a problem creating the event. Please recheck your values and try again!',
-    //       backgroundColor: Colors.red, snackPosition: SnackPosition.BOTTOM);
-    // }
+    try {
+      final eventOwner = _auth.appUser.value;
+      final event = Event(
+        createdAt: DateTime.now(),
+        description: eventDetailController.text.trim(),
+        eventDate: dateTime.value,
+        imageUrl: imageUrl.value,
+        members: [],
+        tags: tags,
+        totalCapacity: int.parse(eventAmountOfNumberController.text.trim()),
+        location: eventLocationController.text.trim(),
+        category: selectedCategory.value,
+        title: eventNameController.text.trim(),
+        upvotes: 0,
+        allowAutomaticJoin: isOn.value,
+        eventOwner: EventOwner(
+            name: eventOwner.getName(),
+            department: eventOwner.department,
+            year: eventOwner.year,
+            uid: eventOwner.uid!),
+      );
+      await FirebaseService().addEvent(event, _auth.appUser.value);
+      sucessSnackBar('Event was created sucessfulyy!');
+      Get.offAllNamed(Routes.allPagesNav);
+      EventsController.instance.events.add(event);
+      EventsController.instance.initializeLists();
+    } catch (e) {
+      errorSnackBar(
+          'There was a problem creating the event. Please recheck your values and try again!');
+    }
   }
 }

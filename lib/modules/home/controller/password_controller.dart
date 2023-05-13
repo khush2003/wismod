@@ -4,6 +4,7 @@ import 'package:get/get.dart';
 import 'package:wismod/modules/auth/controllers/auth_controller.dart';
 import 'package:wismod/modules/home/controller/all_pages_nav_controller.dart';
 import 'package:wismod/routes/routes.dart';
+import 'package:wismod/utils/app_utils.dart';
 
 class PasswordController extends GetxController {
   var auth = FirebaseAuth.instance;
@@ -26,36 +27,17 @@ class PasswordController extends GetxController {
       try {
         await currentUser!.reauthenticateWithCredential(cred);
         currentUser.updatePassword(newPassword);
-        Get.snackbar(
-          'Sucess',
-          "Your password has been changed",
-          snackPosition: SnackPosition.BOTTOM,
-          backgroundColor: Colors.green,
-          colorText: Colors.white,
-          duration: const Duration(seconds: 5),
-        );
+        sucessSnackBar("Your password has been changed");
         Get.offAllNamed(Routes.allPagesNav,
             arguments: {'page': Pages.settingsPage});
         Get.toNamed(Routes.accounts);
       } catch (error) {
-        Get.snackbar(
-          'Error',
-          "Your current password doesn't match with current password that you've typed",
-          snackPosition: SnackPosition.BOTTOM,
-          backgroundColor: Colors.red,
-          colorText: Colors.white,
-          duration: const Duration(seconds: 10),
-        );
+        errorSnackBar(
+            "Your current password doesn't match with current password that you've typed");
       }
     } else {
-      Get.snackbar(
-        'Error',
-        'Please fill in all the fields correctly to change your password',
-        snackPosition: SnackPosition.BOTTOM,
-        backgroundColor: Colors.red,
-        colorText: Colors.white,
-        duration: const Duration(seconds: 10),
-      );
+      errorSnackBar(
+          'Please fill in all the fields correctly to change your password');
     }
   }
 

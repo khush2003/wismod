@@ -21,31 +21,14 @@ class LogInController extends GetxController {
         final password = passwordController.text;
         String? error = await _auth.loginWithEmailAndPassword(email, password);
         if (error != null) {
-          Get.snackbar(
-            "Error!",
-            error.toString(),
-            snackPosition: SnackPosition.BOTTOM,
-            backgroundColor: Colors.red,
-            colorText: Colors.white,
-          );
+          errorSnackBar(error.toString());
         }
       } else {
-        Get.snackbar(
-          "Error!",
-          "Please enter a password",
-          snackPosition: SnackPosition.BOTTOM,
-          backgroundColor: Colors.red,
-          colorText: Colors.white,
-        );
+        errorSnackBar("Please enter a passsword!");
       }
     } else {
-      Get.snackbar(
-        "Error",
-        "Please enter a vaild Email without a domain (no @...) or with @kmutt.ac.th",
-        snackPosition: SnackPosition.BOTTOM,
-        backgroundColor: Colors.red,
-        colorText: Colors.white,
-      );
+      errorSnackBar(
+          "Please enter a vaild Email without a domain (no @...) or with @kmutt.ac.th");
     }
   }
 }

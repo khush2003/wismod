@@ -34,14 +34,6 @@ class SignUpController extends GetxController {
 
   final selectedDepartment = 'School of Information Technology'.obs;
 
-  final firstNameError = RxString('');
-  final lastNameError = RxString('');
-  final yearError = RxString('');
-  final emailError = RxString('');
-  final passwordError = RxString('');
-  final confirmPasswordError = RxString('');
-  final _auth = AuthController.instance;
-
   @override
   void onInit() async {
     super.onInit();
@@ -67,6 +59,8 @@ class SignUpController extends GetxController {
           'Please fill in all the fields correctly to create an account.');
     }
   }
+
+  final _auth = AuthController.instance;
 
   bool validateInputs() {
     String? firstNameError = validateFirstName(firstNameController.text);

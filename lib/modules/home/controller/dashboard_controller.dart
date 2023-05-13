@@ -90,10 +90,10 @@ class FourButtonsController extends GetxController {
   }
 
   void toggleBookmarked() {
-    showBookmarked(showBookmarked.value);
+    showBookmarked(!showBookmarked.value);
   }
 
   void toggleOwn() {
-    showOwn(showOwn.value);
+    showOwn(!showOwn.value);
   }
 }

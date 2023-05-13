@@ -65,15 +65,14 @@ class ChatController extends GetxController {
 
   Future<void> fetchLatestMessages() async {
     try {
-    for (Event event in joinedChatGroupsWithoutBlocks) {
-      final messageStream = _firestore.getLatestMessagesStream(event.id!);
-      messageStream.listen((message) {
-        latestMessages[event.id!] = message;
-      });
-    }
-  } finally{}
+      for (Event event in joinedChatGroupsWithoutBlocks) {
+        final messageStream = _firestore.getLatestMessagesStream(event.id!);
+        messageStream.listen((message) {
+          latestMessages[event.id!] = message;
+        });
+      }
+    } finally {}
   }
-
 
   void blockChatGroup(Event eventData) async {
     final event = getEventInList(eventData.id!, _eventController.events);
@@ -82,11 +81,11 @@ class ChatController extends GetxController {
     }
 
     blockedChatGroups.add(event);
-    joinedChatGroupsWithoutBlocks.removeWhere((e) => e.id == event.id); 
+    joinedChatGroupsWithoutBlocks.removeWhere((e) => e.id == event.id);
     _auth.appUser.value.blockedChatGroups?.add(event.id!);
 
     await _firestore.blockChatGroup(_auth.user.uid!, event.id!).catchError((e) {
-      blockedChatGroups.removeWhere((e) => e.id == event.id); 
+      blockedChatGroups.removeWhere((e) => e.id == event.id);
       joinedChatGroupsWithoutBlocks.add(event);
       _auth.appUser.value.blockedChatGroups?.remove(event.id!);
       errorSnackBar(
@@ -100,14 +99,14 @@ class ChatController extends GetxController {
       return;
     }
 
-    blockedChatGroups.removeWhere((e) => e.id == event.id); 
+    blockedChatGroups.removeWhere((e) => e.id == event.id);
     joinedChatGroupsWithoutBlocks.add(event);
     _auth.appUser.value.blockedChatGroups?.remove(event.id!);
     await _firestore
         .unblockChatGroup(_auth.user.uid!, event.id!)
         .catchError((e) {
       blockedChatGroups.add(event);
-      joinedChatGroupsWithoutBlocks.removeWhere((e) => e.id == event.id); 
+      joinedChatGroupsWithoutBlocks.removeWhere((e) => e.id == event.id);
       _auth.appUser.value.blockedChatGroups?.add(event.id!);
       errorSnackBar(
           "Error Connecting to Database, Please check network connection!");

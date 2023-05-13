@@ -108,7 +108,7 @@ class EventDetailView extends StatelessWidget {
                             children: [
                               Expanded(
                                 child: Obx(() => OutlineButtonMedium(
-                                      onPressed: () {
+                                      onPressed: controller.isOwnedEvent.value ? null :  () {
                                         controller.upvoteEvent();
                                       },
                                       child: controller.isUpvoted.value
@@ -120,15 +120,7 @@ class EventDetailView extends StatelessWidget {
                               auth.appUser.value.isAdmin == true
                                   ? Container()
                                   : Expanded(
-                                      child: Obx(() => PrimaryButtonMedium(
-                                          onPressed: controller.isJoined.value
-                                              ? null
-                                              : () {
-                                                  controller.joinEvent();
-                                                },
-                                          child: controller.isJoined.value
-                                              ? const Text('Joined')
-                                              : const Text('Join'))),
+                                      child: JoinButton(controller: controller),
                                     ),
                             ],
                           ),
@@ -144,12 +136,32 @@ class EventDetailView extends StatelessWidget {
   }
 }
 
+class JoinButton extends StatelessWidget {
+  const JoinButton({
+    super.key,
+    required this.controller,
+  });
+
+  final EventDetailController controller;
+
+  @override
+  Widget build(BuildContext context) {
+    return Obx(() => PrimaryButtonMedium(
+        onPressed: controller.isJoined.value || controller.isRequested.value || controller.isOwnedEvent.value
+            ? null
+            : () {
+                controller.joinEvent();
+              },
+        child: Text(controller.joinButtonText.value)));
+  }
+}
+
 Widget showAdminBottomBar(
     EventDetailController controller, BuildContext context) {
   final auth = AuthController.instance;
-
   if (auth.appUser.value.isAdmin == true &&
-      controller.eventData.value.isReported == false) {
+      (controller.eventData.value.isReported == false ||
+          controller.eventData.value.isReported == null)) {
     return Container(
       decoration: const BoxDecoration(
         color: Color(0xffECE4FC),
@@ -163,53 +175,48 @@ Widget showAdminBottomBar(
         child: Row(
           mainAxisAlignment: MainAxisAlignment.spaceEvenly,
           children: [
-            Obx(() => ElevatedButton(
-                onPressed: controller.isJoined.value
-                    ? null
-                    : () {
-                        controller.joinEvent();
-                      },
-                child: controller.isJoined.value
-                    ? const Text('Joined')
-                    : const Text('Join'))),
-            ElevatedButton(
-              onPressed: () {
-                showDialog(
-                  context: context,
-                  builder: (BuildContext context) {
-                    return AlertDialog(
-                      title: const Text('Confirmation'),
-                      content: const Text(
-                          'Are you sure you want to remove this event?',
-                          style: TextStyle(fontWeight: FontWeight.normal)),
-                      actions: [
-                        OutlineButtonMedium(
-                          child: const Padding(
-                            padding: EdgeInsets.symmetric(vertical: 3.0),
-                            child: Text('Cancel'),
+            Expanded(child: JoinButton(controller: controller)),
+            addHorizontalSpace(20),
+            Expanded(
+              child: ElevatedButton(
+                onPressed: () {
+                  showDialog(
+                    context: context,
+                    builder: (BuildContext context) {
+                      return AlertDialog(
+                        title: const Text('Confirmation'),
+                        content: const Text(
+                            'Are you sure you want to remove this event?',
+                            style: TextStyle(fontWeight: FontWeight.normal)),
+                        actions: [
+                          OutlineButtonMedium(
+                            child: const Padding(
+                              padding: EdgeInsets.symmetric(vertical: 3.0),
+                              child: Text('Cancel'),
+                            ),
+                            onPressed: () {
+                              Navigator.of(context).pop();
+                            },
                           ),
-                          onPressed: () {
-                            Navigator.of(context).pop();
-                          },
-                        ),
-                        ElevatedButton(
-                          style: ElevatedButton.styleFrom(
-                            backgroundColor: Colors.red,
+                          ElevatedButton(
+                            style: ElevatedButton.styleFrom(
+                              backgroundColor: Colors.red,
+                            ),
+                            onPressed: () {
+                              Navigator.of(context).pop();
+                            },
+                            child: const Text('Remove'),
                           ),
-                          onPressed: () {
-                            Navigator.of(context).pop();
-                          },
-                          child: const Text('Remove'),
-                        ),
-                      ],
-                    );
-                  },
-                );
-              },
-              style: ElevatedButton.styleFrom(
-                backgroundColor: Colors.red,
+                        ],
+                      );
+                    },
+                  );
+                },
+                style: ElevatedButton.styleFrom(
+                  backgroundColor: Colors.red,
+                ),
+                child: const Text('Remove'),
               ),
-              child: const Text('Remove'),
             ),
           ],
         ),

@@ -2,6 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:wismod/modules/auth/controllers/auth_controller.dart';
 import 'package:wismod/modules/home/controller/events_controller.dart';
+import 'package:wismod/shared/models/user.dart';
+import 'package:wismod/theme/theme_data.dart';
 import 'package:wismod/utils/app_utils.dart';
 import 'package:wismod/modules/home/controller/dashboard_controller.dart';
 
@@ -287,7 +289,8 @@ class DashboardView extends StatelessWidget {
                               addVerticalSpace(16),
                               FourButtonsWidget(
                                 activityType: 'Join Requests',
-                                activityNumber: 1,
+                                activityNumber:
+                                    _event.getTotaLengthJoinRequests(),
                                 onPressed:
                                     fourButtonsController.toggleRequested,
                                 showSizeBox:
@@ -306,27 +309,25 @@ class DashboardView extends StatelessWidget {
                                             bottomRight: Radius.circular(10),
                                           ),
                                         ),
-                                        child: ListView.builder(
-                                          itemCount: 3,
-                                          itemBuilder: (BuildContext context,
-                                              int index) {
-                                            return Padding(
-                                              padding:
-                                                  const EdgeInsets.all(5.0),
-                                              child: Column(
-                                                children: [
-                                                  _requestedActivityBox(
-                                                      'Activity Name',
-                                                      DateTime.now(),
-                                                      'Jane Vive'),
-                                                  const SizedBox(
-                                                    height: 7,
+                                        child: Obx(() => ListView.builder(
+                                              itemCount: _event
+                                                  .allEventJoinRequests.length,
+                                              itemBuilder:
+                                                  (BuildContext context,
+                                                      int index) {
+                                                return Padding(
+                                                  padding:
+                                                      const EdgeInsets.all(5.0),
+                                                  child: Column(
+                                                    children: [
+                                                      _requestedActivityBox(
+                                                          index, _event),
+                                                      addVerticalSpace()
+                                                    ],
                                                   ),
-                                                ],
-                                              ),
-                                            );
-                                          },
-                                        ),
+                                                );
+                                              },
+                                            )),
                                       ),
                                     )
                                   : const SizedBox()),
@@ -334,51 +335,14 @@ class DashboardView extends StatelessWidget {
                               FourButtonsWidget(
                                 activityType: 'Bookmarked Events',
                                 activityNumber: _event.bookmarkedEvents.length,
-                                onPressed:
-                                    fourButtonsController.toggleBookmarked,
+                                onPressed: () {
+                                  Get.bottomSheet(BookMarkList(
+                                      fourButtonsController:
+                                          fourButtonsController,
+                                      event: _event));
+                                },
                                 showSizeBox:
                                     fourButtonsController.showBookmarked,
-                              ),
-                              Obx(
-                                () => fourButtonsController.showBookmarked.value
-                                    ? SizedBox(
-                                        height: 230,
-                                        child: Container(
-                                          padding: const EdgeInsets.all(10),
-                                          decoration: const BoxDecoration(
-                                            color: Color(0xffEAF4F4),
-                                            borderRadius: BorderRadius.only(
-                                              bottomLeft: Radius.circular(10),
-                                              bottomRight: Radius.circular(10),
-                                            ),
-                                          ),
-                                          child: _event
-                                                  .bookmarkedEvents.isNotEmpty
-                                              ? ListView.builder(
-                                                  itemCount: _event
-                                                      .bookmarkedEvents.length,
-                                                  itemBuilder:
-                                                      (context, index) {
-                                                    final event =
-                                                        _event.bookmarkedEvents[
-                                                            index];
-                                                    return GestureDetector(
-                                                      onTap: () {
-                                                        Get.toNamed(
-                                                            Routes.eventDetials,
-                                                            parameters: {
-                                                              'id': event.id!
-                                                            });
-                                                      },
-                                                      child: OtherActivityBox(
-                                                        event: event,
-                                                      ),
-                                                    );
-                                                  },
-                                                )
-                                              : const EmptyEventsList(),
-                                        ))
-                                    : const SizedBox(),
                               ),
                               addVerticalSpace(16),
                               FourButtonsWidget(
@@ -428,37 +392,11 @@ class DashboardView extends StatelessWidget {
                               FourButtonsWidget(
                                 activityType: 'Archived Events',
                                 activityNumber: _event.archivedEvents.length,
-                                onPressed: fourButtonsController.toggleArchived,
+                                onPressed: () => Get.bottomSheet(
+                                  ArchivedList(event: _event),
+                                ),
                                 showSizeBox: fourButtonsController.showArchived,
                               ),
-                              Obx(() => fourButtonsController.showArchived.value
-                                  ? SizedBox(
-                                      height: 230,
-                                      child: Container(
-                                        padding: const EdgeInsets.all(10),
-                                        decoration: const BoxDecoration(
-                                          color: Color(0xffEAF4F4),
-                                          borderRadius: BorderRadius.only(
-                                            bottomLeft: Radius.circular(10),
-                                            bottomRight: Radius.circular(10),
-                                          ),
-                                        ),
-                                        child: _event.archivedEvents.isNotEmpty
-                                            ? ListView.builder(
-                                                itemCount: _event
-                                                    .archivedEvents.length,
-                                                itemBuilder: (context, index) {
-                                                  final event = _event
-                                                      .archivedEvents[index];
-                                                  return OtherActivityBox(
-                                                    event: event,
-                                                  );
-                                                },
-                                              )
-                                            : const EmptyEventsList(),
-                                      ),
-                                    )
-                                  : const SizedBox()),
                               addVerticalSpace(16),
                             ],
                           )
@@ -470,6 +408,87 @@ class DashboardView extends StatelessWidget {
               ),
       ),
     ));
+  }
+}
+
+class ArchivedList extends StatelessWidget {
+  const ArchivedList({
+    super.key,
+    required EventsController event,
+  }) : _event = event;
+
+  final EventsController _event;
+
+  @override
+  Widget build(BuildContext context) {
+    return SizedBox(
+      height: Size.infinite.height,
+      child: Container(
+        padding: const EdgeInsets.all(10),
+        decoration: const BoxDecoration(
+          color: Color(0xffEAF4F4),
+          borderRadius: BorderRadius.only(
+            bottomLeft: Radius.circular(10),
+            bottomRight: Radius.circular(10),
+          ),
+        ),
+        child: _event.archivedEvents.isNotEmpty
+            ? ListView.builder(
+                itemCount: _event.archivedEvents.length,
+                itemBuilder: (context, index) {
+                  final event = _event.archivedEvents[index];
+                  return OtherActivityBox(
+                    event: event,
+                  );
+                },
+              )
+            : const EmptyEventsList(),
+      ),
+    );
+  }
+}
+
+class BookMarkList extends StatelessWidget {
+  const BookMarkList({
+    super.key,
+    required this.fourButtonsController,
+    required EventsController event,
+  }) : _event = event;
+
+  final FourButtonsController fourButtonsController;
+  final EventsController _event;
+
+  @override
+  Widget build(BuildContext context) {
+    return SizedBox(
+        height: 230,
+        child: Container(
+          padding: const EdgeInsets.all(10),
+          decoration: const BoxDecoration(
+            color: Color(0xffEAF4F4),
+            borderRadius: BorderRadius.only(
+              bottomLeft: Radius.circular(10),
+              bottomRight: Radius.circular(10),
+            ),
+          ),
+          child: _event.bookmarkedEvents.isNotEmpty
+              ? ListView.builder(
+                  itemCount: _event.bookmarkedEvents.length,
+                  itemBuilder: (context, index) {
+                    final event = _event.bookmarkedEvents[index];
+                    return GestureDetector(
+                      onTap: () {
+                        Get.toNamed(Routes.eventDetials,
+                            parameters: {'id': event.id!});
+                      },
+                      child: OtherActivityBox(
+                        event: event,
+                      ),
+                    );
+                  },
+                )
+              : const EmptyEventsList(),
+        ));
   }
 }
 
@@ -682,87 +701,131 @@ class OtherActivityBox extends StatelessWidget {
   }
 }
 
-Widget _requestedActivityBox(
-    String activityName, DateTime activityDate, String requestMember) {
-  return Container(
-    decoration: BoxDecoration(
-      color: Colors.white,
-      borderRadius: BorderRadius.circular(5),
-      boxShadow: const [
-        BoxShadow(
-          color: Color(0xFFFF669F),
-          offset: Offset(0, 4),
-          blurRadius: 3,
+//TODO: Not updating ui when denying a join request
+
+Widget _requestedActivityBox(int index, EventsController controller) {
+  final event = controller.allEventJoinRequests.keys.elementAt(index);
+  final users = controller.allEventJoinRequests.values.elementAt(index);
+  return Column(
+    crossAxisAlignment: CrossAxisAlignment.start,
+    children: [
+      Container(
+        padding: const EdgeInsets.all(8),
+        width: Size.infinite.width,
+        decoration: BoxDecoration(
+          color: Colors.white,
+          borderRadius: BorderRadius.circular(5),
+          boxShadow: const [
+            BoxShadow(
+              color: Color(0xFFFF669F),
+              offset: Offset(0, 4),
+              blurRadius: 3,
+            ),
+          ],
         ),
-      ],
-    ),
-    child: Padding(
-      padding: const EdgeInsets.all(sideWidth),
-      child: Column(
-        children: [
-          addVerticalSpace(16),
-          Row(
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-            children: [
-              Text(
-                formatDate(activityDate),
-                style: const TextStyle(
-                  fontSize: 16,
-                  fontWeight: FontWeight.bold,
-                  color: Color(0xFFFF669F),
-                ),
-              ),
-            ],
-          ),
-          addVerticalSpace(16),
-          Row(
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-            children: [
-              Text(
-                activityName,
-                style: const TextStyle(
-                  fontSize: 24,
-                  fontWeight: FontWeight.w500,
-                ),
-              ),
-            ],
-          ),
-          addVerticalSpace(16),
-          Row(
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-            children: [
-              Text(
-                'Request from: $requestMember',
-                style: const TextStyle(
-                  fontSize: 16,
-                  fontWeight: FontWeight.normal,
-                  color: Color(0xFFFF669F),
-                ),
-              ),
-            ],
-          ),
-          addVerticalSpace(20),
-          Row(
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-            children: [
-              addHorizontalSpace(15),
-              OutlineButtonMedium(
-                onPressed: () {},
-                child: const Text('Approve'),
-              ),
-              ElevatedButton(
-                onPressed: () {},
-                style: ElevatedButton.styleFrom(
-                  backgroundColor: const Color(0xFFF33D81), // Red
-                  foregroundColor: Colors.white, // Text color
-                ),
-                child: const Text('Deny'),
-              ),
-              addHorizontalSpace(15),
-            ],
+        child: Text(
+          'Event: ${event.title}',
+          style: const TextStyle(fontSize: 18, fontWeight: FontWeight.w500),
+        ),
+      ),
+      addVerticalSpace(20),
+      SizedBox(
+        height: 250,
+        child: Obx(() => ListView.separated(
+            separatorBuilder: (context, index) => addVerticalSpace(),
+            itemCount:
+                controller.allEventJoinRequests.values.elementAt(index).length,
+            itemBuilder: (context, index) => UserApproveBox(
+                  user: users[index],
+                  controller: controller,
+                  event: event,
+                ))),
+      ),
+    ],
+  );
+}
+
+class UserApproveBox extends StatelessWidget {
+  final EventsController controller;
+  final AppUser user;
+  final Event event;
+  const UserApproveBox({
+    super.key,
+    required this.user,
+    required this.controller,
+    required this.event,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      decoration: BoxDecoration(
+        color: Colors.white,
+        borderRadius: BorderRadius.circular(5),
+        boxShadow: const [
+          BoxShadow(
+            color: Color(0xFFFF669F),
+            offset: Offset(0, 4),
+            blurRadius: 3,
           ),
         ],
       ),
-    ),
-  );
+      child: Padding(
+        padding: const EdgeInsets.all(sideWidth),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Text(
+              'Request from: ${user.getName()}',
+              style: const TextStyle(
+                fontSize: 24,
+                fontWeight: FontWeight.w500,
+              ),
+            ),
+            addVerticalSpace(),
+            Text(
+              'Department: ${user.department}',
+              style: const TextStyle(
+                fontSize: 16,
+                fontWeight: FontWeight.w400,
+              ),
+            ),
+            addVerticalSpace(),
+            Row(
+              children: [
+                Text(
+                  'Year: ${user.year}',
+                  textAlign: TextAlign.start,
+                  style: const TextStyle(
+                    fontSize: 16,
+                    fontWeight: FontWeight.w400,
+                  ),
+                ),
+              ],
+            ),
+            addVerticalSpace(20),
+            Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: [
+                addHorizontalSpace(15),
+                OutlineButtonMedium(
+                  onPressed: () {
+                    controller.approveJoin(user, event);
+                  },
+                  child: const Text('Approve'),
+                ),
+                SecondaryButtonMedium(
+                  onPressed: () {
+                    controller.denyJoin(user, event);
+                  },
+                  child: const Text('Deny'),
+                ),
+                addHorizontalSpace(15),
+              ],
+            ),
+          ],
+        ),
+      ),
+    );
+  }
 }

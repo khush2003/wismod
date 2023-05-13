@@ -32,10 +32,12 @@ class AppUser {
   });
   @override
   String toString() {
-    return 'AppUser{uid: $uid, firstName: $firstName, lastName: $lastName, department: $department, '
-        'profilePicture: $profilePicture, year: $year, blockedChatGroups: $blockedChatGroups, '
-        'bookmarkedEvents: $bookmarkedEvents, joinedEvents: $joinedEvents, ownedEvents: $ownedEvents, '
-        'requestedEvents: $requestedEvents, upvotedEvents: $upvotedEvents, joinedChatGroups: $joinedChatGroups, isAdmin: $isAdmin}';
+    return 'AppUser{uid: $uid, '
+        // 'firstName: $firstName, lastName: $lastName, department: $department, '
+        //     'profilePicture: $profilePicture, year: $year, blockedChatGroups: $blockedChatGroups, '
+        //     'bookmarkedEvents: $bookmarkedEvents, joinedEvents: $joinedEvents, ownedEvents: $ownedEvents, '
+        //     'requestedEvents: $requestedEvents, upvotedEvents: $upvotedEvents, joinedChatGroups: $joinedChatGroups, isAdmin: $isAdmin'
+        '}';
   }
 
   factory AppUser.empty() {
@@ -73,5 +75,13 @@ class AppUser {
       upvotedEvents: List<String>.from(map['UpvotedEvents'] ?? []),
       joinedChatGroups: List<String>.from(map['JoinedChatGroups'] ?? []),
     );
+  }
+}
+
+AppUser? getUserInList(String userId, List<AppUser> list) {
+  try {
+    return list.where((user) => user.uid == userId).first;
+  } catch (e) {
+    return null;
   }
 }

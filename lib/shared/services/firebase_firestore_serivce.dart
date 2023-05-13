@@ -6,7 +6,7 @@ import '../models/event.dart';
 class FirebaseService {
   final FirebaseFirestore _firestore = FirebaseFirestore.instance;
 
-  Future<List<Event>> getEvents() async {
+  Future<List<Event>> getAllEvents() async {
     QuerySnapshot<Map<String, dynamic>> snapshot =
         await _firestore.collection('Events').get();
     List<Event> events = [];
@@ -15,6 +15,17 @@ class FirebaseService {
       events.add(event);
     }
     return events;
+  }
+
+  Future<List<AppUser>> getAllUsers() async {
+    QuerySnapshot<Map<String, dynamic>> snapshot =
+        await _firestore.collection('Users').get();
+    List<AppUser> users = [];
+    for (var doc in snapshot.docs) {
+      AppUser user = AppUser.fromMap(doc.data(), doc.id);
+      users.add(user);
+    }
+    return users;
   }
 
   Future<List<String>?> getCategories() async {
@@ -156,6 +167,77 @@ class FirebaseService {
     return null;
   }
 
+  Future<void> approveJoin(AppUser user, Event event) async {
+    final documentUsers = _firestore.collection('Users').doc(user.uid!);
+    final documentEvents = _firestore.collection('Events').doc(event.id);
+    var members = <String>[];
+    var joinedEvents = <String>[];
+    var requestedEvents = <String>[];
+    await documentUsers.get().then((doc) {
+      if (doc.exists) {
+        joinedEvents = doc['JoinedEvents'] != null
+            ? List<String>.from(doc['JoinedEvents'] as List<dynamic>)
+            : <String>[]; // Handle the case where tags is null or undefined.
+        requestedEvents = doc['RequestedEvents'] != null
+            ? List<String>.from(doc['RequestedEvents'] as List<dynamic>)
+            : <String>[];
+        if (!joinedEvents.contains(event.id)) {
+          joinedEvents.add(event.id!);
+          if (requestedEvents.contains(event.id)) {
+            requestedEvents.remove(event.id!);
+          }
+        } else {
+          throw Exception('Event joined already!');
+        }
+      } else {
+        throw Exception('User does not exist!');
+      }
+    });
+    await documentEvents.get().then((doc) {
+      if (doc.exists) {
+        members = doc['Members'] != null
+            ? List<String>.from(doc['Members'] as List<dynamic>)
+            : <String>[]; // Handle the case where tags is null or undefined.
+        if (!members.contains(user.uid!)) {
+          members.add(user.uid!);
+        } else {
+          throw Exception('Event joined already!');
+        }
+      } else {
+        throw Exception('Event does not exist!');
+      }
+    });
+    await _firestore.collection('Users').doc(user.uid!).update(
+        {'JoinedEvents': joinedEvents, 'RequestedEvents': requestedEvents});
+    await _firestore
+        .collection('Events')
+        .doc(event.id)
+        .update({'Members': members});
+  }
+
+  Future<void> denyJoin(AppUser user, Event event) async {
+    final documentUsers = _firestore.collection('Users').doc(user.uid!);
+    var requestedEvents = <String>[];
+    await documentUsers.get().then((doc) {
+      if (doc.exists) {
+        requestedEvents = doc['RequestedEvents'] != null
+            ? List<String>.from(doc['RequestedEvents'] as List<dynamic>)
+            : <String>[];
+        if (requestedEvents.contains(event.id)) {
+          requestedEvents.remove(event.id!);
+        } else {
+          throw Exception('Event not requested or joined already!');
+        }
+      } else {
+        throw Exception('User does not exist!');
+      }
+    });
+    await _firestore
+        .collection('Users')
+        .doc(user.uid!)
+        .update({'RequestedEvents': requestedEvents});
+  }
+
   Future<void> addEvent(Event event, AppUser user) async {
     final doc = await _firestore.collection('Events').add({
       'Title': event.title,
@@ -179,7 +261,6 @@ class FirebaseService {
           ? Timestamp.now()
           : Timestamp.fromDate(event.createdAt!),
     });
-    await _addTagsToTagData(event);
     final eventId = doc.id;
     try {
       await joinChatGroup(user.uid!, eventId);
@@ -240,28 +321,6 @@ class FirebaseService {
       'IsAdmin': user.isAdmin ?? false,
       'JoinedChatGroups': user.joinedChatGroups ?? [],
     });
-  }
-
-  Future<void> _addTagsToTagData(Event event) async {
-    if (event.tags != null) {
-      var tags = [];
-      final documentAppData = _firestore.collection('AppData').doc('AppData');
-      await documentAppData.get().then((doc) {
-        if (doc.exists) {
-          tags = doc['Tags'] != null
-              ? List<String>.from(doc['Tags'] as List<dynamic>)
-              : <String>[]; // Handle the case where tags is null or undefined.
-          for (String tag in event.tags!) {
-            if (!tags.contains(tag)) {
-              tags.add(tag);
-            }
-          }
-        }
-      });
-      await _firestore.collection('AppData').doc('AppData').update({
-        'Tags': tags,
-      });
-    }
   }
 
   Future<void> reportEvent(String eventId) async {
@@ -398,6 +457,29 @@ class FirebaseService {
         .update({'Members': members});
   }
 
+  Future<void> requestEvent(String userId, String eventId) async {
+    final documentUsers = _firestore.collection('Users').doc(userId);
+    var requestedEvents = <String>[];
+    await documentUsers.get().then((doc) {
+      if (doc.exists) {
+        requestedEvents = doc['RequestedEvents'] != null
+            ? List<String>.from(doc['RequestedEvents'] as List<dynamic>)
+            : <String>[]; // Handle the case where tags is null or undefined.
+        if (!requestedEvents.contains(eventId)) {
+          requestedEvents.add(eventId);
+        } else {
+          throw Exception('Event requested already!');
+        }
+      } else {
+        throw Exception('User does not exist!');
+      }
+    });
+    await _firestore
+        .collection('Users')
+        .doc(userId)
+        .update({'RequestedEvents': requestedEvents});
+  }
+
   Future<void> bookmarkEvent(String userId, String eventId) async {
     final userRef = _firestore.collection('Users').doc(userId);
     final userDoc = await userRef.get();
@@ -463,7 +545,7 @@ class FirebaseService {
 
   Future<List<Event>> getBlockedChatGroups(String userId) async {
     final user = await getUserById(userId);
-    final events = await getEvents();
+    final events = await getAllEvents();
     if (user != null) {
       final blockedEvents = events
           .where((event) => user.blockedChatGroups?.contains(event.id) ?? false)

@@ -1,4 +1,5 @@
 import 'package:get/get.dart';
+import 'package:wismod/modules/auth/controllers/auth_controller.dart';
 import 'package:wismod/modules/home/controller/events_controller.dart';
 import 'package:wismod/shared/models/event.dart';
 import 'chat_controller.dart';
@@ -13,6 +14,10 @@ class EventDetailController extends GetxController {
   final Rx<bool> isJoined = false.obs;
   final Rx<bool> isUpvoted = false.obs;
   final Rx<bool> isBookmarked = false.obs;
+  final Rx<bool> isRequested = false.obs;
+  final Rx<bool> isOwnedEvent = false.obs;
+
+  final joinButtonText = 'Join'.obs;
 
   final tags = <String>[].obs;
 
@@ -26,9 +31,11 @@ class EventDetailController extends GetxController {
     isLoading(true);
     var eventId = Get.parameters['id'] ?? '2l8UVLQgFin3dthssdlI';
     eventData(_event.events.where((event) => event.id == eventId).first);
+    setIsRequested();
     setIsJoined();
     setIsUpvoted();
     setIsBookmarked();
+    setIsOwnedEvent();
     tags(eventData.value.tags);
     isLoading(false);
   }
@@ -43,9 +50,23 @@ class EventDetailController extends GetxController {
 
   void setIsJoined() {
     if (checkEventInList(eventData.value.id!, _event.joinedEvents)) {
+      joinButtonText('Joined');
       isJoined(true);
     } else {
       isJoined(false);
+    }
+  }
+
+  void setIsRequested() {
+    final auth = AuthController.instance;
+    if (!eventData.value.allowAutomaticJoin) {
+      joinButtonText('Request Join');
+      if (auth.user.requestedEvents?.contains(eventData.value.id!) ?? false) {
+        joinButtonText('Request Sent');
+        isRequested(true);
+      } else {
+        isRequested(false);
+      }
     }
   }
 
@@ -55,6 +76,14 @@ class EventDetailController extends GetxController {
       isBookmarked(true);
     } else {
       isBookmarked(false);
+    }
+  }
+
+  void setIsOwnedEvent() {
+    if (checkEventInList(eventData.value.id!, _event.ownedEvents)) {
+      isOwnedEvent(true);
+    } else {
+      isOwnedEvent(false);
     }
   }
 
@@ -73,6 +102,7 @@ class EventDetailController extends GetxController {
 
   void joinEvent() async {
     _event.joinEvent(eventData.value);
+    setIsRequested();
     setIsJoined();
   }
 

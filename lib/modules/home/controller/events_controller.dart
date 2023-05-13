@@ -11,6 +11,8 @@ class EventsController extends GetxController {
   final joinedEvents = <Event>[].obs;
   final RxList<Event> ownedEvents = <Event>[].obs;
   final RxList<Event> bookmarkedEvents = <Event>[].obs;
+  final RxMap<Event, List<AppUser>> allEventJoinRequests =
+      <Event, List<AppUser>>{}.obs;
   final RxList<Event> requestedEvents = <Event>[].obs;
   final RxList<Event> upvotedEvents = <Event>[].obs;
   final RxList<Event> reportedEvents = <Event>[].obs;
@@ -34,6 +36,7 @@ class EventsController extends GetxController {
     _setOwnedEvents(user);
     _setBookmarkedEvents(user);
     _setRequestedEvents(user);
+    _setAllEventJoinRequests();
     _setUpvotedEvents(user);
     _setReportedEvents(user);
     _setJoinedEvents(user);
@@ -52,7 +55,7 @@ class EventsController extends GetxController {
 
   Future<void> fetchEvents() async {
     try {
-      final eventsTemp = await _firestore.getEvents();
+      final eventsTemp = await _firestore.getAllEvents();
       final archived = <Event>[];
       archived.addAll(eventsTemp);
       if (eventsTemp.isNotEmpty) {
@@ -87,7 +90,38 @@ class EventsController extends GetxController {
     }
   }
 
-  void _setRequestedEvents(AppUser user) {
+  void _setAllEventJoinRequests() async {
+    final users = await _firestore.getAllUsers();
+    allEventJoinRequests.clear();
+    // print(users);
+    for (AppUser user in users) {
+      final tempRequestedEvents = user.requestedEvents;
+      print(tempRequestedEvents);
+      if (tempRequestedEvents != null && tempRequestedEvents.isNotEmpty) {
+        for (String eventId in tempRequestedEvents) {
+          if (checkEventInList(eventId, ownedEvents)) {
+            final event = events.firstWhere((event) => event.id == eventId);
+            if (allEventJoinRequests.containsKey(event)) {
+              allEventJoinRequests[event]!.add(user);
+            } else {
+              allEventJoinRequests[event] = [user];
+            }
+          }
+        }
+      }
+    }
+    print(allEventJoinRequests);
+  }
+
+  int getTotaLengthJoinRequests() {
+    int totalCount = 0;
+    for (var users in allEventJoinRequests.values) {
+      totalCount += users.length;
+    }
+    return totalCount;
+  }
+
+  void _setRequestedEvents(AppUser user) async {
     requestedEvents.clear();
     final tempRequestedEvents = user.requestedEvents;
     if (tempRequestedEvents != null && tempRequestedEvents.isNotEmpty) {
@@ -150,26 +184,37 @@ class EventsController extends GetxController {
     });
   }
 
+  void approveJoin(AppUser user, Event event) async {
+    //TODO: Subscribe to changes in joined List and requested List
+    requestedEvents.removeWhere((e) => e.id == event.id);
+    allEventJoinRequests[event]?.removeWhere((u) => u.uid == user.uid);
+    joinedEvents.add(event);
+    events[getIndexOfEvent(event, events)].members!.add(user.uid!);
+
+    await _firestore.approveJoin(user, event).catchError((e) {
+      errorSnackBar("Error! ${e.toString()}");
+    });
+  }
+
+  void denyJoin(AppUser user, Event event) async {
+    print(allEventJoinRequests);
+    requestedEvents.removeWhere((e) => e.id == event.id);
+    allEventJoinRequests[event]?.removeWhere((u) => u.uid == user.uid);
+    print(allEventJoinRequests);
+    await _firestore.denyJoin(user, event).catchError((e) {
+      errorSnackBar("Error! ${e.toString()}");
+    });
+  }
+
   void joinEvent(Event eventData) async {
     final event = getEventInList(eventData.id!, events);
     if (event == null) {
       return;
     }
-    var isAdd = true;
-    if (checkEventInList(event.id!, joinedEvents)) {
-      isAdd = false;
-      joinedEvents.removeWhere((e) => e.id == event.id);
-      _auth.appUser.value.joinedEvents?.remove(event.id!);
-      events[getIndexOfEvent(event, events)].members!.remove(_auth.user.uid!);
-    } else {
-      joinedEvents.add(event);
-      _auth.appUser.value.joinedEvents?.add(event.id!);
-      events[getIndexOfEvent(event, events)].members!.add(_auth.user.uid!);
-    }
-    await _firestore.joinEvent(_auth.user.uid!, event.id!).catchError((e) {
-      errorSnackBar(
-          "Error Connecting to Database, Please check network connection!");
-      if (isAdd) {
+    if (eventData.allowAutomaticJoin == true) {
+      var isAdd = true;
+      if (checkEventInList(event.id!, joinedEvents)) {
+        isAdd = false;
         joinedEvents.removeWhere((e) => e.id == event.id);
         _auth.appUser.value.joinedEvents?.remove(event.id!);
         events[getIndexOfEvent(event, events)].members!.remove(_auth.user.uid!);
@@ -178,7 +223,57 @@ class EventsController extends GetxController {
         _auth.appUser.value.joinedEvents?.add(event.id!);
         events[getIndexOfEvent(event, events)].members!.add(_auth.user.uid!);
       }
-    });
+      await _firestore.joinEvent(_auth.user.uid!, event.id!).catchError((e) {
+        errorSnackBar(
+            "Error Connecting to Database, Please check network connection!");
+        if (isAdd) {
+          joinedEvents.removeWhere((e) => e.id == event.id);
+          _auth.appUser.value.joinedEvents?.remove(event.id!);
+          events[getIndexOfEvent(event, events)]
+              .members!
+              .remove(_auth.user.uid!);
+        } else {
+          joinedEvents.add(event);
+          _auth.appUser.value.joinedEvents?.add(event.id!);
+          events[getIndexOfEvent(event, events)].members!.add(_auth.user.uid!);
+        }
+      });
+    } else {
+      var isAdd = true;
+      if (checkEventInList(event.id!, requestedEvents)) {
+        isAdd = false;
+        requestedEvents.removeWhere((e) => e.id == event.id);
+        allEventJoinRequests[event]
+            ?.removeWhere((user) => user.uid == _auth.user.uid);
+        _auth.appUser.value.requestedEvents?.remove(event.id!);
+      } else {
+        requestedEvents.add(event);
+        _auth.appUser.value.requestedEvents?.add(event.id!);
+        if (allEventJoinRequests.containsKey(event)) {
+          allEventJoinRequests[event]!.add(_auth.user);
+        } else {
+          allEventJoinRequests[event] = [_auth.user];
+        }
+      }
+      await _firestore.requestEvent(_auth.user.uid!, event.id!).catchError((e) {
+        errorSnackBar(
+            "Error Connecting to Database, Please check network connection!");
+        if (isAdd) {
+          requestedEvents.removeWhere((e) => e.id == event.id);
+          _auth.appUser.value.requestedEvents?.remove(event.id!);
+          allEventJoinRequests[event]
+              ?.removeWhere((e) => e.uid == _auth.user.uid);
+        } else {
+          reportedEvents.add(event);
+          _auth.appUser.value.requestedEvents?.add(event.id!);
+          if (allEventJoinRequests.containsKey(event)) {
+            allEventJoinRequests[event]!.add(_auth.user);
+          } else {
+            allEventJoinRequests[event] = [_auth.user];
+          }
+        }
+      });
+    }
   }
 
   void bookmarkEvent(Event eventData) async {

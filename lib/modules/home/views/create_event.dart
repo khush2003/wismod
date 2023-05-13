@@ -10,7 +10,7 @@ import '../../../theme/global_widgets.dart';
 
 class CreateEventView extends StatelessWidget {
   CreateEventView({super.key});
-  final createViewController = Get.put(CreateEventController());
+  final controller = Get.put(CreateEventController());
 
   @override
   Widget build(BuildContext context) {
@@ -19,7 +19,7 @@ class CreateEventView extends StatelessWidget {
             title: Text("Create Event",
                 style: Theme.of(context).textTheme.titleMedium)),
         body: Obx(
-          () => createViewController.isLoading.value
+          () => controller.isLoading.value
               ? const Center(child: CircularProgressIndicator())
               : SingleChildScrollView(
                   child: Padding(
@@ -43,8 +43,9 @@ class CreateEventView extends StatelessWidget {
                                 14.0, 0.0, 14.0, 16.0),
                             child: TextFormFeildThemed(
                                 hintText: "Event's Name",
+                                validator: controller.validateEventName,
                                 controller:
-                                    createViewController.eventNameController),
+                                    controller.eventNameController),
                           ),
                           Padding(
                             padding: const EdgeInsets.fromLTRB(
@@ -55,15 +56,15 @@ class CreateEventView extends StatelessWidget {
                               height: 250,
                               child: Obx(
                                 () => OutlinedButton.icon(
-                                  icon: createViewController.imageUrl.value ==
+                                  icon: controller.imageUrl.value ==
                                           ''
                                       ? const Icon(Icons.image_outlined)
                                       : Image.network(
-                                          createViewController.imageUrl.value,
+                                          controller.imageUrl.value,
                                           fit: BoxFit.cover,
                                         ),
                                   onPressed: () =>
-                                      createViewController.uploadImage(),
+                                      controller.uploadImage(),
                                   label: const Text(''),
                                   style: ElevatedButton.styleFrom(
                                     side: const BorderSide(
@@ -89,9 +90,10 @@ class CreateEventView extends StatelessWidget {
                             padding: const EdgeInsets.fromLTRB(
                                 14.0, 0.0, 14.0, 16.0),
                             child: TextAreaThemed(
+                              validator: controller.validateEventDetail,
                               hintText: "Event's Detail",
                               controller:
-                                  createViewController.eventDetailController,
+                                  controller.eventDetailController,
                             ),
                           ),
                           Padding(
@@ -106,12 +108,13 @@ class CreateEventView extends StatelessWidget {
                             padding: const EdgeInsets.fromLTRB(
                                 14.0, 0.0, 14.0, 16.0),
                             child: TextFormFeildThemed(
+                              validator: controller.validateEventAmountOfNumber,
                               keyboardType: TextInputType.number,
                               inputFormatters: <TextInputFormatter>[
                                 FilteringTextInputFormatter.digitsOnly
                               ],
                               hintText: "2 - 500",
-                              controller: createViewController
+                              controller: controller
                                   .eventAmountOfNumberController,
                             ),
                           ),
@@ -127,9 +130,10 @@ class CreateEventView extends StatelessWidget {
                             padding: const EdgeInsets.fromLTRB(
                                 14.0, 0.0, 14.0, 16.0),
                             child: TextFormFeildThemed(
+                              validator: controller.validateEventLocation,
                               hintText: "Location",
                               controller:
-                                  createViewController.eventLocationController,
+                                  controller.eventLocationController,
                             ),
                           ),
                           Padding(
@@ -149,7 +153,7 @@ class CreateEventView extends StatelessWidget {
                               height: 47,
                               child: OutlinedButton(
                                 onPressed: () async {
-                                  createViewController.pickDate(context);
+                                  controller.pickDate(context);
                                 },
                                 style: ElevatedButton.styleFrom(
                                   side: const BorderSide(
@@ -159,7 +163,7 @@ class CreateEventView extends StatelessWidget {
                                 ),
                                 child: Obx(
                                   () => Text(
-                                    '${createViewController.dateTime.value.day} / ${createViewController.dateTime.value.month} / ${createViewController.dateTime.value.year}',
+                                    '${controller.dateTime.value.day} / ${controller.dateTime.value.month} / ${controller.dateTime.value.year}',
                                     style: Theme.of(context)
                                         .textTheme
                                         .displayLarge,
@@ -180,7 +184,7 @@ class CreateEventView extends StatelessWidget {
                               padding: const EdgeInsets.fromLTRB(
                                   14.0, 0.0, 14.0, 16.0),
                               child: DropDownCustom(
-                                  controller: createViewController)),
+                                  controller: controller)),
                           // Tags (WIP) later
                           Padding(
                             padding:
@@ -196,17 +200,17 @@ class CreateEventView extends StatelessWidget {
                             child: TextFormFeildThemed(
                               hintText: "Add Tags",
                               controller:
-                                  createViewController.eventTagsController,
+                                  controller.eventTagsController,
                               suffixIcon: IconButton(
                                   onPressed: () {
-                                    createViewController.addTag();
+                                    controller.addTag();
                                   },
                                   icon: Icon(Icons.add,
                                       color: AppThemeData
                                           .themedata.colorScheme.primary)),
                             ),
                           ),
-                          Obx(() => createTags(createViewController)),
+                          Obx(() => createTags(controller)),
                           // AutoJoin Switch (WIP)later
                           // Custom Switch?
                           Padding(
@@ -216,9 +220,9 @@ class CreateEventView extends StatelessWidget {
                               crossAxisAlignment: CrossAxisAlignment.center,
                               children: [
                                 Obx(() => ThemedSwitch(
-                                    value: createViewController.isOn.value,
+                                    value: controller.isOn.value,
                                     onChanged:
-                                        createViewController.toggleSwitch)),
+                                        controller.toggleSwitch)),
                                 Text(
                                   'Allow Automatic Join',
                                   style:
@@ -242,7 +246,7 @@ class CreateEventView extends StatelessWidget {
                               width: double.infinity,
                               child: PrimaryButtonMedium(
                                 onPressed: () =>
-                                    createViewController.createEvent(),
+                                    controller.createEvent(),
                                 child: const Text('Create Event'),
                               ),
                             ),

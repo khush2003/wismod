@@ -14,6 +14,7 @@ class EventsController extends GetxController {
   final RxList<Event> requestedEvents = <Event>[].obs;
   final RxList<Event> upvotedEvents = <Event>[].obs;
   final RxList<Event> reportedEvents = <Event>[].obs;
+  final RxList<Event> archivedEvents = <Event>[].obs;
 
   final _firestore = FirebaseService();
   final _auth = AuthController.instance;
@@ -41,14 +42,19 @@ class EventsController extends GetxController {
   Future<void> fetchEvents() async {
     try {
       final eventsTemp = await _firestore.getEvents();
+      final archived = <Event>[];
+      archived.addAll(eventsTemp);
       if (eventsTemp.isNotEmpty) {
-        // For now removing every event whose deadline has passed
+        // For now removing every event whose deadline has passed, and putting them in archoived list
         final currentDate = DateTime.now();
         final today =
             DateTime(currentDate.year, currentDate.month, currentDate.day);
         eventsTemp
             .removeWhere((event) => event.eventDate?.isBefore(today) ?? false);
+        archived.removeWhere(
+            (event) => !(event.eventDate?.isBefore(today) ?? false));
         events(eventsTemp);
+        archivedEvents(archived);
       }
     } finally {}
   }

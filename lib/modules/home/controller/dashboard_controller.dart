@@ -56,6 +56,7 @@ class FourButtonsController extends GetxController {
   var showRequested = false.obs;
   var showBookmarked = false.obs;
   var showOwn = false.obs;
+  final showArchived = false.obs;
 
   final firestore = FirebaseService();
   final _event = EventsController.instance;
@@ -77,18 +78,22 @@ class FourButtonsController extends GetxController {
   }
 
   void toggleJoined() {
-    showJoined.value = !showJoined.value;
+    showJoined(!showJoined.value);
+  }
+
+  void toggleArchived() {
+    showArchived(!showArchived.value);
   }
 
   void toggleRequested() {
-    showRequested.value = !showRequested.value;
+    showRequested(!showRequested.value);
   }
 
   void toggleBookmarked() {
-    showBookmarked.value = !showBookmarked.value;
+    showBookmarked(showBookmarked.value);
   }
 
   void toggleOwn() {
-    showOwn.value = !showOwn.value;
+    showOwn(showOwn.value);
   }
 }

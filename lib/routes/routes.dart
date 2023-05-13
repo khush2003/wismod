@@ -4,7 +4,6 @@ import 'package:wismod/modules/auth/views/signup_view.dart';
 import 'package:wismod/modules/home/views/accounts.dart';
 import 'package:wismod/modules/home/views/all_pages_nav.dart';
 import 'package:wismod/modules/home/views/block_list.dart';
-import 'package:wismod/modules/home/views/filter_options.dart';
 import 'package:wismod/modules/home/views/notification.dart';
 import 'package:wismod/modules/home/views/password.dart';
 import '../modules/home/views/event_details.dart';

@@ -425,6 +425,41 @@ class DashboardView extends StatelessWidget {
                                     )
                                   : const SizedBox()),
                               addVerticalSpace(16),
+                              FourButtonsWidget(
+                                activityType: 'Archived Events',
+                                activityNumber: _event.archivedEvents.length,
+                                onPressed: fourButtonsController.toggleArchived,
+                                showSizeBox: fourButtonsController.showArchived,
+                              ),
+                              Obx(() => fourButtonsController.showArchived.value
+                                  ? SizedBox(
+                                      height: 230,
+                                      child: Container(
+                                        padding: const EdgeInsets.all(10),
+                                        decoration: const BoxDecoration(
+                                          color: Color(0xffEAF4F4),
+                                          borderRadius: BorderRadius.only(
+                                            bottomLeft: Radius.circular(10),
+                                            bottomRight: Radius.circular(10),
+                                          ),
+                                        ),
+                                        child: _event.archivedEvents.isNotEmpty
+                                            ? ListView.builder(
+                                                itemCount: _event
+                                                    .archivedEvents.length,
+                                                itemBuilder: (context, index) {
+                                                  final event = _event
+                                                      .archivedEvents[index];
+                                                  return OtherActivityBox(
+                                                    event: event,
+                                                  );
+                                                },
+                                              )
+                                            : const EmptyEventsList(),
+                                      ),
+                                    )
+                                  : const SizedBox()),
+                              addVerticalSpace(16),
                             ],
                           )
                         ],

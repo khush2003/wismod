@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:wismod/modules/home/controller/chat_controller.dart';
@@ -18,6 +20,7 @@ class MessageController extends GetxController {
   final Rx<Event> eventData = Event.empty().obs;
 
   final TextEditingController messageTextController = TextEditingController();
+  StreamSubscription<List<Message>>? messagesSubscription;
 
   @override
   void onInit() async {
@@ -39,6 +42,20 @@ class MessageController extends GetxController {
     eventData(_event.events.where((event) => event.id == eventId).first);
     await fetchMessages(eventData.value);
     isLoading(false);
+
+    // Subscribe to messages changes
+    messagesSubscription = _firestore
+        .getMessagesStream(eventData.value.id!)
+        .listen((updatedMessages) {
+      messages(updatedMessages);
+    });
+  }
+
+  @override
+  void onClose() {
+    messagesSubscription
+        ?.cancel(); // Cancel the subscription when closing the controller
+    super.onClose();
   }
 
   void blockChatGroup() async {
@@ -58,7 +75,7 @@ class MessageController extends GetxController {
       );
       await FirebaseService().addMessage(message);
       messageTextController.text = "";
-      messages.add(message);
+      // messages.add(message);
       ChatController.instance.latestMessages
           .addAll({eventData.value.id!: message});
     } catch (e) {

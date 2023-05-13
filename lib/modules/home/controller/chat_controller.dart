@@ -65,12 +65,13 @@ class ChatController extends GetxController {
 
   Future<void> fetchLatestMessages() async {
     try {
-      for (Event event in joinedChatGroupsWithoutBlocks) {
-        final latestMessageEvent =
-            await _firestore.getLatestMessage(event.id!) ?? Message.empty();
-        latestMessages.addAll({event.id!: latestMessageEvent});
-      }
-    } finally {}
+    for (Event event in joinedChatGroupsWithoutBlocks) {
+      final messageStream = _firestore.getLatestMessagesStream(event.id!);
+      messageStream.listen((message) {
+        latestMessages[event.id!] = message;
+      });
+    }
+  } finally{}
   }
 
 

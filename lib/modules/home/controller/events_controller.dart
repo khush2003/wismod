@@ -39,6 +39,17 @@ class EventsController extends GetxController {
     _setJoinedEvents(user);
   }
 
+  Future<List<AppUser>> getMembersfromEvent() async {
+    final membersData = <AppUser>[];
+    for (Event event in events) {
+      event.members?.forEach((member) async {
+        final memberData = await _firestore.getUserById(member);
+        if (memberData != null) membersData.add(memberData);
+      });
+    }
+    return membersData;
+  }
+
   Future<void> fetchEvents() async {
     try {
       final eventsTemp = await _firestore.getEvents();

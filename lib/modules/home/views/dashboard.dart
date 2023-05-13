@@ -173,7 +173,7 @@ class DashboardView extends StatelessWidget {
                           Wrap(
                             direction: Axis.horizontal,
                             alignment: WrapAlignment.spaceEvenly,
-                            spacing: 4,
+                            spacing: 16,
                             runSpacing: 16,
                             children: [
                               Container(
@@ -286,7 +286,7 @@ class DashboardView extends StatelessWidget {
                                   : const SizedBox()),
                               addVerticalSpace(16),
                               FourButtonsWidget(
-                                activityType: 'Requested Events',
+                                activityType: 'Join Requests',
                                 activityNumber: 1,
                                 onPressed:
                                     fourButtonsController.toggleRequested,

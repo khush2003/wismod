@@ -31,6 +31,28 @@ SizedBox addHorizontalSpace([double gap = 8]) {
   return SizedBox(width: gap);
 }
 
+String formatDateTime(DateTime dateTime) {
+  final now = DateTime.now();
+  final today = DateTime(now.year, now.month, now.day);
+  final yesterday = DateTime(now.year, now.month, now.day - 1);
+
+  if (dateTime.isAfter(today)) {
+    return 'Today at ${_formatTime(dateTime)}';
+  } else if (dateTime.isAfter(yesterday)) {
+    return 'Yesterday at ${_formatTime(dateTime)}';
+  } else {
+    return '${_formatDate(dateTime)} ${_formatTime(dateTime)}';
+  }
+}
+
+String _formatDate(DateTime dateTime) {
+  return '${dateTime.day.toString().padLeft(2, '0')}/${dateTime.month.toString().padLeft(2, '0')}/${dateTime.year}';
+}
+
+String _formatTime(DateTime dateTime) {
+  return '${dateTime.hour.toString().padLeft(2, '0')}:${dateTime.minute.toString().padLeft(2, '0')}';
+}
+
 String formatDate(DateTime date) {
   String month;
   switch (date.month) {

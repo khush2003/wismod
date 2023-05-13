@@ -166,40 +166,39 @@ class DropDownCustom extends StatelessWidget {
       padding: const EdgeInsets.fromLTRB(14.0, 0.0, 14.0, 16.0),
       child: SizedBox(
         width: MediaQuery.of(context).size.width * 1,
-        child: DropdownButtonFormField<String>(
-          value: signUpController.selectedDepartment.value,
-          items: signUpController.departmentOptions.map((department) {
-            return dropdownMenuItemCustom(department);
-          }).toList(),
-          onChanged: (value) =>
-              signUpController.selectedDepartment.value = value ?? '',
-          decoration: const InputDecoration(
-            hintText: 'Department',
-            border: OutlineInputBorder(
-              borderSide: BorderSide(
+        child: Obx(() => DropdownButtonFormField<String>(
+              value: signUpController.selectedDepartment.value,
+              items: signUpController.departmentOptions.map((department) {
+                return dropdownMenuItemCustom(department);
+              }).toList(),
+              onChanged: (value) =>
+                  signUpController.selectedDepartment.value = value ?? '',
+              decoration: const InputDecoration(
+                hintText: 'Department',
+                border: OutlineInputBorder(
+                  borderSide: BorderSide(
+                    color: Color.fromRGBO(123, 56, 255, 1),
+                  ),
+                ),
+                contentPadding: EdgeInsets.symmetric(
+                  vertical: 10.0,
+                  horizontal: 15.0,
+                ),
+                hintStyle: TextStyle(
+                  fontSize: 16.0,
+                  fontWeight: FontWeight.normal,
+                  color: Color.fromRGBO(123, 56, 255, 1),
+                ),
+              ),
+              dropdownColor: Colors.white,
+              icon: const Icon(
+                Icons.arrow_drop_down,
                 color: Color.fromRGBO(123, 56, 255, 1),
               ),
-            ),
-            contentPadding: EdgeInsets.symmetric(
-              vertical: 10.0,
-              horizontal: 15.0,
-            ),
-            hintStyle: TextStyle(
-              fontSize: 16.0,
-              fontWeight: FontWeight.normal,
-              color: Color.fromRGBO(123, 56, 255, 1),
-            ),
-          ),
-          dropdownColor: Colors.white,
-          icon: const Icon(
-            Icons.arrow_drop_down,
-            color: Color.fromRGBO(123, 56, 255, 1),
-          ),
-          iconSize: 32,
-          elevation: 2,
-          isExpanded: true,
-          validator: signUpController.validateDropdown,
-        ),
+              iconSize: 32,
+              elevation: 2,
+              isExpanded: true,
+            )),
       ),
     );
   }

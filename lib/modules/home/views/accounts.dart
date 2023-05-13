@@ -3,8 +3,6 @@ import 'package:flutter/services.dart';
 import 'package:get/get.dart';
 import 'package:wismod/theme/global_widgets.dart';
 import '../controller/account_controller.dart';
-import '../../auth/controllers/signup_controller.dart';
-
 import '../../../routes/routes.dart';
 import '../../../utils/app_utils.dart';
 
@@ -36,6 +34,7 @@ class AccountsView extends StatelessWidget {
                 child: AccountSections(
                   label: 'Name',
                   hintText: 'Your Name',
+                  validator: accountController.validateName,
                   controllerFunction: accountController.firstNameController,
                   trailingWidget: const Text(
                     'Change Name',
@@ -48,26 +47,10 @@ class AccountsView extends StatelessWidget {
                   ),
                 ),
               ),
-              // Padding(
-              //   padding: const EdgeInsets.fromLTRB(0.0, 0.0, 0.0, 20.0),
-              //   child: AccountSections(
-              //     label: 'Last name',
-              //     hintText: 'Your last name',
-              //     controllerFunction: accountController.lastNameController,
-              //     trailingWidget: const Text(
-              //       'Change last name',
-              //       style: TextStyle(
-              //         fontFamily: "Gotham",
-              //         fontWeight: FontWeight.w500,
-              //         fontSize: 20,
-              //         color: Color.fromRGBO(123, 56, 255, 1),
-              //       ),
-              //     ),
-              //   ),
-              // ),
               Padding(
                 padding: const EdgeInsets.fromLTRB(0.0, 0.0, 0.0, 20.0),
                 child: DepartmentSections(
+                  controller: accountController,
                   label: 'Department',
                   trailingWidget: const Text(
                     'Change department',
@@ -85,6 +68,7 @@ class AccountsView extends StatelessWidget {
                 child: AccountSections(
                   isNumeric: true,
                   label: 'Year',
+                  validator: accountController.validateYear,
                   hintText: 'Your year',
                   controllerFunction: accountController.yearController,
                   trailingWidget: const Text(
@@ -129,7 +113,7 @@ class AccountSections extends StatelessWidget {
   final Widget trailingWidget;
   final TextEditingController controllerFunction;
   final bool isNumeric;
-
+  final FormFieldValidator<String>? validator;
   const AccountSections({
     Key? key,
     required this.label,
@@ -137,6 +121,7 @@ class AccountSections extends StatelessWidget {
     required this.trailingWidget,
     required this.controllerFunction,
     this.isNumeric = false,
+    this.validator,
   }) : super(key: key);
 
   @override
@@ -157,13 +142,19 @@ class AccountSections extends StatelessWidget {
           padding: const EdgeInsets.only(bottom: 10.0),
           child: SizedBox(
             width: double.infinity,
-            child: TextFormFeildThemed(
-              keyboardType: isNumeric ? TextInputType.number : null,
-              inputFormatters: isNumeric
-                  ? <TextInputFormatter>[FilteringTextInputFormatter.digitsOnly]
-                  : null,
-              hintText: hintText,
-              controller: controllerFunction,
+            child: Form(
+              autovalidateMode: AutovalidateMode.always,
+              child: TextFormFeildThemed(
+                validator: validator,
+                keyboardType: isNumeric ? TextInputType.number : null,
+                inputFormatters: isNumeric
+                    ? <TextInputFormatter>[
+                        FilteringTextInputFormatter.digitsOnly
+                      ]
+                    : null,
+                hintText: hintText,
+                controller: controllerFunction,
+              ),
             ),
           ),
         ),
@@ -182,13 +173,13 @@ class AccountSections extends StatelessWidget {
 }
 
 class DepartmentSections extends StatelessWidget {
-  // TODO: Create a controller for this view and use that instead of signup controller
-  final SignUpController signUpController = Get.put(SignUpController());
+  final AccountController controller;
   final String label;
   final Widget trailingWidget;
 
-  DepartmentSections({
+  const DepartmentSections({
     Key? key,
+    required this.controller,
     required this.label,
     required this.trailingWidget,
   }) : super(key: key);
@@ -209,7 +200,7 @@ class DepartmentSections extends StatelessWidget {
         addVerticalSpace(),
         Padding(
             padding: const EdgeInsets.only(bottom: 10.0),
-            child: DropDownCustom(signUpController: signUpController)),
+            child: DropDownCustom(controller: controller)),
         SizedBox(
           width: double.infinity,
           child: OutlineButtonLarge(
@@ -227,10 +218,10 @@ class DepartmentSections extends StatelessWidget {
 class DropDownCustom extends StatelessWidget {
   const DropDownCustom({
     super.key,
-    required this.signUpController,
+    required this.controller,
   });
 
-  final SignUpController signUpController;
+  final AccountController controller;
 
   @override
   Widget build(BuildContext context) {
@@ -238,40 +229,39 @@ class DropDownCustom extends StatelessWidget {
       padding: const EdgeInsets.fromLTRB(0.0, 0.0, 0.0, 0.0),
       child: SizedBox(
         width: MediaQuery.of(context).size.width * 1,
-        child: DropdownButtonFormField<String>(
-          value: signUpController.selectedDepartment.value,
-          items: signUpController.departmentOptions.map((department) {
-            return dropdownMenuItemCustom(department);
-          }).toList(),
-          onChanged: (value) =>
-              signUpController.selectedDepartment.value = value ?? '',
-          decoration: const InputDecoration(
-            hintText: 'Department',
-            border: OutlineInputBorder(
-              borderSide: BorderSide(
+        child: Obx(() => DropdownButtonFormField<String>(
+              value: controller.selectedDepartment.value,
+              items: controller.departmentOptions.map((department) {
+                return dropdownMenuItemCustom(department);
+              }).toList(),
+              onChanged: (value) => controller.selectedDepartment.value =
+                  value ?? controller.selectedDepartment.value,
+              decoration: const InputDecoration(
+                hintText: 'Department',
+                border: OutlineInputBorder(
+                  borderSide: BorderSide(
+                    color: Color.fromRGBO(123, 56, 255, 1),
+                  ),
+                ),
+                contentPadding: EdgeInsets.symmetric(
+                  vertical: 10.0,
+                  horizontal: 15.0,
+                ),
+                hintStyle: TextStyle(
+                  fontSize: 16.0,
+                  fontWeight: FontWeight.normal,
+                  color: Color.fromRGBO(123, 56, 255, 1),
+                ),
+              ),
+              dropdownColor: Colors.white,
+              icon: const Icon(
+                Icons.arrow_drop_down,
                 color: Color.fromRGBO(123, 56, 255, 1),
               ),
-            ),
-            contentPadding: EdgeInsets.symmetric(
-              vertical: 10.0,
-              horizontal: 15.0,
-            ),
-            hintStyle: TextStyle(
-              fontSize: 16.0,
-              fontWeight: FontWeight.normal,
-              color: Color.fromRGBO(123, 56, 255, 1),
-            ),
-          ),
-          dropdownColor: Colors.white,
-          icon: const Icon(
-            Icons.arrow_drop_down,
-            color: Color.fromRGBO(123, 56, 255, 1),
-          ),
-          iconSize: 32,
-          elevation: 2,
-          isExpanded: true,
-          validator: signUpController.validateDropdown,
-        ),
+              iconSize: 32,
+              elevation: 2,
+              isExpanded: true,
+            )),
       ),
     );
   }

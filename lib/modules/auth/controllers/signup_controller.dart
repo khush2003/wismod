@@ -37,8 +37,7 @@ class SignUpController extends GetxController {
   @override
   void onInit() async {
     super.onInit();
-    departmentOptions(
-        await FirebaseService().getDepartments() ?? departmentOptions);
+    departmentOptions(await FirebaseService().getDepartments() ?? departmentOptions);
   }
 
   Future<void>? registerUser() async {
@@ -126,12 +125,6 @@ class SignUpController extends GetxController {
     return null;
   }
 
-  String? validateDropdown(String? value) {
-    if (value == null || value.isEmpty || value == 'Department') {
-      return 'Please select a department';
-    }
-    return null;
-  }
 
   String? validateEmail(String? value) {
     if (value == null || value.isEmpty) {

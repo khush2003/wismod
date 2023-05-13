@@ -99,6 +99,7 @@ class AuthController extends GetxController {
       } else {
         throw Exception();
       }
+      Get.offAllNamed(Routes.allPagesNav);
       sucessSnackBar("Login Sucess!");
     } on FirebaseAuthException catch (e) {
       return getAuthErrorMessage(e.code);

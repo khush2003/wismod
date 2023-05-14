@@ -18,8 +18,7 @@ class DashboardView extends StatelessWidget {
   final _event = EventsController.instance;
   @override
   Widget build(BuildContext context) {
-    return Center(
-        child: Scaffold(
+    return Scaffold(
       body: Obx(
         () => fourButtonsController.isLoading.value
             ? const LoadingWidget()
@@ -97,7 +96,7 @@ class DashboardView extends StatelessWidget {
                 ),
               ),
       ),
-    ));
+    );
   }
 }
 
@@ -386,7 +385,7 @@ class DisplayList extends StatelessWidget {
               topRight: Radius.circular(30),
             ),
           ),
-          child: Column(children: [
+          child: Column(mainAxisSize: MainAxisSize.min, children: [
             Row(
               mainAxisAlignment: MainAxisAlignment.end,
               children: [
@@ -398,7 +397,7 @@ class DisplayList extends StatelessWidget {
               ],
             ),
             eventList.isNotEmpty
-                ? Expanded(
+                ? Flexible(
                     child: ListView.builder(
                       itemCount: eventList.length,
                       itemBuilder: (context, index) {
@@ -408,8 +407,11 @@ class DisplayList extends StatelessWidget {
                             Get.toNamed(Routes.eventDetials,
                                 parameters: {'id': event.id!});
                           },
-                          child: OtherActivityBox(
-                            event: event,
+                          child: SizedBox(
+                            height: 210,
+                            child: OtherActivityBox(
+                              event: event,
+                            ),
                           ),
                         );
                       },
@@ -426,23 +428,25 @@ class EmptyEventsList extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return ListView.builder(
-      itemCount: 1,
-      itemBuilder: (context, index) {
-        return const Padding(
-          padding: EdgeInsets.only(top: 107.0),
-          child: Center(
-            child: Text(
-              'You do not have any Events.',
-              style: TextStyle(
-                fontSize: 16,
-                fontWeight: FontWeight.bold,
-                color: Colors.red,
+    return Flexible(
+      child: ListView.builder(
+        itemCount: 1,
+        itemBuilder: (context, index) {
+          return const Padding(
+            padding: EdgeInsets.only(top: 107.0),
+            child: Center(
+              child: Text(
+                'You do not have any Events.',
+                style: TextStyle(
+                  fontSize: 16,
+                  fontWeight: FontWeight.bold,
+                  color: Colors.red,
+                ),
               ),
             ),
-          ),
-        );
-      },
+          );
+        },
+      ),
     );
   }
 }
@@ -523,13 +527,14 @@ class FourButtonsWidget extends StatelessWidget {
 
 class OtherActivityBox extends StatelessWidget {
   final Event event;
-  const OtherActivityBox({super.key, required this.event});
+  const OtherActivityBox({Key? key, required this.event});
 
   @override
   Widget build(BuildContext context) {
     return Padding(
       padding: const EdgeInsets.only(bottom: 15.0),
       child: Container(
+        padding: const EdgeInsets.all(sideWidth),
         decoration: BoxDecoration(
           color: Colors.white,
           borderRadius: BorderRadius.circular(5),
@@ -541,71 +546,61 @@ class OtherActivityBox extends StatelessWidget {
             ),
           ],
         ),
-        child: Padding(
-          padding: const EdgeInsets.all(sideWidth),
-          child: Column(
-            children: [
-              addVerticalSpace(16),
-              Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: [
-                  Text(
-                    formatDate(event.eventDate!),
-                    style: const TextStyle(
-                      fontSize: 16,
-                      fontWeight: FontWeight.bold,
-                      color: Color(0xFFFF669F),
-                    ),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            addVerticalSpace(16),
+            Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: [
+                Text(
+                  formatDate(event.eventDate!),
+                  style: const TextStyle(
+                    fontSize: 16,
+                    fontWeight: FontWeight.bold,
+                    color: Color(0xFFFF669F),
                   ),
-                ],
+                ),
+              ],
+            ),
+            addVerticalSpace(16),
+            Flexible(
+              child: Text(
+                event.title,
+                overflow: TextOverflow.ellipsis,
+                style: const TextStyle(
+                  fontSize: 24,
+                  fontWeight: FontWeight.w500,
+                ),
               ),
-              addVerticalSpace(16),
-              Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: [
-                  Text(
-                    event.title.length <= 20
-                        ? event.title
-                        : '${event.title.substring(0, 20)}...',
-                    style: const TextStyle(
-                      fontSize: 24,
-                      fontWeight: FontWeight.w500,
-                    ),
+            ),
+            addVerticalSpace(16),
+            Flexible(
+              child: Text(
+                event.location,
+                overflow: TextOverflow.ellipsis,
+                style: const TextStyle(
+                  fontSize: 16,
+                  fontWeight: FontWeight.normal,
+                  color: Color(0xFFFF669F),
+                ),
+              ),
+            ),
+            addVerticalSpace(20),
+            Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: [
+                Text(
+                  'Category: ${event.category}',
+                  style: const TextStyle(
+                    fontSize: 16,
+                    fontWeight: FontWeight.bold,
+                    color: Color(0xFFFF669F),
                   ),
-                ],
-              ),
-              addVerticalSpace(16),
-              Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: [
-                  Text(
-                    event.location.length <= 30
-                        ? event.location
-                        : '${event.location.substring(0, 30)}...',
-                    style: const TextStyle(
-                      fontSize: 16,
-                      fontWeight: FontWeight.normal,
-                      color: Color(0xFFFF669F),
-                    ),
-                  ),
-                ],
-              ),
-              addVerticalSpace(20),
-              Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: [
-                  Text(
-                    'Category: ${event.category}',
-                    style: const TextStyle(
-                      fontSize: 16,
-                      fontWeight: FontWeight.bold,
-                      color: Color(0xFFFF669F),
-                    ),
-                  ),
-                ],
-              ),
-            ],
-          ),
+                ),
+              ],
+            ),
+          ],
         ),
       ),
     );

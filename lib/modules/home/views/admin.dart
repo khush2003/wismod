@@ -117,21 +117,17 @@ class EventCard extends StatelessWidget {
                           ],
                         ),
                         // const SizedBox(height: 10),
-                        Expanded(
-                          child: Text(
-                            event.title,
-                            textAlign: TextAlign.start,
-                            overflow: TextOverflow.ellipsis,
-                            style: Theme.of(context).textTheme.displayLarge,
-                          ),
+                        Text(
+                          event.title,
+                          textAlign: TextAlign.start,
+                          overflow: TextOverflow.ellipsis,
+                          style: Theme.of(context).textTheme.displayLarge,
                         ),
                         const SizedBox(height: 10),
-                        Expanded(
-                          child: Text(
-                            event.location,
-                            style: Theme.of(context).textTheme.bodyLarge,
-                            overflow: TextOverflow.ellipsis,
-                          ),
+                        Text(
+                          event.location,
+                          style: Theme.of(context).textTheme.bodyLarge,
+                          overflow: TextOverflow.ellipsis,
                         ),
                         const SizedBox(height: 10),
                         Row(

@@ -27,6 +27,7 @@ class AccountController extends GetxController {
 
   late String departmentFromDB = _auth.appUser.value.getDepartment();
 
+  // late RxString selectedDepartment = departmentFromDB.obs;
   late RxString selectedDepartment = 'Department of Computer Engineering'.obs;
 
   final _auth = AuthController.instance;

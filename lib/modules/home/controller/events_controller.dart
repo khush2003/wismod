@@ -110,7 +110,9 @@ class EventsController extends GetxController {
         }
       }
     }
-    print(allEventJoinRequests);
+    print(
+        "allEventJoinRequests: ${allEventJoinRequests.keys.map((event) => event.id)}");
+    "key to list: ${allEventJoinRequests.keys.toList()}";
   }
 
   int getTotaLengthJoinRequests() {

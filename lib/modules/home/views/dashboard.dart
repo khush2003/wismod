@@ -16,7 +16,7 @@ class DashboardView extends StatelessWidget {
   final profilePictureController = Get.put(ProfilePictureController());
   final fourButtonsController = Get.put(FourButtonsController());
   final _auth = AuthController.instance;
-  final _event = EventsController.instance;
+  var _event = EventsController.instance;
   @override
   Widget build(BuildContext context) {
     return Center(
@@ -315,14 +315,28 @@ class DashboardView extends StatelessWidget {
                                               itemBuilder:
                                                   (BuildContext context,
                                                       int index) {
+                                                final event = _event
+                                                    .allEventJoinRequests.keys
+                                                    .toList()[index];
                                                 return Padding(
                                                   padding:
                                                       const EdgeInsets.all(5.0),
                                                   child: Column(
                                                     children: [
-                                                      _requestedActivityBox(
-                                                          index, _event),
-                                                      addVerticalSpace()
+                                                      GestureDetector(
+                                                        onTap: () {
+                                                          Get.toNamed(
+                                                            Routes.eventDetials,
+                                                            arguments: {
+                                                              'id': event.id
+                                                            },
+                                                          );
+                                                        },
+                                                        child:
+                                                            _requestedActivityBox(
+                                                                index, _event),
+                                                      ),
+                                                      addVerticalSpace(),
                                                     ],
                                                   ),
                                                 );

@@ -48,13 +48,18 @@ class AppUser {
     return '$firstName $lastName';
   }
 
-  // get first name last name
+  // get first name
   String getFirstname() {
     return firstName;
   }
 
+  // get last name
   String getLastname() {
     return lastName;
+  }
+
+  String getDepartment() {
+    return department;
   }
 
   List<String> getJoinedChatGroups() {

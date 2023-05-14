@@ -24,7 +24,10 @@ class AccountController extends GetxController {
     'Department of Biological Engineering',
     'Department of Aquaculture Engineering'
   ].obs;
-  final selectedDepartment = 'School of Information Technology'.obs;
+
+  late String departmentFromDB = _auth.appUser.value.getDepartment();
+
+  late RxString selectedDepartment = 'Department of Computer Engineering'.obs;
 
   final _auth = AuthController.instance;
   final FirebaseAuth authBase = FirebaseAuth.instance;
@@ -65,9 +68,9 @@ class AccountController extends GetxController {
 
   @override
   void onInit() async {
+    super.onInit();
     departmentOptions(
         await FirebaseService().getDepartments() ?? departmentOptions);
-    super.onInit();
   }
   // For future use
   // @override
@@ -118,6 +121,7 @@ class AccountController extends GetxController {
   }
 
   yearIsTheSame(int newYear) {
+    late int preYear = _auth.appUser.value.year;
     if (newYear == preYear) {
       return true;
     }

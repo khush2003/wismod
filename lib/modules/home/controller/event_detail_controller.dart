@@ -2,14 +2,20 @@ import 'package:get/get.dart';
 import 'package:wismod/modules/auth/controllers/auth_controller.dart';
 import 'package:wismod/modules/home/controller/events_controller.dart';
 import 'package:wismod/shared/models/event.dart';
+import 'package:wismod/shared/models/user.dart';
+import '../../../shared/services/firebase_firestore_serivce.dart';
 import 'chat_controller.dart';
 
 class EventDetailController extends GetxController {
   final Rx<Event> eventData = Event.empty().obs;
   final isLoading = true.obs;
 
+  static EventDetailController get instance =>
+      Get.find<EventDetailController>();
+
   final _event = EventsController.instance;
   final _chat = ChatController.instance;
+  final _firestore = FirebaseService();
 
   final Rx<bool> isJoined = false.obs;
   final Rx<bool> isUpvoted = false.obs;
@@ -17,6 +23,7 @@ class EventDetailController extends GetxController {
   final Rx<bool> isRequested = false.obs;
   final Rx<bool> isOwnedEvent = false.obs;
 
+  final RxList<String> memberList = <String>[].obs;
   final joinButtonText = 'Join'.obs;
 
   final tags = <String>[].obs;
@@ -24,6 +31,7 @@ class EventDetailController extends GetxController {
   @override
   void onInit() async {
     setEvent();
+    setMemberList();
     super.onInit();
   }
 
@@ -114,4 +122,42 @@ class EventDetailController extends GetxController {
   void chatGroupAdd() async {
     _chat.joinChatGroup(eventData.value);
   }
+
+  void setMemberList() {
+    memberList.clear();
+    final List<String> tempMemberList = eventData.value.members ?? [];
+    memberList.addAll(tempMemberList);
+  }
+
+  void removeMember(String userId) async {
+    eventData.update((event) {
+      event!.members?.remove(userId);
+    });
+
+    try {
+      await _firestore.deleteMemberFromEvent(eventData.value.id!, userId);
+      print('Member removed successfully.');
+      EventDetailController.instance.memberList.remove(userId);
+    } catch (error) {
+      print('Error removing member: $error');
+    }
+  }
+
+  // Future<String> _getUserName(String userId) async {
+  //   final users = await _firestore.getUserById(userId);
+  //   print('${users!.firstName}');
+  //   return "${users.firstName} ${users.lastName}";
+  // }
+  // Future<void> setMemberList() async {
+  //   memberList.clear();
+  //   final List<String> tempMemberList = eventData.value.members ?? [];
+  //   for (String userId in tempMemberList) {
+  //     final AppUser? user = await _firestore.getUserById(userId);
+
+  //     if (user != null) {
+  //       memberList.add(user);
+  //     }
+  //   }
+  //   print('temp member: ${tempMemberList} \n MemberList: ${memberList}');
+  // }
 }

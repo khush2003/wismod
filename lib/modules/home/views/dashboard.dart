@@ -15,7 +15,7 @@ class DashboardView extends StatelessWidget {
   final profilePictureController = Get.put(ProfilePictureController());
   final fourButtonsController = Get.put(FourButtonsController());
   final _auth = AuthController.instance;
-  var _event = EventsController.instance;
+  final _event = EventsController.instance;
   @override
   Widget build(BuildContext context) {
     return Center(

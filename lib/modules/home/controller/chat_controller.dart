@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:get/get.dart';
 import 'package:wismod/routes/routes.dart';
 import 'package:wismod/shared/models/event.dart';
@@ -20,6 +22,7 @@ class ChatController extends GetxController {
 
   final _auth = AuthController.instance;
   final _firestore = FirebaseService();
+  final _messageStreams = <StreamSubscription>{};
 
   @override
   void onInit() async {
@@ -67,11 +70,13 @@ class ChatController extends GetxController {
     try {
       for (Event event in joinedChatGroupsWithoutBlocks) {
         final messageStream = _firestore.getLatestMessagesStream(event.id!);
-        messageStream.listen((message) {
-          if (message != null) {
-            latestMessages[event.id!] = message;
-          }
-        });
+        _messageStreams.add(
+          messageStream.listen((message) {
+            if (message != null) {
+              latestMessages[event.id!] = message;
+            }
+          }),
+        );
       }
     } finally {}
   }
@@ -131,5 +136,18 @@ class ChatController extends GetxController {
       Get.toNamed(Routes.chatting, parameters: {'id': event.id!});
       sucessSnackBar("Joined ChatGroup Sucessfully!");
     });
+  }
+
+  void cancelAllSubscriptions() {
+    for (final subscription in _messageStreams) {
+      subscription.cancel();
+    }
+    _messageStreams.clear();
+  }
+
+  @override
+  void onClose() {
+    cancelAllSubscriptions();
+    super.onClose();
   }
 }

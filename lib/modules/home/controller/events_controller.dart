@@ -1,5 +1,6 @@
 import 'package:get/get.dart';
 import 'package:wismod/modules/auth/controllers/auth_controller.dart';
+import 'package:wismod/modules/home/controller/chat_controller.dart';
 import 'package:wismod/shared/models/event.dart';
 import 'package:wismod/shared/models/user.dart';
 import 'package:wismod/shared/services/firebase_firestore_serivce.dart';
@@ -96,7 +97,6 @@ class EventsController extends GetxController {
     // print(users);
     for (AppUser user in users) {
       final tempRequestedEvents = user.requestedEvents;
-      print(tempRequestedEvents);
       if (tempRequestedEvents != null && tempRequestedEvents.isNotEmpty) {
         for (String eventId in tempRequestedEvents) {
           if (checkEventInList(eventId, ownedEvents)) {
@@ -110,9 +110,6 @@ class EventsController extends GetxController {
         }
       }
     }
-    print(
-        "allEventJoinRequests: ${allEventJoinRequests.keys.map((event) => event.id)}");
-    "key to list: ${allEventJoinRequests.keys.toList()}";
   }
 
   int getTotaLengthJoinRequests() {
@@ -200,10 +197,8 @@ class EventsController extends GetxController {
   }
 
   void denyJoin(AppUser user, Event event) async {
-    print(allEventJoinRequests);
     requestedEvents.removeWhere((e) => e.id == event.id);
     allEventJoinRequests[event]?.removeWhere((u) => u.uid == user.uid);
-    print(allEventJoinRequests);
     await _firestore.denyJoin(user, event).catchError((e) {
       errorSnackBar("Error! ${e.toString()}");
     });
@@ -263,6 +258,34 @@ class EventsController extends GetxController {
         }
       });
     }
+  }
+
+  void deleteEvent(Event event) async {
+    print("Event deletion called");
+    print(event);
+    print(events);
+    events.removeWhere((e) => e.id == event.id);
+    ownedEvents.removeWhere((e) => e.id == event.id);
+    bookmarkedEvents.removeWhere((e) => e.id == event.id);
+    requestedEvents.removeWhere((e) => e.id == event.id);
+    upvotedEvents.removeWhere((e) => e.id == event.id);
+    reportedEvents.removeWhere((e) => e.id == event.id);
+    joinedEvents.removeWhere((e) => e.id == event.id);
+    allEventJoinRequests.removeWhere((key, value) => key.id == event.id);
+    _auth.appUser.value.ownedEvents?.removeWhere((e) => e == event.id);
+    _auth.appUser.value.bookmarkedEvents?.removeWhere((e) => e == event.id);
+    _auth.appUser.value.requestedEvents?.removeWhere((e) => e == event.id);
+    _auth.appUser.value.upvotedEvents?.removeWhere((e) => e == event.id);
+    _auth.appUser.value.joinedEvents?.removeWhere((e) => e == event.id);
+    final chat = ChatController.instance;
+    chat.blockedChatGroups.removeWhere((e) => e.id == event.id);
+    chat.joinedChatGroups.removeWhere((e) => e.id == event.id);
+    chat.joinedChatGroupsWithoutBlocks.removeWhere((e) => e.id == event.id);
+    chat.cancelAllSubscriptions();
+    chat.fetchLatestMessages();
+    print(events);
+    await _firestore.deleteEvent(event).catchError((e) => errorSnackBar(
+        "Error deleting the event please reload application: ${e.toString()}"));
   }
 
   void bookmarkEvent(Event eventData) async {

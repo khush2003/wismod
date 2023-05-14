@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:wismod/modules/home/controller/event_detail_controller.dart';
+import 'package:wismod/modules/home/controller/events_controller.dart';
+import 'package:wismod/routes/routes.dart';
 import 'package:wismod/theme/global_widgets.dart';
 import 'package:wismod/utils/app_utils.dart';
 import 'package:wismod/modules/auth/controllers/auth_controller.dart';
@@ -108,9 +110,11 @@ class EventDetailView extends StatelessWidget {
                             children: [
                               Expanded(
                                 child: Obx(() => OutlineButtonMedium(
-                                      onPressed: controller.isOwnedEvent.value ? null :  () {
-                                        controller.upvoteEvent();
-                                      },
+                                      onPressed: controller.isOwnedEvent.value
+                                          ? null
+                                          : () {
+                                              controller.upvoteEvent();
+                                            },
                                       child: controller.isUpvoted.value
                                           ? const Text("Remove Upvote")
                                           : const Text("Upvote"),
@@ -147,7 +151,9 @@ class JoinButton extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Obx(() => PrimaryButtonMedium(
-        onPressed: controller.isJoined.value || controller.isRequested.value || controller.isOwnedEvent.value
+        onPressed: controller.isJoined.value ||
+                controller.isRequested.value ||
+                controller.isOwnedEvent.value
             ? null
             : () {
                 controller.joinEvent();
@@ -158,6 +164,7 @@ class JoinButton extends StatelessWidget {
 
 Widget showAdminBottomBar(
     EventDetailController controller, BuildContext context) {
+  final event = EventsController.instance;
   final auth = AuthController.instance;
   if (auth.appUser.value.isAdmin == true &&
       (controller.eventData.value.isReported == false ||
@@ -203,7 +210,8 @@ Widget showAdminBottomBar(
                               backgroundColor: Colors.red,
                             ),
                             onPressed: () {
-                              Navigator.of(context).pop();
+                              event.deleteEvent(controller.eventData.value);
+                              Get.offAllNamed(Routes.allPagesNav);
                             },
                             child: const Text('Remove'),
                           ),
@@ -245,7 +253,10 @@ Widget showAdminBottomBar(
               child: const Text('Deny'),
             ),
             ElevatedButton(
-              onPressed: () {},
+              onPressed: () {
+                event.deleteEvent(controller.eventData.value);
+                Get.offAllNamed(Routes.allPagesNav);
+              },
               style: ElevatedButton.styleFrom(
                 backgroundColor: Colors.red,
               ),

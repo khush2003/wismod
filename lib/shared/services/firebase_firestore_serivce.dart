@@ -134,21 +134,21 @@ class FirebaseService {
   }
 
   Stream<Message?> getLatestMessagesStream(String eventId) {
-  return FirebaseFirestore.instance
-      .collection('Messages')
-      .where('EventId', isEqualTo: eventId)
-      .orderBy('SentOn', descending: true)
-      .limit(1)
-      .snapshots()
-      .map((querySnapshot) {
-    if (querySnapshot.docs.isNotEmpty) {
-      final data = querySnapshot.docs[0].data();
-      return Message.fromMap(data);
-    } else {
-      return null;
-    }
-  });
-}
+    return FirebaseFirestore.instance
+        .collection('Messages')
+        .where('EventId', isEqualTo: eventId)
+        .orderBy('SentOn', descending: true)
+        .limit(1)
+        .snapshots()
+        .map((querySnapshot) {
+      if (querySnapshot.docs.isNotEmpty) {
+        final data = querySnapshot.docs[0].data();
+        return Message.fromMap(data);
+      } else {
+        return null;
+      }
+    });
+  }
 
   Future<void> updateProfilePicture(String userId, String imagePath) async {
     // Update the user's profile picture in Firestore
@@ -459,6 +459,87 @@ class FirebaseService {
         .update({'Members': members});
   }
 
+  Future<void> deleteEvent(Event event) async {
+  final eventDoc = _firestore.collection('Events').doc(event.id);
+  final messages = await _firestore
+      .collection('Messages')
+      .where('EventId', isEqualTo: event.id)
+      .get();
+
+  // Delete event document and all associated messages
+  final batch = _firestore.batch();
+  batch.delete(eventDoc);
+  for (final messageDoc in messages.docs) {
+    batch.delete(messageDoc.reference);
+  }
+  await batch.commit();
+
+  // Update user documents to remove references to the event
+  final users = await _firestore.collection('Users').get();
+  final userBatches = <WriteBatch>[];
+  for (final userDoc in users.docs) {
+    final userData = userDoc.data();
+    final joinedEvents =
+        List<String>.from(userData['JoinedEvents'] ?? <String>[]);
+    final requestedEvents =
+        List<String>.from(userData['RequestedEvents'] ?? <String>[]);
+    final ownedEvents =
+        List<String>.from(userData['OwnedEvents'] ?? <String>[]);
+    final bookmarkedEvents =
+        List<String>.from(userData['BookmarkedEvents'] ?? <String>[]);
+    final upvotedEvents =
+        List<String>.from(userData['UpvotedEvents'] ?? <String>[]);
+    final blockedChatGroups =
+        List<String>.from(userData['BlockedChatGroups'] ?? <String>[]);
+    final joinedChatGroups =
+        List<String>.from(userData['JoinedChatGroups'] ?? <String>[]);
+
+    if (joinedEvents.remove(event.id)) {
+      userDoc.reference.update({'JoinedEvents': joinedEvents});
+    }
+    if (requestedEvents.remove(event.id)) {
+      userDoc.reference.update({'RequestedEvents': requestedEvents});
+    }
+    if (ownedEvents.remove(event.id)) {
+      userDoc.reference.update({'OwnedEvents': ownedEvents});
+    }
+    if (bookmarkedEvents.remove(event.id)) {
+      userDoc.reference.update({'BookmarkedEvents': bookmarkedEvents});
+    }
+    if (upvotedEvents.remove(event.id)) {
+      userDoc.reference.update({'UpvotedEvents': upvotedEvents});
+    }
+    if (blockedChatGroups.remove(event.id)) {
+      userDoc.reference.update({'BlockedChatGroups': blockedChatGroups});
+    }
+    if (joinedChatGroups.remove(event.id)) {
+      userDoc.reference.update({'JoinedChatGroups': joinedChatGroups});
+    }
+
+    if (joinedEvents.isNotEmpty ||
+        requestedEvents.isNotEmpty ||
+        ownedEvents.isNotEmpty ||
+        bookmarkedEvents.isNotEmpty ||
+        upvotedEvents.isNotEmpty ||
+        blockedChatGroups.isNotEmpty ||
+        joinedChatGroups.isNotEmpty) {
+      final batch = _firestore.batch();
+      batch.update(userDoc.reference, {
+        'JoinedEvents': joinedEvents,
+        'RequestedEvents': requestedEvents,
+        'OwnedEvents': ownedEvents,
+        'BookmarkedEvents': bookmarkedEvents,
+        'UpvotedEvents': upvotedEvents,
+        'BlockedChatGroups': blockedChatGroups,
+        'JoinedChatGroups': joinedChatGroups,
+      });
+      userBatches.add(batch);
+    }
+  }
+  await Future.wait(userBatches.map((batch) => batch.commit()));
+}
+
+
   Future<void> requestEvent(String userId, String eventId) async {
     final documentUsers = _firestore.collection('Users').doc(userId);
     var requestedEvents = <String>[];
@@ -557,6 +638,5 @@ class FirebaseService {
       throw Exception('User does not exists!');
     }
   }
-
   // Add functions here
 }

@@ -4,6 +4,7 @@ import 'package:wismod/modules/auth/views/signup_view.dart';
 import 'package:wismod/modules/home/views/accounts.dart';
 import 'package:wismod/modules/home/views/all_pages_nav.dart';
 import 'package:wismod/modules/home/views/block_list.dart';
+import 'package:wismod/modules/home/views/edit_event.dart';
 import 'package:wismod/modules/home/views/notification.dart';
 import 'package:wismod/modules/home/views/password.dart';
 import '../modules/home/views/event_details.dart';
@@ -19,6 +20,7 @@ abstract class Routes {
   static const String login = '/login';
   static const String signup = '/signup';
   static const String createEvent = '/createEvent';
+  static const String editEvent = '/editEvent';
   static const String accounts = '/accounts';
   static const String password = '/password';
   static const String notficaition = '/notficaition';
@@ -37,6 +39,7 @@ final getPages = [
   GetPage(name: Routes.login, page: () => LogInView()),
   GetPage(name: Routes.signup, page: () => SignUpView()),
   GetPage(name: Routes.createEvent, page: () => CreateEventView()),
+  GetPage(name: Routes.editEvent, page: () => EditEvent()),
   GetPage(name: Routes.accounts, page: () => AccountsView()),
   GetPage(name: Routes.password, page: () => PassWordView()),
   GetPage(name: Routes.notficaition, page: () => NotificationView()),

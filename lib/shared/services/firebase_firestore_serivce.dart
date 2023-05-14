@@ -271,6 +271,34 @@ class FirebaseService {
     }
   }
 
+  Future<void> editEvent(Event event) async {
+  final doc = await _firestore.collection('Events').doc(event.id).get();
+  if (!doc.exists) {
+    throw Exception('Event does not exist');
+  }
+  
+  await _firestore.collection('Events').doc(event.id).update({
+    'Title': event.title,
+    'Category': event.category,
+    'Upvotes': event.upvotes,
+    'ImageURL': event.imageUrl,
+    'EventDate': event.eventDate == null ? null : Timestamp.fromDate(event.eventDate!),
+    'EventOwnerName': event.eventOwner.name,
+    'EventOwnerDepartment': event.eventOwner.department,
+    'EventOwnerYear': event.eventOwner.year,
+    'EventOwnerId': event.eventOwner.uid,
+    'Description': event.description,
+    'TotalCapacity': event.totalCapacity,
+    'AllowAutomaticJoin': event.allowAutomaticJoin,
+    'Members': event.members,
+    'Location': event.location,
+    'Tags': event.tags,
+    'IsReported': event.isReported,
+    'CreatedAt': event.createdAt == null ? Timestamp.now() : Timestamp.fromDate(event.createdAt!),
+  });
+}
+
+
   /// Fixes the chat group join for all users by adding them to the chat group
   /// of the event they own.
   /// This method iterates over all events and checks the owner of each event.

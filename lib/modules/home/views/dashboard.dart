@@ -121,7 +121,7 @@ class RequestList extends StatelessWidget {
               topRight: Radius.circular(30),
             ),
           ),
-          child: Column(children: [
+          child: Column(mainAxisSize: MainAxisSize.min, children: [
             Row(
               mainAxisAlignment: MainAxisAlignment.end,
               children: [
@@ -132,21 +132,20 @@ class RequestList extends StatelessWidget {
                     icon: const Icon(Icons.close))
               ],
             ),
-            Expanded(
+            Flexible(
               child: Obx(() => _event.allEventJoinRequests.isNotEmpty
                   ? Obx(() => ListView.builder(
                         itemCount: _event.allEventJoinRequests.length,
                         itemBuilder: (BuildContext context, int index) {
+                          final event =
+                              _event.allEventJoinRequests.keys.elementAt(index);
+                          List<AppUser> users =
+                              _event.allEventJoinRequests[event]!;
                           return Padding(
                             padding: const EdgeInsets.all(5.0),
                             child: Column(
                               children: [
-                                Obx(() => _requestedActivityBox(
-                                    index,
-                                    _event.allEventJoinRequests.keys
-                                        .elementAt(index),
-                                    _event.allEventJoinRequests.values
-                                        .elementAt(index))),
+                                _requestedActivityBox(index, event, users),
                                 addVerticalSpace()
                               ],
                             ),
@@ -641,8 +640,6 @@ Widget _requestedActivityBox(int index, Event event, List<AppUser> users) {
             itemCount:
                 controller.allEventJoinRequests.values.elementAt(index).length,
             itemBuilder: (context, index) {
-              final event =
-                  controller.allEventJoinRequests.keys.elementAt(index);
               final users = controller.allEventJoinRequests[event] ?? [];
               return UserApproveBox(
                 user: users[index],

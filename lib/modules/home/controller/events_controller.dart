@@ -184,21 +184,31 @@ class EventsController extends GetxController {
   }
 
 //TODO: Add a check for member limit
+
   void approveJoin(AppUser user, Event event) async {
     //TODO: Subscribe to changes in joined List and requested List
     requestedEvents.removeWhere((e) => e.id == event.id);
     allEventJoinRequests[event]?.removeWhere((u) => u.uid == user.uid);
     joinedEvents.add(event);
     events[getIndexOfEvent(event, events)].members!.add(user.uid!);
-
+    allEventJoinRequests.update(event, (value) {
+      value.remove(user);
+      return value;
+    });
     await _firestore.approveJoin(user, event).catchError((e) {
       errorSnackBar("Error! ${e.toString()}");
     });
+
+    
   }
 
   void denyJoin(AppUser user, Event event) async {
     requestedEvents.removeWhere((e) => e.id == event.id);
     allEventJoinRequests[event]?.removeWhere((u) => u.uid == user.uid);
+    allEventJoinRequests.update(event, (value) {
+      value.remove(user);
+      return value;
+    });
     await _firestore.denyJoin(user, event).catchError((e) {
       errorSnackBar("Error! ${e.toString()}");
     });

@@ -68,7 +68,9 @@ class ChatController extends GetxController {
       for (Event event in joinedChatGroupsWithoutBlocks) {
         final messageStream = _firestore.getLatestMessagesStream(event.id!);
         messageStream.listen((message) {
-          latestMessages[event.id!] = message;
+          if (message != null) {
+            latestMessages[event.id!] = message;
+          }
         });
       }
     } finally {}

@@ -186,6 +186,7 @@ class EventsController extends GetxController {
     });
   }
 
+//TODO: Add a check for member limit
   void approveJoin(AppUser user, Event event) async {
     //TODO: Subscribe to changes in joined List and requested List
     requestedEvents.removeWhere((e) => e.id == event.id);
@@ -245,17 +246,10 @@ class EventsController extends GetxController {
       if (checkEventInList(event.id!, requestedEvents)) {
         isAdd = false;
         requestedEvents.removeWhere((e) => e.id == event.id);
-        allEventJoinRequests[event]
-            ?.removeWhere((user) => user.uid == _auth.user.uid);
         _auth.appUser.value.requestedEvents?.remove(event.id!);
       } else {
         requestedEvents.add(event);
         _auth.appUser.value.requestedEvents?.add(event.id!);
-        if (allEventJoinRequests.containsKey(event)) {
-          allEventJoinRequests[event]!.add(_auth.user);
-        } else {
-          allEventJoinRequests[event] = [_auth.user];
-        }
       }
       await _firestore.requestEvent(_auth.user.uid!, event.id!).catchError((e) {
         errorSnackBar(
@@ -263,16 +257,9 @@ class EventsController extends GetxController {
         if (isAdd) {
           requestedEvents.removeWhere((e) => e.id == event.id);
           _auth.appUser.value.requestedEvents?.remove(event.id!);
-          allEventJoinRequests[event]
-              ?.removeWhere((e) => e.uid == _auth.user.uid);
         } else {
-          reportedEvents.add(event);
+          requestedEvents.add(event);
           _auth.appUser.value.requestedEvents?.add(event.id!);
-          if (allEventJoinRequests.containsKey(event)) {
-            allEventJoinRequests[event]!.add(_auth.user);
-          } else {
-            allEventJoinRequests[event] = [_auth.user];
-          }
         }
       });
     }

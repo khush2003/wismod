@@ -3,7 +3,6 @@ import 'package:get/get.dart';
 import 'package:wismod/modules/auth/controllers/auth_controller.dart';
 import 'package:wismod/modules/home/controller/events_controller.dart';
 import 'package:wismod/shared/models/user.dart';
-import 'package:wismod/theme/theme_data.dart';
 import 'package:wismod/utils/app_utils.dart';
 import 'package:wismod/modules/home/controller/dashboard_controller.dart';
 
@@ -27,389 +26,66 @@ class DashboardView extends StatelessWidget {
             : SingleChildScrollView(
                 child: Column(
                   children: [
-                    Container(
-                      decoration: const BoxDecoration(
-                        color: Color(0xFFEAF4F4),
-                        borderRadius: BorderRadius.only(
-                          bottomLeft: Radius.circular(30),
-                          bottomRight: Radius.circular(30),
-                        ),
-                      ),
-                      child: Column(
-                          crossAxisAlignment: CrossAxisAlignment.stretch,
-                          children: [
-                            addVerticalSpace(24),
-                            const Text('Profile',
-                                textAlign: TextAlign.center,
-                                style: TextStyle(
-                                    fontSize: 32,
-                                    color: Color.fromRGBO(123, 56, 255, 1),
-                                    fontWeight: FontWeight.bold)),
-                            addVerticalSpace(16),
-                            CircleAvatar(
-                              radius: 90,
-                              backgroundImage: Image.network(
-                                      _auth.appUser.value.profilePicture ??
-                                          placeholderImage,
-                                      errorBuilder:
-                                          (context, error, stackTrace) =>
-                                              Image.network(
-                                                placeholderImage,
-                                                fit: BoxFit.cover,
-                                              ),
-                                      fit: BoxFit.cover)
-                                  .image,
-                            ),
-                            addVerticalSpace(20),
-                            Column(
-                              children: [
-                                Text(
-                                  _auth.appUser.value.getName(),
-                                  textAlign: TextAlign.center,
-                                  style:
-                                      Theme.of(context).textTheme.displayLarge,
-                                ),
-                                addVerticalSpace(),
-                                Text(
-                                  _auth.appUser.value.department,
-                                  textAlign: TextAlign.center,
-                                  style: Theme.of(context).textTheme.bodyMedium,
-                                ),
-                                addVerticalSpace(),
-                                Text(
-                                  'Year ${_auth.appUser.value.year}',
-                                  textAlign: TextAlign.center,
-                                  style: Theme.of(context).textTheme.bodyMedium,
-                                ),
-                                addVerticalSpace(),
-                                OutlineButtonMedium(
-                                  onPressed: () {
-                                    showDialog(
-                                      context: context,
-                                      builder: (BuildContext context) {
-                                        return AlertDialog(
-                                          title: const Text(
-                                              "Choose Profile Picture"),
-                                          content: Padding(
-                                            padding: const EdgeInsets.fromLTRB(
-                                                14.0, 0.0, 14.0, 16.0),
-                                            child: SizedBox(
-                                              width: double.infinity,
-                                              // Button Height Change Here
-                                              height: 250,
-                                              child: Obx(
-                                                () => OutlinedButton.icon(
-                                                  icon: profilePictureController
-                                                              .imageUrl.value ==
-                                                          ''
-                                                      ? const Icon(
-                                                          Icons.image_outlined)
-                                                      : Image.network(
-                                                          profilePictureController
-                                                              .imageUrl.value,
-                                                          fit: BoxFit.cover,
-                                                        ),
-                                                  onPressed: () =>
-                                                      profilePictureController
-                                                          .uploadImage(),
-                                                  label: const Text(''),
-                                                  style:
-                                                      ElevatedButton.styleFrom(
-                                                    side: const BorderSide(
-                                                      color: Colors
-                                                          .black, //Set border color
-                                                      width:
-                                                          1, //Set border width
-                                                    ),
-                                                  ),
-                                                ),
-                                              ),
-                                            ),
-                                          ),
-                                          actions: <Widget>[
-                                            OutlineButtonMedium(
-                                                child: const Text("Cancel"),
-                                                onPressed: () {
-                                                  Navigator.pop(context);
-                                                }),
-                                            SecondaryButtonMedium(
-                                              child: const Text("Save"),
-                                              onPressed: () {
-                                                profilePictureController
-                                                    .setProfilePicture();
-                                                Navigator.pop(context);
-                                              },
-                                            ),
-                                          ],
-                                        );
-                                      },
-                                    );
-                                  },
-                                  child: const Padding(
-                                    padding:
-                                        EdgeInsets.symmetric(horizontal: 38.0),
-                                    child: Text('Change Profile Picture'),
-                                    // color: Color(0xFFEAF4F4),
-                                    // borderRadius: BorderRadius.circular(10),
-                                  ),
-                                ),
-                                addVerticalSpace(20),
-                              ],
-                            ),
-                          ]),
-                    ),
+                    ProfileSection(
+                        auth: _auth,
+                        profilePictureController: profilePictureController),
                     Padding(
                       padding: const EdgeInsets.all(sideWidth),
                       child: Column(
                         children: [
-                          Row(
-                            children: [
-                              Text(
-                                'Dashboard',
-                                textAlign: TextAlign.center,
-                                style: Theme.of(context).textTheme.titleMedium,
-                              ),
-                            ],
+                          Text(
+                            'Dashboard',
+                            textAlign: TextAlign.center,
+                            style: Theme.of(context).textTheme.titleMedium,
                           ),
                           addVerticalSpace(),
-                          Wrap(
-                            direction: Axis.horizontal,
-                            alignment: WrapAlignment.spaceEvenly,
-                            spacing: 16,
-                            runSpacing: 16,
-                            children: [
-                              Container(
-                                decoration: BoxDecoration(
-                                  color: Colors.white,
-                                  borderRadius: BorderRadius.circular(10),
-                                  border: Border.all(
-                                    color:
-                                        const Color.fromRGBO(123, 56, 255, 1),
-                                    width: 2.0,
-                                  ),
-                                ),
-                                padding: const EdgeInsets.all(8),
-                                child: Column(
-                                  crossAxisAlignment: CrossAxisAlignment.start,
-                                  children: [
-                                    const Text(
-                                      'Joined Events',
-                                      style: TextStyle(
-                                        fontWeight: FontWeight.bold,
-                                        fontSize: 18,
-                                      ),
-                                    ),
-                                    addVerticalSpace(),
-                                    Text(
-                                      '${_event.joinedEvents.length} Events',
-                                      style: Theme.of(context)
-                                          .textTheme
-                                          .bodyMedium,
-                                    ),
-                                  ],
-                                ),
-                              ),
-                              Container(
-                                decoration: BoxDecoration(
-                                  color: Colors.white,
-                                  borderRadius: BorderRadius.circular(10),
-                                  border: Border.all(
-                                    color:
-                                        const Color.fromRGBO(123, 56, 255, 1),
-                                    width: 2.0,
-                                  ),
-                                ),
-                                padding: const EdgeInsets.all(8),
-                                child: Column(
-                                  crossAxisAlignment: CrossAxisAlignment.start,
-                                  children: [
-                                    const Text('Upvoted Events',
-                                        style: TextStyle(
-                                          fontWeight: FontWeight.bold,
-                                          fontSize: 18,
-                                        )),
-                                    addVerticalSpace(),
-                                    Text(
-                                      '${_event.upvotedEvents.length} Upvotes',
-                                      style: Theme.of(context)
-                                          .textTheme
-                                          .bodyMedium,
-                                    ),
-                                  ],
-                                ),
-                              ),
-                            ],
-                          ),
+                          OverviewSection(event: _event),
                           addVerticalSpace(20),
                           Column(
                             children: [
                               FourButtonsWidget(
                                 activityType: 'Joined Events',
                                 activityNumber: _event.joinedEvents.length,
-                                onPressed: fourButtonsController.toggleJoined,
-                                showSizeBox: fourButtonsController.showJoined,
+                                onPressed: () => Get.bottomSheet(
+                                  DisplayList(eventList: _event.joinedEvents),
+                                  isScrollControlled: true,
+                                ),
                               ),
-                              Obx(() => fourButtonsController.showJoined.value
-                                  ? SizedBox(
-                                      height: 230,
-                                      child: Container(
-                                        padding: const EdgeInsets.all(10),
-                                        decoration: const BoxDecoration(
-                                          color: Color(0xffEAF4F4),
-                                          borderRadius: BorderRadius.only(
-                                            bottomLeft: Radius.circular(10),
-                                            bottomRight: Radius.circular(10),
-                                          ),
-                                        ),
-                                        child: _event.joinedEvents.isNotEmpty
-                                            ? ListView.builder(
-                                                itemCount:
-                                                    _event.joinedEvents.length,
-                                                itemBuilder: (context, index) {
-                                                  final event = _event
-                                                      .joinedEvents[index];
-                                                  return GestureDetector(
-                                                    onTap: () {
-                                                      Get.toNamed(
-                                                          Routes.eventDetials,
-                                                          parameters: {
-                                                            'id': event.id!
-                                                          });
-                                                    },
-                                                    child: OtherActivityBox(
-                                                      event: event,
-                                                    ),
-                                                  );
-                                                },
-                                              )
-                                            : const EmptyEventsList(),
-                                      ),
-                                    )
-                                  : const SizedBox()),
                               addVerticalSpace(16),
                               FourButtonsWidget(
-                                activityType: 'Join Requests',
-                                activityNumber:
-                                    _event.getTotaLengthJoinRequests(),
-                                onPressed:
-                                    fourButtonsController.toggleRequested,
-                                showSizeBox:
-                                    fourButtonsController.showRequested,
-                              ),
-                              Obx(() => fourButtonsController
-                                      .showRequested.value
-                                  ? SizedBox(
-                                      height: 230,
-                                      child: Container(
-                                        padding: const EdgeInsets.all(10),
-                                        decoration: const BoxDecoration(
-                                          color: Color(0xffEAF4F4),
-                                          borderRadius: BorderRadius.only(
-                                            bottomLeft: Radius.circular(10),
-                                            bottomRight: Radius.circular(10),
-                                          ),
-                                        ),
-                                        child: Obx(() => ListView.builder(
-                                              itemCount: _event
-                                                  .allEventJoinRequests.length,
-                                              itemBuilder:
-                                                  (BuildContext context,
-                                                      int index) {
-                                                final event = _event
-                                                    .allEventJoinRequests.keys
-                                                    .toList()[index];
-                                                return Padding(
-                                                  padding:
-                                                      const EdgeInsets.all(5.0),
-                                                  child: Column(
-                                                    children: [
-                                                      GestureDetector(
-                                                        onTap: () {
-                                                          Get.toNamed(
-                                                            Routes.eventDetials,
-                                                            arguments: {
-                                                              'id': event.id
-                                                            },
-                                                          );
-                                                        },
-                                                        child:
-                                                            _requestedActivityBox(
-                                                                index, _event),
-                                                      ),
-                                                      addVerticalSpace(),
-                                                    ],
-                                                  ),
-                                                );
-                                              },
-                                            )),
-                                      ),
-                                    )
-                                  : const SizedBox()),
+                                  activityType: 'Join Requests',
+                                  activityNumber:
+                                      _event.getTotaLengthJoinRequests(),
+                                  onPressed: () => Get.bottomSheet(
+                                      RequestList(event: _event),
+                                      isScrollControlled: true)),
                               addVerticalSpace(16),
                               FourButtonsWidget(
                                 activityType: 'Bookmarked Events',
                                 activityNumber: _event.bookmarkedEvents.length,
                                 onPressed: () {
-                                  Get.bottomSheet(BookMarkList(
-                                      fourButtonsController:
-                                          fourButtonsController,
-                                      event: _event));
+                                  Get.bottomSheet(
+                                      DisplayList(
+                                          eventList: _event.bookmarkedEvents),
+                                      isScrollControlled: true);
                                 },
-                                showSizeBox:
-                                    fourButtonsController.showBookmarked,
                               ),
                               addVerticalSpace(16),
                               FourButtonsWidget(
                                 activityType: 'Events You Own',
                                 activityNumber: _event.ownedEvents.length,
-                                onPressed: fourButtonsController.toggleOwn,
-                                showSizeBox: fourButtonsController.showOwn,
+                                onPressed: () => Get.bottomSheet(
+                                    DisplayList(eventList: _event.ownedEvents),
+                                    isScrollControlled: true),
                               ),
-                              Obx(() => fourButtonsController.showOwn.value
-                                  ? SizedBox(
-                                      height: 230,
-                                      child: Container(
-                                        padding: const EdgeInsets.all(10),
-                                        decoration: const BoxDecoration(
-                                          color: Color(0xffEAF4F4),
-                                          borderRadius: BorderRadius.only(
-                                            bottomLeft: Radius.circular(10),
-                                            bottomRight: Radius.circular(10),
-                                          ),
-                                        ),
-                                        child: _event.ownedEvents.isNotEmpty
-                                            ? ListView.builder(
-                                                itemCount:
-                                                    _event.ownedEvents.length,
-                                                itemBuilder: (context, index) {
-                                                  final event =
-                                                      _event.ownedEvents[index];
-                                                  return GestureDetector(
-                                                    onTap: () {
-                                                      Get.toNamed(
-                                                          Routes.eventDetials,
-                                                          parameters: {
-                                                            'id': event.id!
-                                                          });
-                                                    },
-                                                    child: OtherActivityBox(
-                                                      event: event,
-                                                    ),
-                                                  );
-                                                },
-                                              )
-                                            : const EmptyEventsList(),
-                                      ),
-                                    )
-                                  : const SizedBox()),
                               addVerticalSpace(16),
                               FourButtonsWidget(
                                 activityType: 'Archived Events',
                                 activityNumber: _event.archivedEvents.length,
                                 onPressed: () => Get.bottomSheet(
-                                  ArchivedList(event: _event),
+                                  DisplayList(eventList: _event.archivedEvents),
+                                  isScrollControlled: true,
                                 ),
-                                showSizeBox: fourButtonsController.showArchived,
                               ),
                               addVerticalSpace(16),
                             ],
@@ -425,8 +101,8 @@ class DashboardView extends StatelessWidget {
   }
 }
 
-class ArchivedList extends StatelessWidget {
-  const ArchivedList({
+class RequestList extends StatelessWidget {
+  const RequestList({
     super.key,
     required EventsController event,
   }) : _event = event;
@@ -435,74 +111,313 @@ class ArchivedList extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return SizedBox(
-      height: Size.infinite.height,
+    return Padding(
+      padding: const EdgeInsets.only(top: 80.0),
       child: Container(
-        padding: const EdgeInsets.all(10),
-        decoration: const BoxDecoration(
-          color: Color(0xffEAF4F4),
-          borderRadius: BorderRadius.only(
-            bottomLeft: Radius.circular(10),
-            bottomRight: Radius.circular(10),
+          padding: const EdgeInsets.all(20),
+          decoration: const BoxDecoration(
+            color: Color(0xffEAF4F4),
+            borderRadius: BorderRadius.only(
+              topLeft: Radius.circular(30),
+              topRight: Radius.circular(30),
+            ),
           ),
-        ),
-        child: _event.archivedEvents.isNotEmpty
-            ? ListView.builder(
-                itemCount: _event.archivedEvents.length,
-                itemBuilder: (context, index) {
-                  final event = _event.archivedEvents[index];
-                  return OtherActivityBox(
-                    event: event,
-                  );
-                },
-              )
-            : const EmptyEventsList(),
-      ),
+          child: Column(children: [
+            Row(
+              mainAxisAlignment: MainAxisAlignment.end,
+              children: [
+                IconButton(
+                    onPressed: () {
+                      Get.back();
+                    },
+                    icon: const Icon(Icons.close))
+              ],
+            ),
+            Expanded(
+              child: Obx(() => _event.allEventJoinRequests.isNotEmpty
+                  ? Obx(() => ListView.builder(
+                        itemCount: _event.allEventJoinRequests.length,
+                        itemBuilder: (BuildContext context, int index) {
+                          return Padding(
+                            padding: const EdgeInsets.all(5.0),
+                            child: Column(
+                              children: [
+                                Obx(() => _requestedActivityBox(
+                                    index,
+                                    _event.allEventJoinRequests.keys
+                                        .elementAt(index),
+                                    _event.allEventJoinRequests.values
+                                        .elementAt(index))),
+                                addVerticalSpace()
+                              ],
+                            ),
+                          );
+                        },
+                      ))
+                  : const EmptyEventsList()),
+            ),
+          ])),
     );
   }
 }
 
-class BookMarkList extends StatelessWidget {
-  const BookMarkList({
+class OverviewSection extends StatelessWidget {
+  const OverviewSection({
     super.key,
-    required this.fourButtonsController,
     required EventsController event,
   }) : _event = event;
 
-  final FourButtonsController fourButtonsController;
   final EventsController _event;
 
   @override
   Widget build(BuildContext context) {
-    return SizedBox(
-        height: 230,
-        child: Container(
-          padding: const EdgeInsets.all(10),
+    return Wrap(
+      direction: Axis.horizontal,
+      alignment: WrapAlignment.spaceEvenly,
+      spacing: 16,
+      runSpacing: 16,
+      children: [
+        Container(
+          decoration: BoxDecoration(
+            color: Colors.white,
+            borderRadius: BorderRadius.circular(10),
+            border: Border.all(
+              color: const Color.fromRGBO(123, 56, 255, 1),
+              width: 2.0,
+            ),
+          ),
+          padding: const EdgeInsets.all(8),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              const Text(
+                'Joined Events',
+                style: TextStyle(
+                  fontWeight: FontWeight.bold,
+                  fontSize: 18,
+                ),
+              ),
+              addVerticalSpace(),
+              Text(
+                '${_event.joinedEvents.length} Events',
+                style: Theme.of(context).textTheme.bodyMedium,
+              ),
+            ],
+          ),
+        ),
+        Container(
+          decoration: BoxDecoration(
+            color: Colors.white,
+            borderRadius: BorderRadius.circular(10),
+            border: Border.all(
+              color: const Color.fromRGBO(123, 56, 255, 1),
+              width: 2.0,
+            ),
+          ),
+          padding: const EdgeInsets.all(8),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              const Text('Upvoted Events',
+                  style: TextStyle(
+                    fontWeight: FontWeight.bold,
+                    fontSize: 18,
+                  )),
+              addVerticalSpace(),
+              Text(
+                '${_event.upvotedEvents.length} Upvotes',
+                style: Theme.of(context).textTheme.bodyMedium,
+              ),
+            ],
+          ),
+        ),
+      ],
+    );
+  }
+}
+
+class ProfileSection extends StatelessWidget {
+  const ProfileSection({
+    super.key,
+    required AuthController auth,
+    required this.profilePictureController,
+  }) : _auth = auth;
+
+  final AuthController _auth;
+  final ProfilePictureController profilePictureController;
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      decoration: const BoxDecoration(
+        color: Color(0xFFEAF4F4),
+        borderRadius: BorderRadius.only(
+          bottomLeft: Radius.circular(30),
+          bottomRight: Radius.circular(30),
+        ),
+      ),
+      child: Column(crossAxisAlignment: CrossAxisAlignment.stretch, children: [
+        addVerticalSpace(24),
+        const Text('Profile',
+            textAlign: TextAlign.center,
+            style: TextStyle(
+                fontSize: 32,
+                color: Color.fromRGBO(123, 56, 255, 1),
+                fontWeight: FontWeight.bold)),
+        addVerticalSpace(16),
+        CircleAvatar(
+          radius: 90,
+          backgroundImage: Image.network(
+                  _auth.appUser.value.profilePicture ?? placeholderImage,
+                  errorBuilder: (context, error, stackTrace) => Image.network(
+                        placeholderImage,
+                        fit: BoxFit.cover,
+                      ),
+                  fit: BoxFit.cover)
+              .image,
+        ),
+        addVerticalSpace(20),
+        Column(
+          children: [
+            Text(
+              _auth.appUser.value.getName(),
+              textAlign: TextAlign.center,
+              style: Theme.of(context).textTheme.displayLarge,
+            ),
+            addVerticalSpace(),
+            Text(
+              _auth.appUser.value.department,
+              textAlign: TextAlign.center,
+              style: Theme.of(context).textTheme.bodyMedium,
+            ),
+            addVerticalSpace(),
+            Text(
+              'Year ${_auth.appUser.value.year}',
+              textAlign: TextAlign.center,
+              style: Theme.of(context).textTheme.bodyMedium,
+            ),
+            addVerticalSpace(),
+            OutlineButtonMedium(
+              onPressed: () {
+                showDialog(
+                  context: context,
+                  builder: (BuildContext context) {
+                    return AlertDialog(
+                      title: const Text("Choose Profile Picture"),
+                      content: Padding(
+                        padding:
+                            const EdgeInsets.fromLTRB(14.0, 0.0, 14.0, 16.0),
+                        child: SizedBox(
+                          width: double.infinity,
+                          // Button Height Change Here
+                          height: 250,
+                          child: Obx(
+                            () => OutlinedButton.icon(
+                              icon: profilePictureController.imageUrl.value ==
+                                      ''
+                                  ? const Icon(Icons.image_outlined)
+                                  : Image.network(
+                                      profilePictureController.imageUrl.value,
+                                      fit: BoxFit.cover,
+                                    ),
+                              onPressed: () =>
+                                  profilePictureController.uploadImage(),
+                              label: const Text(''),
+                              style: ElevatedButton.styleFrom(
+                                side: const BorderSide(
+                                  color: Colors.black, //Set border color
+                                  width: 1, //Set border width
+                                ),
+                              ),
+                            ),
+                          ),
+                        ),
+                      ),
+                      actions: <Widget>[
+                        OutlineButtonMedium(
+                            child: const Text("Cancel"),
+                            onPressed: () {
+                              Navigator.pop(context);
+                            }),
+                        SecondaryButtonMedium(
+                          child: const Text("Save"),
+                          onPressed: () {
+                            profilePictureController.setProfilePicture();
+                            Navigator.pop(context);
+                          },
+                        ),
+                      ],
+                    );
+                  },
+                );
+              },
+              child: const Padding(
+                padding: EdgeInsets.symmetric(horizontal: 38.0),
+                child: Text('Change Profile Picture'),
+                // color: Color(0xFFEAF4F4),
+                // borderRadius: BorderRadius.circular(10),
+              ),
+            ),
+            addVerticalSpace(20),
+          ],
+        ),
+      ]),
+    );
+  }
+}
+
+class DisplayList extends StatelessWidget {
+  const DisplayList({
+    super.key,
+    required this.eventList,
+  });
+  final RxList<Event> eventList;
+
+  @override
+  Widget build(BuildContext context) {
+    return Padding(
+      padding: const EdgeInsets.only(top: 80.0),
+      child: Container(
+          padding: const EdgeInsets.all(20),
           decoration: const BoxDecoration(
             color: Color(0xffEAF4F4),
             borderRadius: BorderRadius.only(
-              bottomLeft: Radius.circular(10),
-              bottomRight: Radius.circular(10),
+              topLeft: Radius.circular(30),
+              topRight: Radius.circular(30),
             ),
           ),
-          child: _event.bookmarkedEvents.isNotEmpty
-              ? ListView.builder(
-                  itemCount: _event.bookmarkedEvents.length,
-                  itemBuilder: (context, index) {
-                    final event = _event.bookmarkedEvents[index];
-                    return GestureDetector(
-                      onTap: () {
-                        Get.toNamed(Routes.eventDetials,
-                            parameters: {'id': event.id!});
+          child: Column(children: [
+            Row(
+              mainAxisAlignment: MainAxisAlignment.end,
+              children: [
+                IconButton(
+                    onPressed: () {
+                      Get.back();
+                    },
+                    icon: const Icon(Icons.close))
+              ],
+            ),
+            eventList.isNotEmpty
+                ? Expanded(
+                    child: ListView.builder(
+                      itemCount: eventList.length,
+                      itemBuilder: (context, index) {
+                        final event = eventList[index];
+                        return GestureDetector(
+                          onTap: () {
+                            Get.toNamed(Routes.eventDetials,
+                                parameters: {'id': event.id!});
+                          },
+                          child: OtherActivityBox(
+                            event: event,
+                          ),
+                        );
                       },
-                      child: OtherActivityBox(
-                        event: event,
-                      ),
-                    );
-                  },
-                )
-              : const EmptyEventsList(),
-        ));
+                    ),
+                  )
+                : const EmptyEventsList(),
+          ])),
+    );
   }
 }
 
@@ -537,90 +452,72 @@ class FourButtonsWidget extends StatelessWidget {
   final int activityNumber;
   final VoidCallback onPressed;
   final fourButtonsController = Get.put(FourButtonsController());
-  final RxBool showSizeBox;
   FourButtonsWidget({
     Key? key,
     required this.activityType,
     required this.activityNumber,
     required this.onPressed,
-    required this.showSizeBox,
   }) : super(key: key);
   @override
   Widget build(BuildContext context) {
     final boxDecoration = BoxDecoration(
       color: const Color(0xFFEAF4F4),
-      borderRadius: showSizeBox.value
-          ? const BorderRadius.only(
-              topLeft: Radius.circular(10),
-              topRight: Radius.circular(10),
-            )
-          : BorderRadius.circular(10),
+      borderRadius: BorderRadius.circular(10),
     );
-
     return InkWell(
-      onTap: onPressed,
-      child: Obx(() => Container(
-            decoration: boxDecoration.copyWith(
-              borderRadius: showSizeBox.value
-                  ? const BorderRadius.only(
-                      topLeft: Radius.circular(10),
-                      topRight: Radius.circular(10),
-                    )
-                  : BorderRadius.circular(10),
-              boxShadow: [
-                !showSizeBox.value
-                    ? BoxShadow(
-                        color: Colors.grey.withOpacity(0.5),
-                        spreadRadius: 1,
-                        blurRadius: 1,
-                        offset: const Offset(
-                            0, 3), // changes the position of the shadow
-                      )
-                    : const BoxShadow(),
-              ],
-            ),
-            child: Row(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: [
-                Padding(
-                  padding: const EdgeInsets.all(12.0),
+        onTap: onPressed,
+        child: Container(
+          decoration: boxDecoration.copyWith(
+            borderRadius: BorderRadius.circular(10),
+            boxShadow: [
+              BoxShadow(
+                color: Colors.grey.withOpacity(0.5),
+                spreadRadius: 1,
+                blurRadius: 1,
+                offset:
+                    const Offset(0, 3), // changes the position of the shadow
+              )
+            ],
+          ),
+          child: Row(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              Padding(
+                padding: const EdgeInsets.all(12.0),
+                child: Text(
+                  activityType,
+                  style: const TextStyle(
+                    fontSize: 17,
+                    fontWeight: FontWeight.bold,
+                    color: Color(0xFF7B38FF),
+                  ),
+                ),
+              ),
+              Container(
+                decoration: BoxDecoration(
+                  color: const Color(0xFFFF669F),
+                  borderRadius: BorderRadius.circular(4),
+                ),
+                child: Padding(
+                  padding: const EdgeInsets.fromLTRB(6, 3, 6, 3),
                   child: Text(
-                    activityType,
+                    activityNumber.toString(),
                     style: const TextStyle(
+                      color: Colors.white,
                       fontSize: 17,
-                      fontWeight: FontWeight.bold,
-                      color: Color(0xFF7B38FF),
+                      fontWeight: FontWeight.normal,
                     ),
                   ),
                 ),
-                Container(
-                  decoration: BoxDecoration(
-                    color: const Color(0xFFFF669F),
-                    borderRadius: BorderRadius.circular(4),
-                  ),
-                  child: Padding(
-                    padding: const EdgeInsets.fromLTRB(6, 3, 6, 3),
-                    child: Text(
-                      activityNumber.toString(),
-                      style: const TextStyle(
-                        color: Colors.white,
-                        fontSize: 17,
-                        fontWeight: FontWeight.normal,
-                      ),
-                    ),
-                  ),
-                ),
-                Icon(
-                  showSizeBox.value
-                      ? Icons.arrow_drop_up
-                      : Icons.arrow_drop_down,
-                  size: 40,
-                  color: const Color(0xFF7B38FF),
-                ),
-              ],
-            ),
-          )),
-    );
+              ),
+              const Icon(
+                Icons.arrow_drop_down,
+                size: 40,
+                color: Color(0xFF7B38FF),
+              ),
+            ],
+          ),
+        ));
   }
 }
 
@@ -715,11 +612,10 @@ class OtherActivityBox extends StatelessWidget {
   }
 }
 
-//TODO: Not updating ui when denying a join request
+//TODO: Fix ui glitch/bug when approving or denying a join request
 
-Widget _requestedActivityBox(int index, EventsController controller) {
-  final event = controller.allEventJoinRequests.keys.elementAt(index);
-  final users = controller.allEventJoinRequests.values.elementAt(index);
+Widget _requestedActivityBox(int index, Event event, List<AppUser> users) {
+  final controller = EventsController.instance;
   return Column(
     crossAxisAlignment: CrossAxisAlignment.start,
     children: [
@@ -744,16 +640,21 @@ Widget _requestedActivityBox(int index, EventsController controller) {
       ),
       addVerticalSpace(20),
       SizedBox(
-        height: 250,
+        height: 500,
         child: Obx(() => ListView.separated(
             separatorBuilder: (context, index) => addVerticalSpace(),
             itemCount:
                 controller.allEventJoinRequests.values.elementAt(index).length,
-            itemBuilder: (context, index) => UserApproveBox(
-                  user: users[index],
-                  controller: controller,
-                  event: event,
-                ))),
+            itemBuilder: (context, index) {
+              final event =
+                  controller.allEventJoinRequests.keys.elementAt(index);
+              final users = controller.allEventJoinRequests[event] ?? [];
+              return UserApproveBox(
+                user: users[index],
+                controller: controller,
+                event: event,
+              );
+            })),
       ),
     ],
   );

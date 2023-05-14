@@ -9,7 +9,6 @@ import 'package:wismod/modules/home/controller/message_controller.dart';
 
 const double textTimeMargin = 30;
 
-//TODO: Add a listener to subscibe to the changes in messages. (Show new meessage when another user sends a message)
 class ChattingView extends StatelessWidget {
   ChattingView({super.key});
   final controller = Get.put(MessageController());

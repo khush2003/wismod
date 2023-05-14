@@ -133,20 +133,22 @@ class FirebaseService {
     });
   }
 
-  Stream<Message> getLatestMessagesStream(String eventId) {
-    return FirebaseFirestore.instance
-        .collection('Messages')
-        .where('EventId', isEqualTo: eventId)
-        .orderBy('SentOn', descending: true)
-        .limit(1)
-        .snapshots()
-        .map((querySnapshot) {
-      return querySnapshot.docs.map((doc) {
-        final data = doc.data();
-        return Message.fromMap(data);
-      }).toList()[0];
-    });
-  }
+  Stream<Message?> getLatestMessagesStream(String eventId) {
+  return FirebaseFirestore.instance
+      .collection('Messages')
+      .where('EventId', isEqualTo: eventId)
+      .orderBy('SentOn', descending: true)
+      .limit(1)
+      .snapshots()
+      .map((querySnapshot) {
+    if (querySnapshot.docs.isNotEmpty) {
+      final data = querySnapshot.docs[0].data();
+      return Message.fromMap(data);
+    } else {
+      return null;
+    }
+  });
+}
 
   Future<void> updateProfilePicture(String userId, String imagePath) async {
     // Update the user's profile picture in Firestore

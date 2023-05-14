@@ -271,9 +271,6 @@ class EventsController extends GetxController {
   }
 
   void deleteEvent(Event event) async {
-    print("Event deletion called");
-    print(event);
-    print(events);
     events.removeWhere((e) => e.id == event.id);
     ownedEvents.removeWhere((e) => e.id == event.id);
     bookmarkedEvents.removeWhere((e) => e.id == event.id);
@@ -293,7 +290,6 @@ class EventsController extends GetxController {
     chat.joinedChatGroupsWithoutBlocks.removeWhere((e) => e.id == event.id);
     chat.cancelAllSubscriptions();
     chat.fetchLatestMessages();
-    print(events);
     await _firestore.deleteEvent(event).catchError((e) => errorSnackBar(
         "Error deleting the event please reload application: ${e.toString()}"));
   }

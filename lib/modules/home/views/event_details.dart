@@ -14,6 +14,7 @@ class EventDetailView extends StatelessWidget {
   final controller = Get.put(EventDetailController());
   final auth = AuthController.instance;
   Event eventData() => controller.eventData.value;
+  final _event = EventsController.instance;
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -120,14 +121,20 @@ class EventDetailView extends StatelessWidget {
                                           : const Text("Upvote"),
                                     )),
                               ),
-                              addHorizontalSpace(16),
-                              auth.appUser.value.isAdmin == true
-                                  ? Container()
-                                  : Expanded(
-                                      child: JoinButton(controller: controller),
-                                    ),
                             ],
                           ),
+                          addVerticalSpace(20),
+                          if (controller.isOwnedEvent.value)
+                            Row(
+                              children: [
+                                Expanded(
+                                    child: EditButton(controller: controller)),
+                                if (!(auth.appUser.value.isAdmin ?? false))
+                                  addHorizontalSpace(20),
+                                if (!(auth.appUser.value.isAdmin ?? false))
+                                  Expanded(child: DeleteButton(event: _event))
+                              ],
+                            ),
                           addVerticalSpace(20),
                           ChatBox(controller: controller),
                         ],
@@ -137,6 +144,24 @@ class EventDetailView extends StatelessWidget {
             showAdminBottomBar(controller, context)
           ],
         ));
+  }
+}
+
+class EditButton extends StatelessWidget {
+  const EditButton({
+    super.key,
+    required this.controller,
+  });
+
+  final EventDetailController controller;
+  @override
+  Widget build(BuildContext context) {
+    return PrimaryButtonMedium(
+        onPressed: () {
+          Get.toNamed(Routes.editEvent,
+              parameters: {'id': controller.eventData.value.id!});
+        },
+        child: const Text("Edit Event"));
   }
 }
 
@@ -185,46 +210,7 @@ Widget showAdminBottomBar(
             Expanded(child: JoinButton(controller: controller)),
             addHorizontalSpace(20),
             Expanded(
-              child: ElevatedButton(
-                onPressed: () {
-                  showDialog(
-                    context: context,
-                    builder: (BuildContext context) {
-                      return AlertDialog(
-                        title: const Text('Confirmation'),
-                        content: const Text(
-                            'Are you sure you want to remove this event?',
-                            style: TextStyle(fontWeight: FontWeight.normal)),
-                        actions: [
-                          OutlineButtonMedium(
-                            child: const Padding(
-                              padding: EdgeInsets.symmetric(vertical: 3.0),
-                              child: Text('Cancel'),
-                            ),
-                            onPressed: () {
-                              Navigator.of(context).pop();
-                            },
-                          ),
-                          ElevatedButton(
-                            style: ElevatedButton.styleFrom(
-                              backgroundColor: Colors.red,
-                            ),
-                            onPressed: () {
-                              event.deleteEvent(controller.eventData.value);
-                              Get.offAllNamed(Routes.allPagesNav);
-                            },
-                            child: const Text('Remove'),
-                          ),
-                        ],
-                      );
-                    },
-                  );
-                },
-                style: ElevatedButton.styleFrom(
-                  backgroundColor: Colors.red,
-                ),
-                child: const Text('Remove'),
-              ),
+              child: DeleteButton(event: event),
             ),
           ],
         ),
@@ -252,22 +238,81 @@ Widget showAdminBottomBar(
               },
               child: const Text('Deny'),
             ),
-            ElevatedButton(
-              onPressed: () {
-                event.deleteEvent(controller.eventData.value);
-                Get.offAllNamed(Routes.allPagesNav);
-              },
-              style: ElevatedButton.styleFrom(
-                backgroundColor: Colors.red,
-              ),
-              child: const Text('Remove'),
-            ),
+            DeleteButton(event: event)
           ],
         ),
       ),
     );
   }
-  return Container();
+  return Container(
+    decoration: const BoxDecoration(
+      color: Color(0xffECE4FC),
+      borderRadius: BorderRadius.only(
+        topLeft: Radius.circular(20),
+        topRight: Radius.circular(20),
+      ),
+    ),
+    child: Padding(
+        padding: const EdgeInsets.all(16),
+        child: Row(
+          children: [
+            Expanded(child: JoinButton(controller: controller)),
+          ],
+        )),
+  );
+}
+
+class DeleteButton extends StatelessWidget {
+  final controller = Get.find<EventDetailController>();
+  DeleteButton({
+    super.key,
+    required this.event,
+  });
+
+  final EventsController event;
+
+  @override
+  Widget build(BuildContext context) {
+    return ElevatedButton(
+      onPressed: () {
+        showDialog(
+          context: context,
+          builder: (BuildContext context) {
+            return AlertDialog(
+              title: const Text('Confirmation'),
+              content: const Text('Are you sure you want to remove this event?',
+                  style: TextStyle(fontWeight: FontWeight.normal)),
+              actions: [
+                OutlineButtonMedium(
+                  child: const Padding(
+                    padding: EdgeInsets.symmetric(vertical: 3.0),
+                    child: Text('Cancel'),
+                  ),
+                  onPressed: () {
+                    Navigator.of(context).pop();
+                  },
+                ),
+                ElevatedButton(
+                  style: ElevatedButton.styleFrom(
+                    backgroundColor: Colors.red,
+                  ),
+                  onPressed: () {
+                    event.deleteEvent(controller.eventData.value);
+                    Get.offAllNamed(Routes.allPagesNav);
+                  },
+                  child: const Text('Remove'),
+                ),
+              ],
+            );
+          },
+        );
+      },
+      style: ElevatedButton.styleFrom(
+        backgroundColor: Colors.red,
+      ),
+      child: const Text('Remove'),
+    );
+  }
 }
 
 class ChatBox extends StatelessWidget {

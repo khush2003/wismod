@@ -325,6 +325,6 @@ class EventsController extends GetxController {
           "Error Connecting to Database, Please check network connection!");
       events[getIndexOfEvent(event, events)].isReported = true;
       reportedEvents.add(event);
-    }).then((value) => sucessSnackBar("Reported Sucessfully!"));
+    }).then((value) => sucessSnackBar("Denied Reported Event Sucessfully!"));
   }
 }

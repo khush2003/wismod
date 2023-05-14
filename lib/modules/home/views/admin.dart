@@ -39,8 +39,15 @@ class AdminView extends StatelessWidget {
                 return Obx(() => ListView.builder(
                       itemCount: _event.reportedEvents.length,
                       itemBuilder: (context, index) {
-                        return EventCard(
-                          event: _event.reportedEvents[index],
+                        final event = _event.reportedEvents[index];
+                        return GestureDetector(
+                          onTap: () {
+                            Get.toNamed(Routes.eventDetials,
+                                parameters: {'id': event.id!});
+                          },
+                          child: EventCard(
+                            event: event,
+                          ),
                         );
                       },
                     ));
@@ -146,23 +153,23 @@ class EventCard extends StatelessWidget {
                       ],
                     ),
                   ),
-                  Expanded(
-                    child: Column(
-                      mainAxisAlignment: MainAxisAlignment.end,
-                      children: [
-                        OutlineButtonMedium(
-                          onPressed: () => {
-                            Get.toNamed(Routes.eventDetials,
-                                parameters: {'id': event.id!})
-                          },
-                          child: const Padding(
-                            padding: EdgeInsets.symmetric(horizontal: 5.0),
-                            child: Text('More'),
-                          ),
-                        ),
-                      ],
-                    ),
-                  ),
+                  // Expanded(
+                  //   child: Column(
+                  //     mainAxisAlignment: MainAxisAlignment.end,
+                  //     children: [
+                  //       OutlineButtonMedium(
+                  //         onPressed: () => {
+                  //           Get.toNamed(Routes.eventDetials,
+                  //               parameters: {'id': event.id!})
+                  //         },
+                  //         child: const Padding(
+                  //           padding: EdgeInsets.symmetric(horizontal: 5.0),
+                  //           child: Text('More'),
+                  //         ),
+                  //       ),
+                  //     ],
+                  //   ),
+                  // ),
                 ],
               ),
             ],

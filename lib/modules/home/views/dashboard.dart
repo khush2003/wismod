@@ -526,7 +526,7 @@ class FourButtonsWidget extends StatelessWidget {
 
 class OtherActivityBox extends StatelessWidget {
   final Event event;
-  const OtherActivityBox({Key? key, required this.event});
+  const OtherActivityBox({super.key, required this.event});
 
   @override
   Widget build(BuildContext context) {

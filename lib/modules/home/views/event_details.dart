@@ -7,6 +7,8 @@ import 'package:wismod/theme/global_widgets.dart';
 import 'package:wismod/utils/app_utils.dart';
 import 'package:wismod/modules/auth/controllers/auth_controller.dart';
 import '../../../shared/models/event.dart';
+import '../../../shared/models/user.dart';
+import '../../../shared/services/firebase_firestore_serivce.dart';
 import '../../../theme/theme_data.dart';
 
 class EventDetailView extends StatelessWidget {
@@ -17,6 +19,7 @@ class EventDetailView extends StatelessWidget {
   final _event = EventsController.instance;
   @override
   Widget build(BuildContext context) {
+    controller.setMemberList();
     return Scaffold(
         appBar: AppBar(
           actions: [
@@ -41,6 +44,8 @@ class EventDetailView extends StatelessWidget {
                       child: Column(
                         crossAxisAlignment: CrossAxisAlignment.stretch,
                         children: [
+                          MemberBox(),
+                          addVerticalSpace(20),
                           ClipRRect(
                               borderRadius: BorderRadius.circular(5),
                               child: Image.network(
@@ -144,6 +149,206 @@ class EventDetailView extends StatelessWidget {
             showAdminBottomBar(controller, context)
           ],
         ));
+  }
+}
+
+class MemberBox extends StatelessWidget {
+  final controller = Get.put(EventDetailController());
+  Event eventData() => controller.eventData.value;
+
+  final _firestore = FirebaseService();
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      height: 200, // Set the desired height of the scrollable box
+      decoration: BoxDecoration(
+        color: Colors.white, // Set desired background color
+        boxShadow: [
+          BoxShadow(
+            color: Colors.black.withOpacity(0.2), // Set desired shadow color
+            offset: Offset(0, 2), // Set desired shadow offset
+            blurRadius: 4, // Set desired blur radius
+          ),
+        ],
+        borderRadius: BorderRadius.circular(15),
+      ),
+      child: ClipRRect(
+          // Set desired border radius
+          child: SizedBox(
+        height: 200, // Set the desired height of the scrollable box
+        child: DefaultTabController(
+          length: 2, // Number of tabs
+          child: Column(
+            children: [
+              Container(
+                color: Colors.white, // Set desired background color
+                child: TabBar(
+                  labelColor: Colors.black,
+                  tabs: [
+                    Tab(
+                      child: Text(
+                        'Members',
+                        style: TextStyle(fontWeight: FontWeight.bold),
+                      ),
+                    ),
+                    Tab(
+                      child: Text(
+                        'Join Requests',
+                        style: TextStyle(fontWeight: FontWeight.bold),
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+              Expanded(
+                child: Container(
+                  decoration: BoxDecoration(
+                    //color: Colors.grey[200], // Set desired background color
+                    borderRadius: BorderRadius.circular(5),
+                  ),
+                  child: TabBarView(
+                    children: [
+                      SingleChildScrollView(
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            Padding(
+                              padding: const EdgeInsets.all(10.0),
+                              child: Obx(() {
+                                return Text(
+                                  '${controller.memberList.length}/${eventData().totalCapacity} members joined this event.',
+                                  style: TextStyle(
+                                    color: Colors.purple,
+                                    fontWeight: FontWeight.w400,
+                                  ),
+                                );
+                              }),
+                            ),
+                            Obx(
+                              () => ListView.builder(
+                                shrinkWrap: true,
+                                physics: NeverScrollableScrollPhysics(),
+                                itemCount: controller.memberList.length,
+                                itemBuilder: (context, index) {
+                                  String userId = controller.memberList[index];
+                                  return FutureBuilder<AppUser?>(
+                                    future: _firestore.getUserById(userId),
+                                    builder: (context, snapshot) {
+                                      if (snapshot.connectionState ==
+                                          ConnectionState.waiting) {
+                                        return SizedBox(
+                                          width: 40,
+                                          height: 40,
+                                          child: Container(
+                                            width: 40,
+                                            height: 40,
+                                            child:
+                                                const CircularProgressIndicator(),
+                                          ),
+                                        );
+                                      }
+                                      if (snapshot.hasError ||
+                                          !snapshot.hasData) {
+                                        return SizedBox();
+                                      }
+                                      AppUser userData = snapshot.data!;
+
+                                      return UserRowWidget(user: userData);
+                                    },
+                                  );
+                                },
+                              ),
+                            )
+                          ],
+                        ),
+                      ),
+                      Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Text('Content for Tab 2'),
+                          // Add more widgets for Tab 2
+                        ],
+                      ),
+                    ],
+                  ),
+                ),
+              ),
+            ],
+          ),
+        ),
+      )),
+    );
+  }
+}
+
+class UserRowWidget extends StatelessWidget {
+  final AppUser user;
+  final controller = Get.put(EventDetailController());
+  UserRowWidget({super.key, required this.user});
+  // final UserData userData;
+  // final auth = AuthController.instance;
+  // final controller = Get.put(EventDetailController());
+
+  // UserRowWidget({Key? key, required this.userData}) : super(key: key);
+  @override
+  Widget build(BuildContext context) {
+    return Padding(
+      padding: const EdgeInsets.all(10.0),
+      child: Container(
+        decoration: BoxDecoration(
+          color: Colors.white,
+          boxShadow: [
+            BoxShadow(
+              color: Colors.black.withOpacity(0.2),
+              offset: Offset(0, 2),
+              blurRadius: 4,
+            ),
+          ],
+          borderRadius: BorderRadius.circular(8),
+        ),
+        child: Padding(
+          padding: const EdgeInsets.all(5.0),
+          child: Row(
+            children: [
+              ClipRRect(
+                borderRadius: BorderRadius.circular(20),
+                child: Image.network(
+                  user.profilePicture ??
+                      'https://perspectives.agf.com/wp-content/plugins/accelerated-mobile-pages/images/SD-default-image.png',
+                  errorBuilder: (context, error, stackTrace) => Image.network(
+                    'https://perspectives.agf.com/wp-content/plugins/accelerated-mobile-pages/images/SD-default-image.png',
+                    width: 40,
+                    height: 40,
+                    fit: BoxFit.cover,
+                  ),
+                  // Image size adjustment here
+                  width: 40,
+                  height: 40,
+                  fit: BoxFit.cover,
+                ),
+              ),
+              SizedBox(width: 10),
+              Text(
+                '${user.firstName} ${user.lastName}',
+                overflow: TextOverflow.ellipsis,
+                style: TextStyle(fontWeight: FontWeight.bold),
+              ),
+              Spacer(),
+              ElevatedButton(
+                style: ButtonStyle(
+                  backgroundColor: MaterialStateProperty.all<Color>(Colors.red),
+                  minimumSize: MaterialStateProperty.all<Size>(Size(90, 36)),
+                ),
+                onPressed: () {
+                  controller.removeMember(user.uid!);
+                },
+                child: const Text('Remove', style: TextStyle(fontSize: 12)),
+              ),
+            ],
+          ),
+        ),
+      ),
+    );
   }
 }
 

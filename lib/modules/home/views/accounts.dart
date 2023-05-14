@@ -1,3 +1,4 @@
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:get/get.dart';
@@ -32,9 +33,9 @@ class AccountsView extends StatelessWidget {
                 padding: const EdgeInsets.fromLTRB(0.0, 0.0, 0.0, 20.0),
                 child: AccountSections(
                   label: 'Name',
-                  hintText: 'Your Name',
+                  hintText: 'Your first name and last name',
                   validator: accountController.validateName,
-                  controllerFunction: accountController.firstNameController,
+                  controllerFunction: accountController.nameController,
                   trailingWidget: const Text(
                     'Change Name',
                     style: TextStyle(
@@ -44,6 +45,9 @@ class AccountsView extends StatelessWidget {
                       color: Color.fromRGBO(123, 56, 255, 1),
                     ),
                   ),
+                  onPressed: () {
+                    accountController.updateName();
+                  },
                 ),
               ),
               Padding(
@@ -79,6 +83,9 @@ class AccountsView extends StatelessWidget {
                       color: Color.fromRGBO(123, 56, 255, 1),
                     ),
                   ),
+                  onPressed: () {
+                    //
+                  },
                 ),
               ),
               Padding(
@@ -113,6 +120,8 @@ class AccountSections extends StatelessWidget {
   final TextEditingController controllerFunction;
   final bool isNumeric;
   final FormFieldValidator<String>? validator;
+
+  final VoidCallback onPressed;
   const AccountSections({
     Key? key,
     required this.label,
@@ -121,6 +130,7 @@ class AccountSections extends StatelessWidget {
     required this.controllerFunction,
     this.isNumeric = false,
     this.validator,
+    required this.onPressed,
   }) : super(key: key);
 
   @override
@@ -160,10 +170,8 @@ class AccountSections extends StatelessWidget {
         SizedBox(
           width: double.infinity,
           child: OutlineButtonMedium(
+            onPressed: onPressed,
             child: trailingWidget,
-            onPressed: () {
-              // Pressed effect here
-            },
           ),
         ),
       ],

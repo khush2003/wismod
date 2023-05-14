@@ -48,6 +48,15 @@ class AppUser {
     return '$firstName $lastName';
   }
 
+  // get first name last name
+  String getFirstname() {
+    return firstName;
+  }
+
+  String getLastname() {
+    return lastName;
+  }
+
   List<String> getJoinedChatGroups() {
     List<String> eventIds = [];
     if (joinedChatGroups != null && joinedChatGroups!.isNotEmpty) {

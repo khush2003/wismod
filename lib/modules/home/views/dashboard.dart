@@ -606,8 +606,6 @@ class OtherActivityBox extends StatelessWidget {
   }
 }
 
-//TODO: Fix ui glitch/bug when approving or denying a join request
-
 Widget _requestedActivityBox(int index, Event event, List<AppUser> users) {
   final controller = EventsController.instance;
   return Column(
@@ -633,21 +631,14 @@ Widget _requestedActivityBox(int index, Event event, List<AppUser> users) {
         ),
       ),
       addVerticalSpace(20),
-      SizedBox(
-        height: 500,
-        child: Obx(() => ListView.separated(
-            separatorBuilder: (context, index) => addVerticalSpace(),
-            itemCount:
-                controller.allEventJoinRequests.values.elementAt(index).length,
-            itemBuilder: (context, index) {
-              final users = controller.allEventJoinRequests[event] ?? [];
-              return UserApproveBox(
-                user: users[index],
-                controller: controller,
-                event: event,
-              );
-            })),
-      ),
+      Column(
+          children: users
+              .map((u) => UserApproveBox(
+                    user: u,
+                    controller: controller,
+                    event: event,
+                  ))
+              .toList())
     ],
   );
 }
@@ -666,6 +657,7 @@ class UserApproveBox extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Container(
+      margin: const EdgeInsets.only(bottom: 20),
       decoration: BoxDecoration(
         color: Colors.white,
         borderRadius: BorderRadius.circular(5),

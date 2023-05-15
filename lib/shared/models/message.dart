@@ -1,14 +1,16 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 
 class Message {
+  final String? id;
   final String message;
   final String sentBy;
-  final String userName;
+  String userName;
   final String? profilePicture;
   final DateTime? sentOn;
   final String? eventId;
 
-  Message({
+  Message( {
+    this.id,
     required this.message,
     required this.sentBy,
     this.sentOn,
@@ -37,9 +39,10 @@ class Message {
     );
   }
 
-  factory Message.fromMap(Map<String, dynamic> map) {
+  factory Message.fromMap(Map<String, dynamic> map, String messageId) {
     final time = map['SentOn'] as Timestamp;
     return Message(
+      id: messageId,
       message: map['Message'] as String,
       sentBy: map['SentBy'] as String,
       sentOn: time.toDate(),

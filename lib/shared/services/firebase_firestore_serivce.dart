@@ -1,4 +1,5 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:wismod/modules/auth/controllers/auth_controller.dart';
 import 'package:wismod/shared/models/message.dart';
 import 'package:wismod/shared/models/user.dart';
 import '../models/event.dart';
@@ -99,7 +100,7 @@ class FirebaseService {
 
     final latestMessage = querySnapshot.docs.first;
     final data = latestMessage.data();
-    return Message.fromMap(data);
+    return Message.fromMap(data, latestMessage.id);
   }
 
   Future<List<Message>> getMessages(String eventId) async {
@@ -115,7 +116,7 @@ class FirebaseService {
 
     final messages = querySnapshot.docs.map((doc) {
       final data = doc.data();
-      return Message.fromMap(data);
+      return Message.fromMap(data, doc.id);
     }).toList();
 
     return messages.reversed.toList();
@@ -144,7 +145,7 @@ class FirebaseService {
       return querySnapshot.docs
           .map((doc) {
             final data = doc.data();
-            return Message.fromMap(data);
+            return Message.fromMap(data, doc.id);
           })
           .toList()
           .reversed
@@ -162,7 +163,7 @@ class FirebaseService {
         .map((querySnapshot) {
       if (querySnapshot.docs.isNotEmpty) {
         final data = querySnapshot.docs[0].data();
-        return Message.fromMap(data);
+        return Message.fromMap(data, querySnapshot.docs[0].id);
       } else {
         return null;
       }
@@ -463,6 +464,84 @@ class FirebaseService {
         .collection('Events')
         .doc(eventId)
         .update({'Upvotes': upvotes});
+  }
+
+  Future<void> updateUserName(
+      String firstName, String lastName, String userId) async {
+    final events = await getAllEvents();
+    final user =
+        await getUserById(userId) ?? AuthController.instance.appUser.value;
+
+    for (Event event in events) {
+      if (event.eventOwner.uid == userId) {
+        // Update eventOwnerName
+        event.eventOwner.name = '$firstName $lastName';
+        await _firestore.collection('Events').doc(event.id).update({
+          'EventOwnerName': event.eventOwner.name,
+        });
+      }
+    }
+
+    for (String eventId in user.joinedChatGroups ?? []) {
+      final messages = await getMessages(eventId);
+      for (Message message in messages) {
+        if (message.sentBy == userId) {
+          // Update the userName for each message
+          message.userName = '$firstName $lastName';
+          try {
+            await _firestore.collection('Messages').doc(message.id).update({
+            'UserName': message.userName,
+          });
+          } catch (e) {
+            continue;
+          }
+        }
+      }
+    }
+
+    // Updating firstname and lastname in users
+    await _firestore.collection('Users').doc(userId).update({
+      'Firstname': firstName,
+      'Lastname': lastName,
+    });
+  }
+  
+  Future<void> updateDepartment(
+    String department, String userId) async {
+    final events = await getAllEvents();
+
+    for (Event event in events) {
+      if (event.eventOwner.uid == userId) {
+        // Update eventOwnerDepartment
+        await _firestore.collection('Events').doc(event.id).update({
+          'EventOwnerDepartment': department,
+        });
+      }
+    }
+
+    // Updating department in users
+    await _firestore.collection('Users').doc(userId).update({
+      'Department': department,
+    });
+  }
+
+  Future<void> updateYear(
+    int year, String userId) async {
+    final events = await getAllEvents();
+
+    for (Event event in events) {
+      if (event.eventOwner.uid == userId) {
+        // Update eventOwnerYear
+        await _firestore.collection('Events').doc(event.id).update({
+          'EventOwnerYear': year,
+        });
+      }
+    }
+
+    // Updating year in users
+    await _firestore.collection('Users').doc(userId).update({
+      'Year': year,
+    });
   }
 
   Future<void> joinEvent(String userId, String eventId) async {

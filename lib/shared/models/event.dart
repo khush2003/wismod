@@ -115,9 +115,9 @@ int getIndexOfEvent(Event event, List<Event> list) {
 
 class EventOwner {
   final String? userPhotoUrl;
-  final String name;
-  final String department;
-  final int year;
+  String name;
+  String department;
+  int year;
   final String uid;
   EventOwner(
       {this.userPhotoUrl,

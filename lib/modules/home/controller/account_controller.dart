@@ -1,3 +1,4 @@
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
@@ -9,6 +10,7 @@ import '../../auth/controllers/auth_controller.dart';
 
 class AccountController extends GetxController {
   final departmentOptions = [
+    '',
     'School of Information Technology',
     'Department of Electrical Engineering',
     'Department of Computer Engineering',
@@ -26,10 +28,11 @@ class AccountController extends GetxController {
   ].obs;
 
   // late RxString selectedDepartment = departmentFromDB.obs;
-  final selectedDepartment = 'School of Information Technology'.obs;
+  final selectedDepartment = ''.obs;
 
   final _auth = AuthController.instance;
   final _firestore = FirebaseService();
+  final FirebaseAuth authBase = FirebaseAuth.instance;
 
   static AccountController get instance => Get.find();
 
@@ -131,6 +134,7 @@ class AccountController extends GetxController {
             .then((value) => sucessSnackBar(
                 'Your first name and last name has been changed'));
         await updateAllData();
+        authBase.currentUser!.reload();
       } else {
         errorSnackBar(
             "You can't change your new name that's the same with your old name");
@@ -158,6 +162,7 @@ class AccountController extends GetxController {
           await _firestore.updateYear(year, uid);
           sucessSnackBar('Your year has been changed');
           updateAllData();
+          authBase.currentUser!.reload();
         } catch (e) {
           if (kDebugMode) {
             print('Error updating year: $e');
@@ -181,6 +186,7 @@ class AccountController extends GetxController {
         await _firestore.updateDepartment(department, uid);
         sucessSnackBar('Your department has been changed');
         updateAllData();
+        authBase.currentUser!.reload();
       } catch (e) {
         if (kDebugMode) {
           print('Error updating department: $e');
@@ -188,7 +194,7 @@ class AccountController extends GetxController {
       }
     } else {
       errorSnackBar(
-          "You can't fill new department that's the same with the old one");
+          "You can't choose new department that's the same with the old one");
     }
   }
 }

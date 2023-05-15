@@ -15,7 +15,6 @@ class EventDetailController extends GetxController {
 
   final _event = EventsController.instance;
   final _chat = ChatController.instance;
-  final _firestore = FirebaseService();
 
   final Rx<bool> isJoined = false.obs;
   final Rx<bool> isUpvoted = false.obs;
@@ -24,7 +23,7 @@ class EventDetailController extends GetxController {
   final Rx<bool> isOwnedEvent = false.obs;
   final Rx<bool> isMemberLimitReached = false.obs;
 
-  final RxList<String> memberList = <String>[].obs;
+  final memberList = <AppUser>[].obs;
   final requestedUsers = <AppUser>[].obs;
   final joinButtonText = 'Join'.obs;
 
@@ -34,7 +33,6 @@ class EventDetailController extends GetxController {
   void onInit() async {
     setEvent();
     setMemberList();
-    joinRequest();
     super.onInit();
   }
 
@@ -128,7 +126,8 @@ class EventDetailController extends GetxController {
   }
 
   void setIsMemberLimitReached() {
-    if ((eventData.value.members?.length ?? 0) >= (eventData.value.totalCapacity ?? 2)) {
+    if ((eventData.value.members?.length ?? 0) >=
+        (eventData.value.totalCapacity ?? 2)) {
       isMemberLimitReached(true);
     } else {
       isMemberLimitReached(false);
@@ -137,66 +136,15 @@ class EventDetailController extends GetxController {
 
   void setMemberList() {
     memberList.clear();
-    final List<String> tempMemberList = eventData.value.members ?? [];
-    memberList.addAll(tempMemberList);
-  }
-
-  void removeMember(String userId) async {
-    eventData.update((event) {
-      event!.members?.remove(userId);
-    });
-
-    try {
-      await _firestore.deleteMemberFromEvent(eventData.value.id!, userId);
-      EventDetailController.instance.memberList.remove(userId);
-    } catch (error) {
-      print('Error removing member: $error');
+    requestedUsers.clear();
+    if (_event.allEventMemberList.containsKey(eventData.value)) {
+      memberList.addAll(_event.allEventMemberList[eventData.value]!);
+    }
+    if (_event.allEventJoinRequests.containsKey(eventData.value)) {
+      
+      requestedUsers.addAll(_event.allEventJoinRequests[eventData.value]!);
     }
   }
-
-  void joinRequest() async {
-    String eventId = eventData.value.id!; // Replace with the actual event ID
-
-    List<AppUser> requestedUsers = await _firestore.getRequestedUsers(eventId);
-  }
-
-  // void joinRequest() async {
-  //   try {
-  //     List<AppUser>? users = await _firestore.getAllUsers();
-
-  //     if (users != null) {
-  //       List<AppUser> requestedUsersList = [];
-  //       for (AppUser user in users) {
-  //         if (user.requestedEvents?.contains(eventData.value.id!) ?? false) {
-  //           requestedUsersList.add(user);
-  //         }
-  //       }
-
-  //       // Update the requestedUsers list
-  //       requestedUsers.assignAll(requestedUsersList);
-  //     }
-  //   } catch (error) {
-  //     print('Error fetching users: $error');
-  //   }
-  // }
-
-  // Future<String> _getUserName(String userId) async {
-  //   final users = await _firestore.getUserById(userId);
-  //   print('${users!.firstName}');
-  //   return "${users.firstName} ${users.lastName}";
-  // }
-  // Future<void> setMemberList() async {
-  //   memberList.clear();
-  //   final List<String> tempMemberList = eventData.value.members ?? [];
-  //   for (String userId in tempMemberList) {
-  //     final AppUser? user = await _firestore.getUserById(userId);
-
-  //     if (user != null) {
-  //       memberList.add(user);
-  //     }
-  //   }
-  //   print('temp member: ${tempMemberList} \n MemberList: ${memberList}');
-  // }
 }
 
 class RequestedUser {

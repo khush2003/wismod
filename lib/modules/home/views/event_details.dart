@@ -10,6 +10,7 @@ import '../../../shared/models/event.dart';
 import '../../../shared/models/user.dart';
 import '../../../shared/services/firebase_firestore_serivce.dart';
 import '../../../theme/theme_data.dart';
+import 'dashboard.dart';
 
 class EventDetailView extends StatelessWidget {
   EventDetailView({super.key});
@@ -44,8 +45,9 @@ class EventDetailView extends StatelessWidget {
                       child: Column(
                         crossAxisAlignment: CrossAxisAlignment.stretch,
                         children: [
-                          MemberBox(),
-                          addVerticalSpace(20),
+                          if (controller.isOwnedEvent.value) MemberBox(),
+                          if (controller.isOwnedEvent.value)
+                            addVerticalSpace(20),
                           ClipRRect(
                               borderRadius: BorderRadius.circular(5),
                               child: Image.network(
@@ -154,19 +156,18 @@ class EventDetailView extends StatelessWidget {
 
 class MemberBox extends StatelessWidget {
   final controller = Get.put(EventDetailController());
+  MemberBox({super.key});
   Event eventData() => controller.eventData.value;
-
-  final _firestore = FirebaseService();
   @override
   Widget build(BuildContext context) {
     return Container(
-      height: 200,
+      height: 400,
       decoration: BoxDecoration(
         color: Colors.white,
         boxShadow: [
           BoxShadow(
             color: Colors.black.withOpacity(0.2),
-            offset: Offset(0, 2),
+            offset: const Offset(0, 2),
             blurRadius: 4,
           ),
         ],
@@ -182,7 +183,7 @@ class MemberBox extends StatelessWidget {
             children: [
               Container(
                 color: Colors.white, // Set desired background color
-                child: TabBar(
+                child: const TabBar(
                   labelColor: Colors.black,
                   tabs: [
                     Tab(
@@ -203,7 +204,6 @@ class MemberBox extends StatelessWidget {
               Expanded(
                 child: Container(
                   decoration: BoxDecoration(
-                    //color: Colors.grey[200], // Set desired background color
                     borderRadius: BorderRadius.circular(5),
                   ),
                   child: TabBarView(
@@ -217,7 +217,7 @@ class MemberBox extends StatelessWidget {
                               child: Obx(() {
                                 return Text(
                                   '${controller.memberList.length}/${eventData().totalCapacity} members joined this event.',
-                                  style: TextStyle(
+                                  style: const TextStyle(
                                     color: Colors.purple,
                                     fontWeight: FontWeight.w400,
                                   ),
@@ -227,26 +227,11 @@ class MemberBox extends StatelessWidget {
                             Obx(
                               () => ListView.builder(
                                 shrinkWrap: true,
-                                physics: NeverScrollableScrollPhysics(),
+                                physics: const NeverScrollableScrollPhysics(),
                                 itemCount: controller.memberList.length,
                                 itemBuilder: (context, index) {
-                                  String userId = controller.memberList[index];
-                                  return FutureBuilder<AppUser?>(
-                                    future: _firestore.getUserById(userId),
-                                    builder: (context, snapshot) {
-                                      if (snapshot.connectionState ==
-                                          ConnectionState.waiting) {
-                                        return LoadingWidget();
-                                      }
-                                      if (snapshot.hasError ||
-                                          !snapshot.hasData) {
-                                        return SizedBox();
-                                      }
-                                      AppUser userData = snapshot.data!;
-
-                                      return UserRowWidget(user: userData);
-                                    },
-                                  );
+                                  return UserRowWidget(
+                                      user: controller.memberList[index]);
                                 },
                               ),
                             )
@@ -254,20 +239,19 @@ class MemberBox extends StatelessWidget {
                         ),
                       ),
                       Obx(() {
-                        controller.requestedUsers();
                         final requestedUsers = controller.requestedUsers;
-
                         if (requestedUsers.isEmpty) {
-                          return Text('No requested users');
+                          return const Text('No requested users');
                         }
-
                         return ListView.builder(
                           itemCount: requestedUsers.length,
                           itemBuilder: (context, index) {
                             final user = requestedUsers[index];
-                            return ListTile(
-                              title: Text(user.firstName),
-                            );
+                            return UserApproveBox(
+                                user: user,
+                                controller: EventsController.instance,
+                                event: controller.eventData.value,
+                                requestedUsers: controller.requestedUsers);
                           },
                         );
                       })
@@ -302,7 +286,7 @@ class UserRowWidget extends StatelessWidget {
           boxShadow: [
             BoxShadow(
               color: Colors.black.withOpacity(0.2),
-              offset: Offset(0, 2),
+              offset: const Offset(0, 2),
               blurRadius: 4,
             ),
           ],
@@ -329,23 +313,23 @@ class UserRowWidget extends StatelessWidget {
                   fit: BoxFit.cover,
                 ),
               ),
-              SizedBox(width: 10),
+              const SizedBox(width: 10),
               Text(
                 '${user.firstName} ${user.lastName}',
                 overflow: TextOverflow.ellipsis,
-                style: TextStyle(fontWeight: FontWeight.bold),
+                style: const TextStyle(fontWeight: FontWeight.bold),
               ),
-              Spacer(),
-              ElevatedButton(
-                style: ButtonStyle(
-                  backgroundColor: MaterialStateProperty.all<Color>(Colors.red),
-                  minimumSize: MaterialStateProperty.all<Size>(Size(90, 36)),
-                ),
-                onPressed: () {
-                  controller.removeMember(user.uid!);
-                },
-                child: const Text('Remove', style: TextStyle(fontSize: 12)),
-              ),
+              const Spacer(),
+              // ElevatedButton(
+              //   style: ButtonStyle(
+              //     backgroundColor: MaterialStateProperty.all<Color>(Colors.red),
+              //     minimumSize: MaterialStateProperty.all<Size>(const Size(90, 36)),
+              //   ),
+              //   onPressed: () {
+              //     controller.removeMember(user.uid!);
+              //   },
+              //   child: const Text('Remove', style: TextStyle(fontSize: 12)),
+              // ),
             ],
           ),
         ),

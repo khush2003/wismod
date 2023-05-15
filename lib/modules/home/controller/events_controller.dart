@@ -14,6 +14,8 @@ class EventsController extends GetxController {
   final RxList<Event> bookmarkedEvents = <Event>[].obs;
   final RxMap<Event, List<AppUser>> allEventJoinRequests =
       <Event, List<AppUser>>{}.obs;
+  final RxMap<Event, List<AppUser>> allEventMemberList =
+      <Event, List<AppUser>>{}.obs;
   final RxList<Event> requestedEvents = <Event>[].obs;
   final RxList<Event> upvotedEvents = <Event>[].obs;
   final RxList<Event> reportedEvents = <Event>[].obs;
@@ -37,7 +39,7 @@ class EventsController extends GetxController {
     _setOwnedEvents(user);
     _setBookmarkedEvents(user);
     _setRequestedEvents(user);
-    _setAllEventJoinRequests();
+    _setAllEventJoinRequestsAndMembers();
     _setUpvotedEvents(user);
     _setReportedEvents(user);
     _setJoinedEvents(user);
@@ -91,10 +93,41 @@ class EventsController extends GetxController {
     }
   }
 
-  void _setAllEventJoinRequests() async {
+  void _setAllEventJoinRequestsAndMembers() async {
     final users = await _firestore.getAllUsers();
     allEventJoinRequests.clear();
-    // print(users);
+    allEventMemberList.clear();
+
+    // Setting all event members list
+    for (AppUser user in users) {
+      for (String eventId in user.joinedEvents ?? []) {
+        try {
+          final event = events.firstWhere((element) => element.id == eventId);
+          if (allEventMemberList.containsKey(event)) {
+            allEventMemberList[event]!.add(user);
+          } else {
+            allEventMemberList[event] = [user];
+          }
+        } catch (e) {
+          continue;
+        }
+      }
+    }
+
+    // for (Event event in events) {
+    //   for (String userId in event.members ?? []) {
+    //     if (allEventMemberList.containsKey(event)) {
+    //       allEventMemberList[event]!
+    //           .add(users.firstWhere((user) => user.uid == userId));
+    //     } else {
+    //       allEventMemberList[event] = [
+    //         users.firstWhere((user) => user.uid == userId)
+    //       ];
+    //     }
+    //   }
+    // }
+
+    // Setting all event Join Requests
     for (AppUser user in users) {
       final tempRequestedEvents = user.requestedEvents;
       if (tempRequestedEvents != null && tempRequestedEvents.isNotEmpty) {

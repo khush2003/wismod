@@ -647,11 +647,13 @@ class UserApproveBox extends StatelessWidget {
   final EventsController controller;
   final AppUser user;
   final Event event;
+  final RxList<AppUser>? requestedUsers;
   const UserApproveBox({
     super.key,
     required this.user,
     required this.controller,
     required this.event,
+    this.requestedUsers,
   });
 
   @override
@@ -710,12 +712,14 @@ class UserApproveBox extends StatelessWidget {
                 OutlineButtonMedium(
                   onPressed: () {
                     controller.approveJoin(user, event);
+                    requestedUsers?.remove(user);
                   },
                   child: const Text('Approve'),
                 ),
                 SecondaryButtonMedium(
                   onPressed: () {
                     controller.denyJoin(user, event);
+                    requestedUsers?.remove(user);
                   },
                   child: const Text('Deny'),
                 ),

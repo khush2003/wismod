@@ -91,6 +91,9 @@ class AppUser {
     );
   }
 }
+bool checkUserInList(String userId, List<AppUser> list) {
+  return list.any((user) => user.uid == userId);
+}
 
 AppUser? getUserInList(String userId, List<AppUser> list) {
   try {
@@ -98,4 +101,5 @@ AppUser? getUserInList(String userId, List<AppUser> list) {
   } catch (e) {
     return null;
   }
+  
 }

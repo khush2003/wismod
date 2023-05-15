@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:get/get.dart';
 import 'package:wismod/modules/home/controller/edit_event_controller.dart';
-import 'package:wismod/modules/home/controller/events_controller.dart';
 import 'package:wismod/theme/theme_data.dart';
 import 'package:wismod/utils/app_utils.dart';
 // import 'package:image_picker_windows/image_picker_windows.dart';

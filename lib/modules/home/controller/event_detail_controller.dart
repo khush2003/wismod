@@ -22,6 +22,7 @@ class EventDetailController extends GetxController {
   final Rx<bool> isBookmarked = false.obs;
   final Rx<bool> isRequested = false.obs;
   final Rx<bool> isOwnedEvent = false.obs;
+  final Rx<bool> isMemberLimitReached = false.obs;
 
   final RxList<String> memberList = <String>[].obs;
   final requestedUsers = <AppUser>[].obs;
@@ -46,6 +47,7 @@ class EventDetailController extends GetxController {
     setIsUpvoted();
     setIsBookmarked();
     setIsOwnedEvent();
+    setIsMemberLimitReached();
     tags(eventData.value.tags);
     isLoading(false);
   }
@@ -123,6 +125,14 @@ class EventDetailController extends GetxController {
 
   void chatGroupAdd() async {
     _chat.joinChatGroup(eventData.value);
+  }
+
+  void setIsMemberLimitReached() {
+    if ((eventData.value.members?.length ?? 0) >= (eventData.value.totalCapacity ?? 2)) {
+      isMemberLimitReached(true);
+    } else {
+      isMemberLimitReached(false);
+    }
   }
 
   void setMemberList() {

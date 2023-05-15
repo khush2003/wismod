@@ -186,20 +186,22 @@ class EventsController extends GetxController {
 //TODO: Add a check for member limit
 
   void approveJoin(AppUser user, Event event) async {
-    //TODO: Subscribe to changes in joined List and requested List
-    requestedEvents.removeWhere((e) => e.id == event.id);
-    allEventJoinRequests[event]?.removeWhere((u) => u.uid == user.uid);
-    joinedEvents.add(event);
-    events[getIndexOfEvent(event, events)].members!.add(user.uid!);
-    allEventJoinRequests.update(event, (value) {
-      value.remove(user);
-      return value;
-    });
-    await _firestore.approveJoin(user, event).catchError((e) {
-      errorSnackBar("Error! ${e.toString()}");
-    });
-
-    
+    if ((event.members?.length ?? 0) < (event.totalCapacity ?? 2)) {
+      //TODO: Subscribe to changes in joined List and requested List
+      requestedEvents.removeWhere((e) => e.id == event.id);
+      allEventJoinRequests[event]?.removeWhere((u) => u.uid == user.uid);
+      joinedEvents.add(event);
+      events[getIndexOfEvent(event, events)].members!.add(user.uid!);
+      allEventJoinRequests.update(event, (value) {
+        value.remove(user);
+        return value;
+      });
+      await _firestore.approveJoin(user, event).catchError((e) {
+        errorSnackBar("Error! ${e.toString()}");
+      });
+    } else {
+      errorSnackBar("Member limit reached! Cannot approve join request");
+    }
   }
 
   void denyJoin(AppUser user, Event event) async {
@@ -215,26 +217,17 @@ class EventsController extends GetxController {
   }
 
   void joinEvent(Event eventData) async {
-    final event = getEventInList(eventData.id!, events);
-    if (event == null) {
-      return;
-    }
-    if (eventData.allowAutomaticJoin == true) {
-      var isAdd = true;
-      if (checkEventInList(event.id!, joinedEvents)) {
-        isAdd = false;
-        joinedEvents.removeWhere((e) => e.id == event.id);
-        _auth.appUser.value.joinedEvents?.remove(event.id!);
-        events[getIndexOfEvent(event, events)].members!.remove(_auth.user.uid!);
-      } else {
-        joinedEvents.add(event);
-        _auth.appUser.value.joinedEvents?.add(event.id!);
-        events[getIndexOfEvent(event, events)].members!.add(_auth.user.uid!);
+    if ((eventData.members?.length ?? 0) >= (eventData.totalCapacity ?? 2)) {
+      errorSnackBar("Event has reached it's member limit! ");
+    } else {
+      final event = getEventInList(eventData.id!, events);
+      if (event == null) {
+        return;
       }
-      await _firestore.joinEvent(_auth.user.uid!, event.id!).catchError((e) {
-        errorSnackBar(
-            "Error Connecting to Database, Please check network connection!");
-        if (isAdd) {
+      if (eventData.allowAutomaticJoin == true) {
+        var isAdd = true;
+        if (checkEventInList(event.id!, joinedEvents)) {
+          isAdd = false;
           joinedEvents.removeWhere((e) => e.id == event.id);
           _auth.appUser.value.joinedEvents?.remove(event.id!);
           events[getIndexOfEvent(event, events)]
@@ -245,28 +238,47 @@ class EventsController extends GetxController {
           _auth.appUser.value.joinedEvents?.add(event.id!);
           events[getIndexOfEvent(event, events)].members!.add(_auth.user.uid!);
         }
-      });
-    } else {
-      var isAdd = true;
-      if (checkEventInList(event.id!, requestedEvents)) {
-        isAdd = false;
-        requestedEvents.removeWhere((e) => e.id == event.id);
-        _auth.appUser.value.requestedEvents?.remove(event.id!);
+        await _firestore.joinEvent(_auth.user.uid!, event.id!).catchError((e) {
+          errorSnackBar(
+              "Error Connecting to Database, Please check network connection!");
+          if (isAdd) {
+            joinedEvents.removeWhere((e) => e.id == event.id);
+            _auth.appUser.value.joinedEvents?.remove(event.id!);
+            events[getIndexOfEvent(event, events)]
+                .members!
+                .remove(_auth.user.uid!);
+          } else {
+            joinedEvents.add(event);
+            _auth.appUser.value.joinedEvents?.add(event.id!);
+            events[getIndexOfEvent(event, events)]
+                .members!
+                .add(_auth.user.uid!);
+          }
+        });
       } else {
-        requestedEvents.add(event);
-        _auth.appUser.value.requestedEvents?.add(event.id!);
-      }
-      await _firestore.requestEvent(_auth.user.uid!, event.id!).catchError((e) {
-        errorSnackBar(
-            "Error Connecting to Database, Please check network connection!");
-        if (isAdd) {
+        var isAdd = true;
+        if (checkEventInList(event.id!, requestedEvents)) {
+          isAdd = false;
           requestedEvents.removeWhere((e) => e.id == event.id);
           _auth.appUser.value.requestedEvents?.remove(event.id!);
         } else {
           requestedEvents.add(event);
           _auth.appUser.value.requestedEvents?.add(event.id!);
         }
-      });
+        await _firestore
+            .requestEvent(_auth.user.uid!, event.id!)
+            .catchError((e) {
+          errorSnackBar(
+              "Error Connecting to Database, Please check network connection!");
+          if (isAdd) {
+            requestedEvents.removeWhere((e) => e.id == event.id);
+            _auth.appUser.value.requestedEvents?.remove(event.id!);
+          } else {
+            requestedEvents.add(event);
+            _auth.appUser.value.requestedEvents?.add(event.id!);
+          }
+        });
+      }
     }
   }
 

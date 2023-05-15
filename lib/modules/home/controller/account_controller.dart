@@ -25,19 +25,31 @@ class AccountController extends GetxController {
     'Department of Aquaculture Engineering'
   ].obs;
 
-  late String departmentFromDB = _auth.appUser.value.getDepartment();
-
   // late RxString selectedDepartment = departmentFromDB.obs;
-  late RxString selectedDepartment = 'Department of Computer Engineering'.obs;
+  final selectedDepartment = 'School of Information Technology'.obs;
 
   final _auth = AuthController.instance;
   final FirebaseAuth authBase = FirebaseAuth.instance;
   final _fireBase = FirebaseFirestore.instance;
 
   static AccountController get instance => Get.find();
-  String firstNameUser = '';
-  String lastNameUser = '';
-  String yearUser = '';
+
+  final TextEditingController nameController = TextEditingController();
+  final TextEditingController yearController = TextEditingController();
+
+  @override
+  void onInit() async {
+    super.onInit();
+    departmentOptions(
+        await FirebaseService().getDepartments() ?? departmentOptions);
+    initializeValues();
+  }
+
+  void initializeValues() {
+    nameController.text = _auth.appUser.value.getName();
+    yearController.text = _auth.appUser.value.year.toString();
+    selectedDepartment(_auth.appUser.value.department);
+  }
 
   String? validateName(String? value) {
     if (value == null || value.isEmpty) {
@@ -67,39 +79,17 @@ class AccountController extends GetxController {
     return null;
   }
 
-  @override
-  void onInit() async {
-    super.onInit();
-    departmentOptions(
-        await FirebaseService().getDepartments() ?? departmentOptions);
-  }
   // For future use
-  // @override
-  // void onClose() {
-  //   // You can perform any cleanup here
-  //   firstNameController.dispose();
-  //   // lastNameController.dispose();
-  //   yearController.dispose();
-  //   super.onClose();
-  // }
-
-  // Same name with old one check (experimental)
-
-  late String preFirstname = _auth.appUser.value.getFirstname();
-  late String preLastname = _auth.appUser.value.getLastname();
-  late int preYear = _auth.appUser.value.year;
-
-  // ignore: non_constant_identifier_names
-  late String prefirstname_lastname = "$preFirstname $preLastname";
-
-  late TextEditingController nameController =
-      TextEditingController(text: prefirstname_lastname);
-  late TextEditingController yearController =
-      TextEditingController(text: preYear.toString());
+  @override
+  void onClose() {
+    nameController.dispose();
+    yearController.dispose();
+    super.onClose();
+  }
 
   nameIsTheSame(String newFirstname, newLastname) {
-    late String oldFirstname = _auth.appUser.value.getFirstname();
-    late String oldLasttname = _auth.appUser.value.getLastname();
+    late String oldFirstname = _auth.appUser.value.firstName;
+    late String oldLasttname = _auth.appUser.value.lastName;
     if (newFirstname == oldFirstname && newLastname == oldLasttname) {
       return true;
     } else {

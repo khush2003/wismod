@@ -16,6 +16,7 @@ class PasswordController extends GetxController {
   final passwordError = RxString('');
   final confirmPasswordError = RxString('');
 
+
   changePassword() async {
     final currentPassword = currentPasswordController.text;
     final newPassword = passwordController.text;
@@ -27,10 +28,8 @@ class PasswordController extends GetxController {
       try {
         await currentUser!.reauthenticateWithCredential(cred);
         currentUser.updatePassword(newPassword);
+        Get.back();
         sucessSnackBar("Your password has been changed");
-        Get.offAllNamed(Routes.allPagesNav,
-            arguments: {'page': Pages.settingsPage});
-        Get.toNamed(Routes.accounts);
       } catch (error) {
         errorSnackBar(
             "Your current password doesn't match with current password that you've typed");

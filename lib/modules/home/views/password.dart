@@ -186,7 +186,7 @@ class AlertPasswordChange extends StatelessWidget {
                       child: OutlineButtonMedium(
                           onPressed: () {
                             controller.changePassword();
-                            Navigator.of(context).pop();
+                            Navigator.pop(context, 'Yes');
                           },
                           child: const Text('Yes',
                               style: TextStyle(

@@ -82,12 +82,12 @@ class AccountController extends GetxController {
   }
 
   // For future use
-  @override
-  void onClose() {
-    nameController.dispose();
-    yearController.dispose();
-    super.onClose();
-  }
+  // @override
+  // void onClose() {
+  //   nameController.dispose();
+  //   yearController.dispose();
+  //   super.onClose();
+  // }
 
   nameIsTheSame(String newFirstname, newLastname) {
     late String oldFirstname = _auth.appUser.value.firstName;

@@ -9,6 +9,7 @@ import '../../auth/controllers/auth_controller.dart';
 
 class AccountController extends GetxController {
   final departmentOptions = [
+    '',
     'School of Information Technology',
     'Department of Electrical Engineering',
     'Department of Computer Engineering',
@@ -26,7 +27,7 @@ class AccountController extends GetxController {
   ].obs;
 
   // late RxString selectedDepartment = departmentFromDB.obs;
-  final selectedDepartment = 'School of Information Technology'.obs;
+  final selectedDepartment = ''.obs;
 
   final _auth = AuthController.instance;
   final FirebaseAuth authBase = FirebaseAuth.instance;
@@ -169,7 +170,7 @@ class AccountController extends GetxController {
           authBase.currentUser!.reload();
         } catch (e) {
           if (kDebugMode) {
-            print('Error updating name: $e');
+            print('Error updating year: $e');
           }
         }
       } else {
@@ -178,6 +179,40 @@ class AccountController extends GetxController {
       }
     } else {
       errorSnackBar('Please fill correct year');
+    }
+  }
+
+  departmentIsSame(String newDepartment) {
+    String oldDepartment = _auth.appUser.value.department;
+    // ignore: unrelated_type_equality_checks
+    if (oldDepartment == newDepartment) {
+      return true;
+    } else {
+      return false;
+    }
+  }
+
+  Future<void> updateDepartment() async {
+    String choosenDepartment = selectedDepartment.value;
+    if (departmentIsSame(choosenDepartment) == false) {
+      try {
+        final User? user = authBase.currentUser;
+        final uid = user?.uid;
+        await _fireBase
+            .collection("Users")
+            .doc(uid)
+            .update({'Department': choosenDepartment});
+
+        sucessSnackBar('Your department has been changed');
+        authBase.currentUser!.reload();
+      } catch (e) {
+        if (kDebugMode) {
+          print('Error updating department: $e');
+        }
+      }
+    } else {
+      errorSnackBar(
+          "You can't choose new department that's the same with the old one");
     }
   }
 }

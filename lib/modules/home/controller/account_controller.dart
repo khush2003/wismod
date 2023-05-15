@@ -1,8 +1,8 @@
-import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:wismod/modules/home/controller/chat_controller.dart';
+import 'package:wismod/modules/home/controller/events_controller.dart';
 import 'package:wismod/shared/services/firebase_firestore_serivce.dart';
 import 'package:wismod/utils/app_utils.dart';
 import '../../auth/controllers/auth_controller.dart';
@@ -29,8 +29,7 @@ class AccountController extends GetxController {
   final selectedDepartment = 'School of Information Technology'.obs;
 
   final _auth = AuthController.instance;
-  final FirebaseAuth authBase = FirebaseAuth.instance;
-  final _fireBase = FirebaseFirestore.instance;
+  final _firestore = FirebaseService();
 
   static AccountController get instance => Get.find();
 
@@ -121,30 +120,17 @@ class AccountController extends GetxController {
 
   Future<void> updateName() async {
     final List<String> splitedName = nameController.text.trim().split(' ');
-
     if (splitedName.length == 2) {
       final String firstName = splitedName[0];
       final String lastName = splitedName[1];
       if (nameIsTheSame(firstName, lastName) == false) {
-        try {
-          final User? user = authBase.currentUser;
-          final uid = user?.uid;
-          await _fireBase
-              .collection("Users")
-              .doc(uid)
-              .update({'Firstname': firstName});
-
-          await _fireBase
-              .collection("Users")
-              .doc(uid)
-              .update({'Lastname': lastName});
-          sucessSnackBar('Your first name and last name has been changed');
-          authBase.currentUser!.reload();
-        } catch (e) {
-          if (kDebugMode) {
-            print('Error updating name: $e');
-          }
-        }
+        final uid = _auth.appUser.value.uid;
+        await _firestore
+            .updateUserName(firstName, lastName, uid!)
+            .catchError((e) => errorSnackBar("Error connecting to database!"))
+            .then((value) => sucessSnackBar(
+                'Your first name and last name has been changed'));
+        await updateAllData();
       } else {
         errorSnackBar(
             "You can't change your new name that's the same with your old name");
@@ -155,21 +141,26 @@ class AccountController extends GetxController {
     }
   }
 
+  Future<void> updateAllData() async {
+    await EventsController.instance.fetchEvents();
+    EventsController.instance.initializeLists();
+    ChatController.instance.initializeLists();
+    await ChatController.instance.fetchLatestMessages();
+  }
+
   Future<void> updateYear() async {
     String yearCheck = yearController.text;
     if (validYearCheck(yearCheck)) {
       int? year = int.tryParse(yearCheck);
       if (yearIsTheSame(year!) == false) {
         try {
-          final User? user = authBase.currentUser;
-          final uid = user?.uid;
-          await _fireBase.collection("Users").doc(uid).update({'Year': year});
-
+          final uid = _auth.appUser.value.uid!;
+          await _firestore.updateYear(year, uid);
           sucessSnackBar('Your year has been changed');
-          authBase.currentUser!.reload();
+          updateAllData();
         } catch (e) {
           if (kDebugMode) {
-            print('Error updating name: $e');
+            print('Error updating year: $e');
           }
         }
       } else {
@@ -178,6 +169,25 @@ class AccountController extends GetxController {
       }
     } else {
       errorSnackBar('Please fill correct year');
+    }
+  }
+
+  Future<void> updateDepartment() async {
+    String department = selectedDepartment.value;
+    final prevDepartment = _auth.appUser.value.department;
+    if (department != prevDepartment) {
+      try {
+        final uid = _auth.appUser.value.uid!;
+        await _firestore.updateDepartment(department, uid);
+        sucessSnackBar('Your department has been changed');
+        updateAllData();
+      } catch (e) {
+        if (kDebugMode) {
+          print('Error updating department: $e');
+        }
+      }
+    } else {
+      errorSnackBar("You can't fill new department that's the same with the old one");
     }
   }
 }

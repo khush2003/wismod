@@ -212,7 +212,7 @@ class DepartmentSections extends StatelessWidget {
           child: OutlineButtonLarge(
             child: trailingWidget,
             onPressed: () {
-              // Pressed effect here
+              controller.updateDepartment();
             },
           ),
         ),

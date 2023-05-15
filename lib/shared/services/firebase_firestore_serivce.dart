@@ -17,6 +17,18 @@ class FirebaseService {
     return events;
   }
 
+  Future<List<AppUser>> getRequestedUsers(String eventId) async {
+    List<AppUser> allUsers = await getAllUsers();
+    List<AppUser> requestedUsers = [];
+    for (var user in allUsers) {
+      if (user.requestedEvents != null &&
+          user.requestedEvents!.contains(eventId)) {
+        requestedUsers.add(user);
+      }
+    }
+    return requestedUsers;
+  }
+
   Future<List<AppUser>> getAllUsers() async {
     QuerySnapshot<Map<String, dynamic>> snapshot =
         await _firestore.collection('Users').get();

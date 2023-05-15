@@ -160,14 +160,14 @@ class MemberBox extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Container(
-      height: 200, // Set the desired height of the scrollable box
+      height: 200,
       decoration: BoxDecoration(
-        color: Colors.white, // Set desired background color
+        color: Colors.white,
         boxShadow: [
           BoxShadow(
-            color: Colors.black.withOpacity(0.2), // Set desired shadow color
-            offset: Offset(0, 2), // Set desired shadow offset
-            blurRadius: 4, // Set desired blur radius
+            color: Colors.black.withOpacity(0.2),
+            offset: Offset(0, 2),
+            blurRadius: 4,
           ),
         ],
         borderRadius: BorderRadius.circular(15),
@@ -236,16 +236,7 @@ class MemberBox extends StatelessWidget {
                                     builder: (context, snapshot) {
                                       if (snapshot.connectionState ==
                                           ConnectionState.waiting) {
-                                        return SizedBox(
-                                          width: 40,
-                                          height: 40,
-                                          child: Container(
-                                            width: 40,
-                                            height: 40,
-                                            child:
-                                                const CircularProgressIndicator(),
-                                          ),
-                                        );
+                                        return LoadingWidget();
                                       }
                                       if (snapshot.hasError ||
                                           !snapshot.hasData) {
@@ -262,13 +253,24 @@ class MemberBox extends StatelessWidget {
                           ],
                         ),
                       ),
-                      Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          Text('Content for Tab 2'),
-                          // Add more widgets for Tab 2
-                        ],
-                      ),
+                      Obx(() {
+                        controller.requestedUsers();
+                        final requestedUsers = controller.requestedUsers;
+
+                        if (requestedUsers.isEmpty) {
+                          return Text('No requested users');
+                        }
+
+                        return ListView.builder(
+                          itemCount: requestedUsers.length,
+                          itemBuilder: (context, index) {
+                            final user = requestedUsers[index];
+                            return ListTile(
+                              title: Text(user.firstName),
+                            );
+                          },
+                        );
+                      })
                     ],
                   ),
                 ),

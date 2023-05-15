@@ -24,6 +24,7 @@ class EventDetailController extends GetxController {
   final Rx<bool> isOwnedEvent = false.obs;
 
   final RxList<String> memberList = <String>[].obs;
+  final requestedUsers = <AppUser>[].obs;
   final joinButtonText = 'Join'.obs;
 
   final tags = <String>[].obs;
@@ -32,6 +33,7 @@ class EventDetailController extends GetxController {
   void onInit() async {
     setEvent();
     setMemberList();
+    joinRequest();
     super.onInit();
   }
 
@@ -136,12 +138,37 @@ class EventDetailController extends GetxController {
 
     try {
       await _firestore.deleteMemberFromEvent(eventData.value.id!, userId);
-      print('Member removed successfully.');
       EventDetailController.instance.memberList.remove(userId);
     } catch (error) {
       print('Error removing member: $error');
     }
   }
+
+  void joinRequest() async {
+    String eventId = eventData.value.id!; // Replace with the actual event ID
+
+    List<AppUser> requestedUsers = await _firestore.getRequestedUsers(eventId);
+  }
+
+  // void joinRequest() async {
+  //   try {
+  //     List<AppUser>? users = await _firestore.getAllUsers();
+
+  //     if (users != null) {
+  //       List<AppUser> requestedUsersList = [];
+  //       for (AppUser user in users) {
+  //         if (user.requestedEvents?.contains(eventData.value.id!) ?? false) {
+  //           requestedUsersList.add(user);
+  //         }
+  //       }
+
+  //       // Update the requestedUsers list
+  //       requestedUsers.assignAll(requestedUsersList);
+  //     }
+  //   } catch (error) {
+  //     print('Error fetching users: $error');
+  //   }
+  // }
 
   // Future<String> _getUserName(String userId) async {
   //   final users = await _firestore.getUserById(userId);
@@ -160,4 +187,16 @@ class EventDetailController extends GetxController {
   //   }
   //   print('temp member: ${tempMemberList} \n MemberList: ${memberList}');
   // }
+}
+
+class RequestedUser {
+  final String firstName;
+  final String lastName;
+  final String profilePicture;
+
+  RequestedUser({
+    required this.firstName,
+    required this.lastName,
+    required this.profilePicture,
+  });
 }

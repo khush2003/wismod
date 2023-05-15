@@ -9,7 +9,6 @@ import '../../auth/controllers/auth_controller.dart';
 
 class AccountController extends GetxController {
   final departmentOptions = [
-    '',
     'School of Information Technology',
     'Department of Electrical Engineering',
     'Department of Computer Engineering',
@@ -27,7 +26,7 @@ class AccountController extends GetxController {
   ].obs;
 
   // late RxString selectedDepartment = departmentFromDB.obs;
-  final selectedDepartment = ''.obs;
+  final selectedDepartment = 'School of Information Technology'.obs;
 
   final _auth = AuthController.instance;
   final _firestore = FirebaseService();
@@ -173,28 +172,15 @@ class AccountController extends GetxController {
     }
   }
 
-  departmentIsSame(String newDepartment) {
-    String oldDepartment = _auth.appUser.value.department;
-    // ignore: unrelated_type_equality_checks
-    if (oldDepartment == newDepartment) {
-      return true;
-    } else {
-      return false;
-    }
-  }
-
   Future<void> updateDepartment() async {
-    String choosenDepartment = selectedDepartment.value;
-    if (departmentIsSame(choosenDepartment) == false) {
+    String department = selectedDepartment.value;
+    final prevDepartment = _auth.appUser.value.department;
+    if (department != prevDepartment) {
       try {
         final uid = _auth.appUser.value.uid!;
-        await _firestore
-            .collection("Users")
-            .doc(uid)
-            .update({'Department': choosenDepartment});
-
+        await _firestore.updateDepartment(department, uid);
         sucessSnackBar('Your department has been changed');
-        authBase.currentUser!.reload();
+        updateAllData();
       } catch (e) {
         if (kDebugMode) {
           print('Error updating department: $e');
@@ -202,7 +188,7 @@ class AccountController extends GetxController {
       }
     } else {
       errorSnackBar(
-          "You can't choose new department that's the same with the old one");
+          "You can't fill new department that's the same with the old one");
     }
   }
 }

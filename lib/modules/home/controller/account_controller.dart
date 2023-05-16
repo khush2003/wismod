@@ -161,7 +161,7 @@ class AccountController extends GetxController {
           final uid = _auth.appUser.value.uid!;
           await _firestore.updateYear(year, uid);
           sucessSnackBar('Your year has been changed');
-          updateAllData();
+          await updateAllData();
           authBase.currentUser!.reload();
         } catch (e) {
           if (kDebugMode) {
@@ -185,7 +185,7 @@ class AccountController extends GetxController {
         final uid = _auth.appUser.value.uid!;
         await _firestore.updateDepartment(department, uid);
         sucessSnackBar('Your department has been changed');
-        updateAllData();
+        await updateAllData();
         authBase.currentUser!.reload();
       } catch (e) {
         if (kDebugMode) {

@@ -19,20 +19,7 @@ class ChatRoomView extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-        appBar: AppBar(
-          title: const Text(
-            "CHAT ROOMS",
-            style: TextStyle(fontSize: 40, color: Colors.white),
-          ),
-          centerTitle: true,
-          backgroundColor: const Color.fromRGBO(201, 173, 255, 1),
-          toolbarHeight: 100,
-          shape: const RoundedRectangleBorder(
-            borderRadius: BorderRadius.vertical(
-              bottom: Radius.circular(30),
-            ),
-          ),
-        ),
+        appBar: _buildAppBar(),
         body: Obx(
           () => homeController.isLoading.value
               ? const Center(child: CircularProgressIndicator())
@@ -53,6 +40,17 @@ class ChatRoomView extends StatelessWidget {
   }
 }
 
+AppBar _buildAppBar() {
+  return AppBar(
+    title: const Text(
+      "JOINED CHAT GROUPS",
+      style: TextStyle(fontSize: 22, color: Colors.black),
+    ),
+    centerTitle: true,
+    toolbarHeight: 80,
+  );
+}
+
 class ChatEvent extends StatelessWidget {
   final Event event;
   final _chat = ChatController.instance;
@@ -64,85 +62,69 @@ class ChatEvent extends StatelessWidget {
       margin: const EdgeInsets.only(bottom: 20),
       width: MediaQuery.of(context).size.width,
       decoration: const BoxDecoration(
-        color: Colors.white,
-        boxShadow: [
-          BoxShadow(
-              color: Color.fromRGBO(107, 41, 237, 1),
-              offset: Offset(0, 4),
-              blurRadius: 6),
-        ],
+        borderRadius: BorderRadius.all(Radius.circular(20)),
+        color: Color(0xd37b38ff),
       ),
-      child: OutlinedButton(
-        // Route to the Chatting Page
-        onPressed: () {
+      child: InkWell(
+        onTap: () {
           Get.toNamed(Routes.chatting, parameters: {'id': event.id!});
         },
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
+        child: Row(
+          crossAxisAlignment: CrossAxisAlignment.center,
+          mainAxisAlignment: MainAxisAlignment.start,
           children: [
-            addVerticalSpace(),
-            Row(
-              crossAxisAlignment: CrossAxisAlignment.center,
-              children: [
-                if (event.imageUrl != null)
-                  SizedBox(
-                    width: 100,
-                    height: 75,
-                    child: ClipRRect(
-                        borderRadius: BorderRadius.circular(5),
-                        child: Image.network(event.imageUrl ?? placeholderImage,
-                            errorBuilder: (context, error, stackTrace) =>
-                                Image.network(
-                                  placeholderImage,
-                                  fit: BoxFit.cover,
-                                ),
-                            fit: BoxFit.cover)),
-                  ),
-                addHorizontalSpace(10),
-                Expanded(
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    mainAxisSize: MainAxisSize.min,
-                    children: [
-                      Text(
-                        event.title,
-                        style: const TextStyle(
-                            fontFamily: "Gotham",
-                            fontWeight: FontWeight.bold,
-                            color: Colors.black,
-                            fontSize: 20),
-                        overflow: TextOverflow.ellipsis,
-                        softWrap: false,
-                      ),
-                      addVerticalSpace(5),
-                      Text(
-                        'Owner: ${event.eventOwner.name}',
-                        style: Theme.of(context).textTheme.bodyMedium,
-                      ),
-                    ],
-                  ),
-                ),
-              ],
+            SizedBox(
+              width: 120,
+              height: 100,
+              child: ClipRRect(
+                  borderRadius: const BorderRadius.only(
+                      topLeft: Radius.circular(20),
+                      bottomLeft: Radius.circular(20)),
+                  child: Image.network(event.imageUrl ?? placeholderImage,
+                      errorBuilder: (context, error, stackTrace) =>
+                          Image.network(
+                            placeholderImage,
+                            fit: BoxFit.cover,
+                          ),
+                      fit: BoxFit.cover)),
             ),
-            addVerticalSpace(10),
-            Obx(() => _chat.latestMessages[event.id!] != null
-                ? Text(
-                    _chat.latestMessages[event.id!]!.userName != ''
-                        ? '${_chat.latestMessages[event.id!]!.userName}: ${_chat.latestMessages[event.id!]!.message}'
-                        : '',
+            addHorizontalSpace(16),
+            Expanded(
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                mainAxisAlignment: MainAxisAlignment.center,
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  Text(
+                    event.title,
                     style: const TextStyle(
-                      fontFamily: "Gotham",
-                      fontWeight: FontWeight.w400,
-                      color: Colors.black,
-                      fontSize: 16,
-                    ),
-                    maxLines: 1,
-                    softWrap: false,
+                        fontFamily: "Gotham",
+                        fontWeight: FontWeight.bold,
+                        color: Colors.white,
+                        fontSize: 20),
                     overflow: TextOverflow.ellipsis,
-                  )
-                : Container()),
-            addVerticalSpace(10),
+                    softWrap: false,
+                  ),
+                  addVerticalSpace(5),
+                  Obx(() => _chat.latestMessages[event.id!] != null
+                      ? Text(
+                          _chat.latestMessages[event.id!]!.userName != ''
+                              ? '${_chat.latestMessages[event.id!]!.userName}: ${_chat.latestMessages[event.id!]!.message}'
+                              : '',
+                          style: const TextStyle(
+                            fontFamily: "Gotham",
+                            fontWeight: FontWeight.w400,
+                            color: Colors.white,
+                            fontSize: 16,
+                          ),
+                          maxLines: 1,
+                          softWrap: false,
+                          overflow: TextOverflow.ellipsis,
+                        )
+                      : Container()),
+                ],
+              ),
+            ),
           ],
         ),
       ),

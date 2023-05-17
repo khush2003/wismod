@@ -8,7 +8,6 @@ import 'package:wismod/theme/theme_data.dart';
 import 'package:get/get.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
 
-
 void main() async {
   // Initializing Firebase
   WidgetsFlutterBinding.ensureInitialized();

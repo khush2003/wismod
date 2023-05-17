@@ -27,15 +27,21 @@ class ChatRoomView extends StatelessWidget {
               : Padding(
                   padding: const EdgeInsets.all(sideWidth),
                   child: SizedBox(
-                    child: Obx(() => ListView.builder(
-                          itemCount: _chat.joinedChatGroupsWithoutBlocks.length,
-                          itemBuilder: (context, index) {
-                            return ChatEvent(
-                                event:
-                                    _chat.joinedChatGroupsWithoutBlocks[index]);
-                          },
-                        )),
-                  ),
+                      child: Obx(
+                    () => _chat.joinedChatGroupsWithoutBlocks.length == 0
+                        ? Center(
+                            child: const Text(
+                                'You have not joined any chat group!'))
+                        : Obx(() => ListView.builder(
+                              itemCount:
+                                  _chat.joinedChatGroupsWithoutBlocks.length,
+                              itemBuilder: (context, index) {
+                                return ChatEvent(
+                                    event: _chat
+                                        .joinedChatGroupsWithoutBlocks[index]);
+                              },
+                            )),
+                  )),
                 ),
         ));
   }

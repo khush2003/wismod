@@ -8,7 +8,6 @@ import 'package:wismod/utils/app_utils.dart';
 import 'package:wismod/modules/auth/controllers/auth_controller.dart';
 import '../../../shared/models/event.dart';
 import '../../../shared/models/user.dart';
-import '../../../shared/services/firebase_firestore_serivce.dart';
 import '../../../theme/theme_data.dart';
 import 'dashboard.dart';
 
@@ -41,7 +40,7 @@ class EventDetailView extends StatelessWidget {
                   ? const Center(child: CircularProgressIndicator())
                   : SingleChildScrollView(
                       child: Padding(
-                      padding: const EdgeInsets.all(sideWidth),
+                      padding: const EdgeInsets.all(8),
                       child: Column(
                         crossAxisAlignment: CrossAxisAlignment.stretch,
                         children: [
@@ -51,8 +50,7 @@ class EventDetailView extends StatelessWidget {
                           ClipRRect(
                               borderRadius: BorderRadius.circular(5),
                               child: Image.network(
-                                  eventData().imageUrl ??
-                                      placeholderImage,
+                                  eventData().imageUrl ?? placeholderImage,
                                   errorBuilder: (context, error, stackTrace) =>
                                       Image.network(
                                         placeholderImage,
@@ -60,31 +58,52 @@ class EventDetailView extends StatelessWidget {
                                       ),
                                   fit: BoxFit.cover)),
                           addVerticalSpace(20),
-                          Wrap(
-                            direction: Axis.horizontal,
-                            alignment: WrapAlignment.spaceBetween,
-                            runAlignment: WrapAlignment.spaceBetween,
-                            runSpacing: 10,
-                            spacing: 10,
+                          Row(
+                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
                             children: [
-                              Text(eventData().title,
+                              Text(eventData().category.toUpperCase(),
                                   style: const TextStyle(
-                                      fontSize: 20,
-                                      fontWeight: FontWeight.w500)),
-                              if (eventData().members != null &&
-                                  eventData().totalCapacity != null)
-                                Text(
-                                    'Members: ${eventData().members!.length}/${eventData().totalCapacity}',
-                                    style: Theme.of(context)
-                                        .textTheme
-                                        .displayMedium)
+                                      fontSize: 16,
+                                      fontWeight: FontWeight.w500,
+                                      color: Colors.grey)),
+                              Text('${eventData().upvotes} ▲',
+                                  style: const TextStyle(
+                                      fontSize: 16,
+                                      fontWeight: FontWeight.w500,
+                                      color: Colors.grey))
                             ],
                           ),
-                          addVerticalSpace(20),
+                          addVerticalSpace(),
+                          Text(eventData().title,
+                              style: const TextStyle(
+                                  fontSize: 22, fontWeight: FontWeight.w500)),
+                          Divider(),
+                          addVerticalSpace(4),
                           Text(
-                            "Category: ${eventData().category}",
-                            style: const TextStyle(fontWeight: FontWeight.bold),
+                            'Location: ${eventData().location}',
                           ),
+                          addVerticalSpace(4),
+                          if (eventData().eventDate != null)
+                            Text(
+                              'Date: ${formatDate(eventData().eventDate!)}',
+                            ),
+                          addVerticalSpace(4),
+                          if (eventData().members != null &&
+                              eventData().totalCapacity != null)
+                            Text(
+                                'Members: ${eventData().members!.length}/${eventData().totalCapacity}',
+                                style: TextStyle(
+                                    fontSize: 16, fontWeight: FontWeight.w400)),
+                          addVerticalSpace(10),
+                          Text(
+                            'Description',
+                            style: TextStyle(fontWeight: FontWeight.bold),
+                          ),
+                          addVerticalSpace(),
+                          Text(
+                            eventData().description,
+                          ),
+                          Divider(),
                           addVerticalSpace(20),
                           const Text(
                             "Tags",
@@ -95,23 +114,6 @@ class EventDetailView extends StatelessWidget {
                               eventData().tags!.isEmpty)
                             const Text("No Tags Found"),
                           createTags(controller),
-                          addVerticalSpace(20),
-                          Obx(() => Text("${eventData().upvotes} upvotes")),
-                          addVerticalSpace(20),
-                          if (eventData().eventDate != null)
-                            Text(
-                              'Date: ${formatDate(eventData().eventDate!)}',
-                              style:
-                                  const TextStyle(fontWeight: FontWeight.bold),
-                            ),
-                          addVerticalSpace(20),
-                          Text(
-                            'Location: ${eventData().location}',
-                          ),
-                          addVerticalSpace(20),
-                          Text(
-                            eventData().description,
-                          ),
                           addVerticalSpace(20),
                           Row(
                             mainAxisAlignment: MainAxisAlignment.spaceEvenly,
@@ -608,13 +610,23 @@ class ChatBox extends StatelessWidget {
 Widget createTags(EventDetailController controller) {
   final tagsWidgets = <Widget>[];
   for (int i = 0; i < controller.tags.length; i++) {
-    tagsWidgets.add(Container(
-      decoration: BoxDecoration(
-          border: Border.all(
-              color: AppThemeData.themedata.colorScheme.primary, width: 2),
-          borderRadius: BorderRadius.circular(5)),
-      child: Text(controller.tags[i]),
-    ));
+    tagsWidgets.add(
+      Container(
+          decoration: BoxDecoration(
+              border: Border.all(
+                  color: AppThemeData.themedata.colorScheme.primary, width: 0),
+              borderRadius: BorderRadius.circular(50),
+              color: AppThemeData.themedata.colorScheme.secondary),
+          child: Row(mainAxisSize: MainAxisSize.min, children: [
+            addHorizontalSpace(),
+            Text(
+              controller.tags[i],
+              style: const TextStyle(
+                  color: Colors.white, fontWeight: FontWeight.bold),
+            ),
+            addHorizontalSpace()
+          ])),
+    );
   }
   return Wrap(
     direction: Axis.horizontal,

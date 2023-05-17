@@ -99,7 +99,33 @@ class ChattingView extends StatelessWidget {
       actions: [
         IconButton(
           onPressed: () {
-            controller.blockChatGroup();
+            Get.defaultDialog(
+              title: 'Confirmation',
+              content: const Text(
+                  'Are you sure you want to block this chat group?',
+                  style: TextStyle(fontWeight: FontWeight.normal)),
+              actions: [
+                OutlineButtonMedium(
+                  child: const Padding(
+                    padding: EdgeInsets.symmetric(vertical: 3.0),
+                    child: Text('Cancel'),
+                  ),
+                  onPressed: () {
+                    Get.back();
+                  },
+                ),
+                ElevatedButton(
+                  style: ElevatedButton.styleFrom(
+                    backgroundColor: Colors.red,
+                  ),
+                  onPressed: () {
+                    Get.back();
+                    controller.blockChatGroup();
+                  },
+                  child: const Text('Block'),
+                ),
+              ],
+            );
           },
           icon: const Icon(Icons.block),
         ),

@@ -24,18 +24,23 @@ class PrimaryButtonMedium extends StatelessWidget {
   final Size? size;
   final Size? maxSize;
   final Color? color;
+  final double borderRadius;
   const PrimaryButtonMedium(
       {super.key,
       required this.child,
       required this.onPressed,
       this.size,
-      this.maxSize, this.color});
+      this.maxSize,
+      this.color,
+      this.borderRadius = 8});
 
   @override
   Widget build(BuildContext context) {
     return ElevatedButton(
       onPressed: onPressed,
       style: ElevatedButton.styleFrom(
+          shape: RoundedRectangleBorder(
+              borderRadius: BorderRadius.all(Radius.circular(borderRadius))),
           backgroundColor: color,
           fixedSize: size,
           maximumSize: maxSize,

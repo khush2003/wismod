@@ -28,12 +28,12 @@ class BlockListView extends StatelessWidget {
         padding: const EdgeInsets.fromLTRB(20.0, 20.0, 20.0, 0.0),
         child: Align(
             alignment: Alignment.topCenter,
-            child: Obx(() => ListView.separated(
+            child: Obx(() => _chat.blockedChatGroups.length == 0 ? Center(child: const Text('You have not blocked any chat groups!')) : Obx(() => ListView.separated(
                 itemCount: _chat.blockedChatGroups.length,
                 itemBuilder: (context, index) {
                   return BlockedPerson(event: _chat.blockedChatGroups[index]);
                 },
-                separatorBuilder: (context, index) => addVerticalSpace(20)))),
+                separatorBuilder: (context, index) => addVerticalSpace(20))))),
       ),
     );
   }

@@ -150,7 +150,9 @@ class RequestList extends StatelessWidget {
                           );
                         },
                       ))
-                  : const EmptyEventsList()),
+                  : const EmptyEventsList(
+                      message:
+                          'No join requests found for any event you own!')),
             ),
           ])),
     );
@@ -408,28 +410,24 @@ class DisplayList extends StatelessWidget {
 }
 
 class EmptyEventsList extends StatelessWidget {
-  const EmptyEventsList({Key? key}) : super(key: key);
+  final String message;
+  const EmptyEventsList(
+      {Key? key, this.message = 'No events found for this list'})
+      : super(key: key);
 
   @override
   Widget build(BuildContext context) {
-    return Flexible(
-      child: ListView.builder(
-        itemCount: 1,
-        itemBuilder: (context, index) {
-          return const Padding(
-            padding: EdgeInsets.only(top: 107.0),
-            child: Center(
-              child: Text(
-                'You do not have any Events.',
-                style: TextStyle(
-                  fontSize: 16,
-                  fontWeight: FontWeight.bold,
-                  color: Colors.red,
-                ),
-              ),
-            ),
-          );
-        },
+    return Padding(
+      padding: EdgeInsets.only(top: 107.0),
+      child: Center(
+        child: Text(
+          message,
+          style: TextStyle(
+            fontSize: 16,
+            fontWeight: FontWeight.bold,
+            color: Colors.red,
+          ),
+        ),
       ),
     );
   }

@@ -74,6 +74,7 @@ class LogInView extends StatelessWidget {
                 addVerticalSpace(20),
                 Center(
                   child: SizedBox(
+                    width: double.infinity,
                     child: PrimaryButtonMedium(
                       onPressed: () async => await logInController.loginUser(),
                       child: const Text("Log In"),

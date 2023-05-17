@@ -40,7 +40,7 @@ class LogInController extends GetxController {
     if (vaildEmail) {
       final email = getCorrectEmail(emailController.text.trim());
       try {
-        await FirebaseAuth.instance.sendPasswordResetEmail(email: email);
+        // await FirebaseAuth.instance.sendPasswordResetEmail(email: email);
         print(email);
         buttonclicked = true;
       } catch (error) {

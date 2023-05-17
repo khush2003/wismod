@@ -20,7 +20,7 @@ class ForgotView extends StatelessWidget {
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                const Text("Email",
+                const Text("Email of your account",
                     style: TextStyle(
                         fontFamily: "Gotham",
                         fontSize: 20,
@@ -36,11 +36,12 @@ class ForgotView extends StatelessWidget {
                     Text("@kmutt.ac.th", style: tt.displayLarge)
                   ],
                 ),
-                addVerticalSpace(20),
-                Center(
-                    child: Text(
-                        "We'll sent the password changing mail to your email ")),
-                addVerticalSpace(20),
+                Padding(
+                  padding: EdgeInsets.fromLTRB(0, 20, 0, 10),
+                  child: Center(
+                      child: Text(
+                          "Make sure that email is the one you've been registered with.")),
+                ),
                 Center(
                   //button was here
                   child: MyStatefulWidget(),
@@ -67,8 +68,15 @@ class MyStatefulWidget extends StatefulWidget {
 class _MyStatefulWidgetState extends State<MyStatefulWidget> {
   final LogInController logInController = Get.put(LogInController());
   String text = "Send Password changing mail";
+  bool buttonClicked = false;
 
-  void _changeText() {
+  void _changeTextInsideButton() {
+    setState(() {
+      text = "Send Password changing mail again";
+    });
+  }
+
+  void _changeTextMessage() {
     setState(() {
       text = "Send Password changing mail again";
     });
@@ -76,26 +84,73 @@ class _MyStatefulWidgetState extends State<MyStatefulWidget> {
 
   @override
   Widget build(BuildContext context) {
-    return SizedBox(
-      width: double.infinity,
-      child: PrimaryButtonMedium(
-        onPressed: () {
-          logInController.sendMail();
-          if (logInController.isButtonClicked() == true) {
-            setState(() {
-              _changeText();
-            });
-          }
-        },
-        child: Row(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            Icon(Icons.mail_outlined),
-            addHorizontalSpace(10),
-            Text('$text')
-          ],
+    return Column(
+      children: [
+        if (buttonClicked)
+          Padding(
+            padding: const EdgeInsets.fromLTRB(0, 0, 0, 20),
+            child: Row(
+              crossAxisAlignment: CrossAxisAlignment.baseline,
+              textBaseline: TextBaseline.alphabetic,
+              children: [
+                Transform.translate(
+                  offset: const Offset(0,
+                      3), // Adjust the offset to align the icon with the desired position
+                  child: Icon(
+                    Icons.check_circle,
+                    size: 17,
+                    color: Colors.green,
+                  ),
+                ),
+                const SizedBox(width: 8),
+                Expanded(
+                  child: Align(
+                    alignment: Alignment.topLeft,
+                    child: RichText(
+                      text: TextSpan(
+                        children: [
+                          TextSpan(
+                            text:
+                                "Re-setting password mail has been sent to your email. If your email hasn't received any mail, you can try clicking the reset password button again",
+                            style: TextStyle(
+                                fontFamily: "Gotham",
+                                fontWeight: FontWeight.w500,
+                                fontSize: 16,
+                                color: Color.fromARGB(255, 255, 77, 143)),
+                          ),
+                        ],
+                      ),
+                    ),
+                  ),
+                ),
+              ],
+            ),
+          )
+        else
+          Container(),
+        SizedBox(
+          width: double.infinity,
+          child: PrimaryButtonMedium(
+            onPressed: () {
+              logInController.sendMail();
+              if (logInController.isButtonClicked() == true) {
+                setState(() {
+                  _changeTextInsideButton();
+                  buttonClicked = true;
+                });
+              }
+            },
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                Icon(Icons.mail_outlined),
+                SizedBox(width: 10),
+                Text('$text'),
+              ],
+            ),
+          ),
         ),
-      ),
+      ],
     );
   }
 }

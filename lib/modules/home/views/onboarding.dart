@@ -55,9 +55,12 @@ class OnboardingView extends StatelessWidget {
             ),
             Column(
               children: [
-                PrimaryButtonMedium(
-                  onPressed: () => Get.toNamed(Routes.login),
-                  child: const Text('Log In'),
+                SizedBox(
+                  width: double.infinity,
+                  child: PrimaryButtonMedium(
+                    onPressed: () => Get.toNamed(Routes.login),
+                    child: const Text('Log In'),
+                  ),
                 ),
                 addVerticalSpace(),
                 Row(

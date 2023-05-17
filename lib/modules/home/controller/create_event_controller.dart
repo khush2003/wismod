@@ -7,6 +7,7 @@ import 'package:wismod/modules/auth/controllers/auth_controller.dart';
 import 'package:wismod/modules/home/controller/events_controller.dart';
 import 'package:wismod/shared/models/event.dart';
 import 'package:wismod/shared/services/firebase_firestore_serivce.dart';
+import 'package:wismod/shared/services/notification_service.dart';
 import 'package:wismod/utils/app_utils.dart';
 
 import '../../../routes/routes.dart';
@@ -150,41 +151,42 @@ class CreateEventController extends GetxController {
   }
 
   void createEvent() async {
-
     if (validateInputs()) {
-  try {
-    final eventOwner = _auth.appUser.value;
-    final event = Event(
-      createdAt: DateTime.now(),
-      description: eventDetailController.text.trim(),
-      eventDate: dateTime.value,
-      imageUrl: imageUrl.value,
-      members: [],
-      tags: tags,
-      totalCapacity: int.parse(eventAmountOfNumberController.text.trim()),
-      location: eventLocationController.text.trim(),
-      category: selectedCategory.value,
-      title: eventNameController.text.trim(),
-      upvotes: 0,
-      allowAutomaticJoin: isOn.value,
-      eventOwner: EventOwner(
-          name: eventOwner.getName(),
-          department: eventOwner.department,
-          year: eventOwner.year,
-          uid: eventOwner.uid!),
-    );
-    await FirebaseService().addEvent(event, _auth.appUser.value);
-    sucessSnackBar('Event was created sucessfulyy!');
-    Get.offAllNamed(Routes.allPagesNav);
-    EventsController.instance.events.add(event);
-    EventsController.instance.initializeLists();
-  } catch (e) {
-    errorSnackBar(
-        'There was a problem creating the event. Please recheck your values and try again!');
-  }
-} else {
-  errorSnackBar(
+      try {
+        final eventOwner = _auth.appUser.value;
+        final event = Event(
+          createdAt: DateTime.now(),
+          description: eventDetailController.text.trim(),
+          eventDate: dateTime.value,
+          imageUrl: imageUrl.value,
+          members: [],
+          tags: tags,
+          totalCapacity: int.parse(eventAmountOfNumberController.text.trim()),
+          location: eventLocationController.text.trim(),
+          category: selectedCategory.value,
+          title: eventNameController.text.trim(),
+          upvotes: 0,
+          allowAutomaticJoin: isOn.value,
+          eventOwner: EventOwner(
+              name: eventOwner.getName(),
+              department: eventOwner.department,
+              year: eventOwner.year,
+              uid: eventOwner.uid!),
+        );
+        /*NotificationService().showNotification(
+            title: eventNameController.text.trim(), body: 'Come and join!');*/
+        await FirebaseService().addEvent(event, _auth.appUser.value);
+        sucessSnackBar('Event was created sucessfulyy!');
+        Get.offAllNamed(Routes.allPagesNav);
+        EventsController.instance.events.add(event);
+        EventsController.instance.initializeLists();
+      } catch (e) {
+        errorSnackBar(
+            'There was a problem creating the event. Please recheck your values and try again!');
+      }
+    } else {
+      errorSnackBar(
           'Please fill in all the fields correctly to create an event.');
-}
+    }
   }
 }

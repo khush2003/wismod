@@ -99,6 +99,11 @@ class ChattingView extends StatelessWidget {
                         width: 20,
                         child: TextFormField(
                           controller: controller.messageTextController,
+                          style: const TextStyle(
+                            color: Colors.black,
+                            fontSize: 14,
+                            fontFamily: 'Gotham',
+                          ),
                           //textAlignVertical: TextAlignVertical.center,
                           decoration: const InputDecoration(
                             filled: true,

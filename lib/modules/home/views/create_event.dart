@@ -2,6 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:get/get.dart';
 import 'package:wismod/modules/home/controller/create_event_controller.dart';
+import 'package:wismod/modules/home/controller/notification_controller.dart';
+import 'package:wismod/shared/services/notification_service.dart';
 import 'package:wismod/theme/theme_data.dart';
 import 'package:wismod/utils/app_utils.dart';
 // import 'package:image_picker_windows/image_picker_windows.dart';
@@ -11,6 +13,7 @@ import '../../../theme/global_widgets.dart';
 class CreateEventView extends StatelessWidget {
   CreateEventView({super.key});
   final controller = Get.put(CreateEventController());
+  final notiController = Get.put(NotificationController());
 
   @override
   Widget build(BuildContext context) {
@@ -44,8 +47,7 @@ class CreateEventView extends StatelessWidget {
                             child: TextFormFeildThemed(
                                 hintText: "Event's Name",
                                 validator: controller.validateEventName,
-                                controller:
-                                    controller.eventNameController),
+                                controller: controller.eventNameController),
                           ),
                           Padding(
                             padding: const EdgeInsets.fromLTRB(
@@ -56,15 +58,13 @@ class CreateEventView extends StatelessWidget {
                               height: 250,
                               child: Obx(
                                 () => OutlinedButton.icon(
-                                  icon: controller.imageUrl.value ==
-                                          ''
+                                  icon: controller.imageUrl.value == ''
                                       ? const Icon(Icons.image_outlined)
                                       : Image.network(
                                           controller.imageUrl.value,
                                           fit: BoxFit.cover,
                                         ),
-                                  onPressed: () =>
-                                      controller.uploadImage(),
+                                  onPressed: () => controller.uploadImage(),
                                   label: const Text(''),
                                   style: ElevatedButton.styleFrom(
                                     side: const BorderSide(
@@ -92,8 +92,7 @@ class CreateEventView extends StatelessWidget {
                             child: TextAreaThemed(
                               validator: controller.validateEventDetail,
                               hintText: "Event's Detail",
-                              controller:
-                                  controller.eventDetailController,
+                              controller: controller.eventDetailController,
                             ),
                           ),
                           Padding(
@@ -114,8 +113,8 @@ class CreateEventView extends StatelessWidget {
                                 FilteringTextInputFormatter.digitsOnly
                               ],
                               hintText: "2 - 500",
-                              controller: controller
-                                  .eventAmountOfNumberController,
+                              controller:
+                                  controller.eventAmountOfNumberController,
                             ),
                           ),
                           Padding(
@@ -132,8 +131,7 @@ class CreateEventView extends StatelessWidget {
                             child: TextFormFeildThemed(
                               validator: controller.validateEventLocation,
                               hintText: "Location",
-                              controller:
-                                  controller.eventLocationController,
+                              controller: controller.eventLocationController,
                             ),
                           ),
                           Padding(
@@ -183,8 +181,7 @@ class CreateEventView extends StatelessWidget {
                           Padding(
                               padding: const EdgeInsets.fromLTRB(
                                   14.0, 0.0, 14.0, 16.0),
-                              child: DropDownCustom(
-                                  controller: controller)),
+                              child: DropDownCustom(controller: controller)),
                           // Tags (WIP) later
                           Padding(
                             padding:
@@ -199,8 +196,7 @@ class CreateEventView extends StatelessWidget {
                                 14.0, 0.0, 14.0, 16.0),
                             child: TextFormFeildThemed(
                               hintText: "Add Tags",
-                              controller:
-                                  controller.eventTagsController,
+                              controller: controller.eventTagsController,
                               suffixIcon: IconButton(
                                   onPressed: () {
                                     controller.addTag();
@@ -211,8 +207,6 @@ class CreateEventView extends StatelessWidget {
                             ),
                           ),
                           Obx(() => createTags(controller)),
-                          // AutoJoin Switch (WIP)later
-                          // Custom Switch?
                           Padding(
                             padding:
                                 const EdgeInsets.fromLTRB(14.0, 0.0, 14.0, 8.0),
@@ -221,8 +215,7 @@ class CreateEventView extends StatelessWidget {
                               children: [
                                 Obx(() => ThemedSwitch(
                                     value: controller.isOn.value,
-                                    onChanged:
-                                        controller.toggleSwitch)),
+                                    onChanged: controller.toggleSwitch)),
                                 Text(
                                   'Allow Automatic Join',
                                   style:
@@ -245,8 +238,18 @@ class CreateEventView extends StatelessWidget {
                             child: SizedBox(
                               width: double.infinity,
                               child: PrimaryButtonMedium(
-                                onPressed: () =>
-                                    controller.createEvent(),
+                                onPressed: () => [
+                                  controller.createEvent(),
+                                  if (notiController.isEventNotification(true))
+                                    {
+                                      NotificationService().showNotification(
+                                          title:
+                                              'New Event from ${controller.eventNameController.text}',
+                                          body: controller
+                                              .eventDetailController.text
+                                              .trim())
+                                    }
+                                ],
                                 child: const Text('Create Event'),
                               ),
                             ),

@@ -1,5 +1,7 @@
+import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:get/get_connect/http/src/utils/utils.dart';
 import 'package:wismod/modules/auth/controllers/auth_controller.dart';
 import 'package:wismod/modules/home/controller/events_controller.dart';
 import 'package:wismod/shared/models/message.dart';
@@ -30,7 +32,41 @@ class HomeController extends GetxController {
     filteredEvents(_event.events);
     isLoading(false);
     super.onInit();
+    /*requestPermission();
+    getToken();*/
   }
+
+/*  void getToken() async {
+    await FirebaseMessaging.instance.getToken().then((token) {
+      setState(() {
+        mtoken = token;
+        print('My token is $mtoken');
+      });
+    });
+  }
+
+  void requestPermission() async {
+    FirebaseMessaging messaging = FirebaseMessaging.instance;
+
+    NotificationSettings settings = await messaging.requestPermission(
+      alert: true,
+      announcement: false,
+      badge: false,
+      carPlay: false,
+      criticalAlert: false,
+      provisional: true,
+      sound: true,
+    );
+
+    if (settings.authorizationStatus == AuthorizationStatus.authorized) {
+      print('User granted permission');
+    } else if (settings.authorizationStatus ==
+        AuthorizationStatus.provisional) {
+      print('User granted provisional permission');
+    } else {
+      print('User declined or has not accepted permission');
+    }
+  }*/
 
   void filterEventsByCategory(String category) {
     searchController.text = '';
@@ -45,6 +81,7 @@ class HomeController extends GetxController {
       filteredEvents(filterEvents);
     }
   }
+
   void sortEventsByDate() {
     if (currentDateSort.value == 'Ascending') {
       currentDateSort('Descending');

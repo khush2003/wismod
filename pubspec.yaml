@@ -42,6 +42,10 @@ dependencies:
   image_picker: ^0.8.7+4
   image_picker_windows: ^0.1.0+6
   firebase_storage: ^11.1.1
+  flutter_local_notifications: ^14.0.0+2
+  firebase_messaging: ^14.6.0
+  http: ^0.13.6
+  overlay_support: ^2.1.0
 
 dev_dependencies:
   flutter_test:

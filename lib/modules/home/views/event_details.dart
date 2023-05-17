@@ -52,10 +52,10 @@ class EventDetailView extends StatelessWidget {
                           ClipRRect(
                               borderRadius: BorderRadius.circular(5),
                               child: Image.network(
-                                  eventData().imageUrl ?? placeholderImage,
+                                  eventData().imageUrl ?? placeholderImageEvent,
                                   errorBuilder: (context, error, stackTrace) =>
                                       Image.network(
-                                        placeholderImage,
+                                        placeholderImageEvent,
                                         fit: BoxFit.cover,
                                       ),
                                   fit: BoxFit.cover)),

@@ -66,7 +66,7 @@ class BlockedPerson extends StatelessWidget {
                   height: 100,
                   fit: BoxFit.cover,
                   errorBuilder: (context, error, stackTrace) => Image.network(
-                    placeholderImage,
+                    placeholderImageEvent,
                     width: 100,
                     height: 100,
                     fit: BoxFit.cover,

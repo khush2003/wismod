@@ -377,9 +377,9 @@ class ProfilePicture extends StatelessWidget {
         child: CircleAvatar(
           radius: 25,
           backgroundImage: Image.network(
-            message.profilePicture ?? placeholderImage,
+            message.profilePicture ?? placeholderImageUserPurple,
             errorBuilder: (context, error, stackTrace) => Image.network(
-              placeholderImage,
+              placeholderImageUserPurple,
               fit: BoxFit.cover,
             ),
           ).image,

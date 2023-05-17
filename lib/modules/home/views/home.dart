@@ -51,7 +51,7 @@ class HomeView extends StatelessWidget {
                     child: Obx(() => ListView.builder(
                           itemCount: homeController.filteredEvents.length,
                           itemBuilder: (context, index) {
-                            return EventCard2(
+                            return EventCard(
                                 event: homeController.filteredEvents[index]);
                           },
                         )),
@@ -63,9 +63,9 @@ class HomeView extends StatelessWidget {
   }
 }
 
-class EventCard2 extends StatelessWidget {
+class EventCard extends StatelessWidget {
   final Event event;
-  const EventCard2({super.key, required this.event});
+  const EventCard({super.key, required this.event});
 
   @override
   Widget build(BuildContext context) {
@@ -73,7 +73,7 @@ class EventCard2 extends StatelessWidget {
       padding: const EdgeInsets.only(bottom: 20.0),
       child: DecoratedBox(
         decoration: BoxDecoration(
-          color: Color(0xd37b38ff),
+          color: const Color(0xd37b38ff),
           borderRadius: BorderRadius.circular(25),
         ),
         child: InkWell(
@@ -90,66 +90,6 @@ class EventCard2 extends StatelessWidget {
         ),
       ),
     );
-  }
-}
-
-class EventCard extends StatelessWidget {
-  final Event event;
-  const EventCard({super.key, required this.event});
-
-  @override
-  Widget build(BuildContext context) {
-    return Container(
-        // width: MediaQuery.of(context).size.width,
-        margin: const EdgeInsets.only(bottom: 20, left: 8, right: 8),
-        decoration: BoxDecoration(
-            shape: BoxShape.rectangle,
-            color: Colors.white,
-            borderRadius: BorderRadius.circular(15),
-            boxShadow: const [
-              BoxShadow(
-                  color: Color.fromRGBO(107, 41, 237, 1),
-                  offset: Offset(0, 4),
-                  blurRadius: 6)
-            ]),
-        child: Padding(
-          padding: const EdgeInsets.all(sideWidth),
-          child: Column(
-            children: [
-              Column(crossAxisAlignment: CrossAxisAlignment.stretch, children: [
-                Text(
-                  '#${event.category}',
-                  style: TextStyle(
-                      color: Theme.of(context).colorScheme.secondary,
-                      fontWeight: FontWeight.bold),
-                ),
-                addVerticalSpace(),
-                DetailSection(event: event),
-                addVerticalSpace(20),
-                PictureSection(event: event),
-                addVerticalSpace(20),
-                if (event.eventDate != null)
-                  Text(
-                    'Date: ${formatDate(event.eventDate!)}',
-                    style: const TextStyle(fontWeight: FontWeight.bold),
-                  ),
-                addVerticalSpace(20),
-                Text('Event Owner: ${event.eventOwner.name}',
-                    style: Theme.of(context).textTheme.bodyMedium),
-                addVerticalSpace(20),
-                Text('Details: ${event.description}',
-                    style: Theme.of(context).textTheme.bodyMedium, maxLines: 3),
-              ]),
-              addVerticalSpace(20),
-              OutlineButtonMedium(
-                  child: const Text("Read More"),
-                  onPressed: () {
-                    Get.toNamed(Routes.eventDetials,
-                        parameters: {'id': event.id!});
-                  })
-            ],
-          ),
-        ));
   }
 }
 
@@ -188,7 +128,7 @@ class DetailSection extends StatelessWidget {
             children: [
               Text(
                 event.title,
-                style: TextStyle(
+                style: const TextStyle(
                     fontWeight: FontWeight.bold,
                     fontSize: 18,
                     color: Colors.white),
@@ -197,13 +137,13 @@ class DetailSection extends StatelessWidget {
           ),
           addVerticalSpace(),
           ConstrainedBox(
-              constraints: BoxConstraints(maxHeight: 100),
+              constraints: const BoxConstraints(maxHeight: 100),
               child: Expanded(
                 child: Text(
                   event.description,
                   overflow: TextOverflow.ellipsis,
                   maxLines: 2,
-                  style: TextStyle(color: Colors.white, height: 1.3),
+                  style: const TextStyle(color: Colors.white, height: 1.3),
                 ),
               ))
         ],

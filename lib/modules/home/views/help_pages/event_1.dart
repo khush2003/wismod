@@ -101,7 +101,7 @@ class BodySearch1 extends StatelessWidget {
                         ),
                       ),
                       TextSpan(
-                        text: " in far left of the bottom bar",
+                        text: "in far left of the bottom bar",
                         style: Theme.of(context).textTheme.bodyMedium,
                       ),
                     ],
@@ -211,7 +211,7 @@ class BodySearch3 extends StatelessWidget {
                         ),
                       ),
                       TextSpan(
-                        text: " That's next to a search bar.",
+                        text: "That's next to a search bar.",
                         style: Theme.of(context).textTheme.bodyMedium,
                       ),
                     ],

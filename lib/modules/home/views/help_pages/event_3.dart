@@ -31,7 +31,7 @@ class HelpEvent3 extends StatelessWidget {
                         BodyManage1(icon: Icons.circle),
                         BodyManage2(icon: Icons.circle),
                         BodyManage3(icon: Icons.circle),
-                        BodyManage4(icon: Icons.circle),
+                        BodyManage4(),
                       ],
                     ),
                   ),
@@ -75,7 +75,7 @@ class BodyManage1 extends StatelessWidget {
           children: [
             Transform.translate(
               offset: const Offset(0,
-                  -8), // Adjust the offset to align the icon with the desired position
+                  -19), // Adjust the offset to align the icon with the desired position
               child: Icon(
                 icon,
                 size: 17,
@@ -91,7 +91,8 @@ class BodyManage1 extends StatelessWidget {
                   text: TextSpan(
                     children: [
                       TextSpan(
-                        text: "Go to Dashboard page by clicking Dashboard icon",
+                        text:
+                            "Go to Dashboard page by clicking on the Dashboard icon",
                         style: Theme.of(context).textTheme.bodyMedium,
                       ),
                       const WidgetSpan(
@@ -101,7 +102,7 @@ class BodyManage1 extends StatelessWidget {
                         ),
                       ),
                       TextSpan(
-                        text: " in the middle of the bottom bar",
+                        text: "in the middle of the bottom bar",
                         style: Theme.of(context).textTheme.bodyMedium,
                       ),
                     ],
@@ -150,7 +151,7 @@ class BodyManage2 extends StatelessWidget {
                     children: [
                       TextSpan(
                         text:
-                            "In the Dashbaord page, click into the \"Events You Own\" tab, will show all of events that you're the owner",
+                            "In the Dashboard page, click on the \"Events You Own\" tab, will show all of events that you're the owner",
                         style: Theme.of(context).textTheme.bodyMedium,
                       ),
                     ],
@@ -177,7 +178,7 @@ class BodyManage3 extends StatelessWidget {
     return Align(
       alignment: Alignment.topLeft,
       child: Padding(
-        padding: const EdgeInsets.only(bottom: 10.0),
+        padding: const EdgeInsets.only(bottom: 0.0),
         child: Row(
           crossAxisAlignment: CrossAxisAlignment.baseline,
           textBaseline: TextBaseline.alphabetic,
@@ -199,7 +200,7 @@ class BodyManage3 extends StatelessWidget {
                     children: [
                       TextSpan(
                         text:
-                            "Click into your event will show the page of your event in owner view.",
+                            "Click on your event will show the page of your event in owner view.",
                         style: Theme.of(context).textTheme.bodyMedium,
                       ),
                     ],

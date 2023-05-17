@@ -1,9 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:wismod/theme/global_widgets.dart';
 import 'package:get/get.dart';
 import '../../../../routes/routes.dart';
-import '../../controller/password_controller.dart';
-import 'package:firebase_auth/firebase_auth.dart';
 
 class HelpView extends StatelessWidget {
   const HelpView({super.key});
@@ -62,9 +59,9 @@ class HelpView extends StatelessWidget {
                           label: 'Chat',
                         ),
                         TextButtonSection(
-                          text: "How Can I start a chat?",
+                          text: "How Can I join a chat?",
                           onPressed: () {
-                            //effect here
+                            Get.toNamed(Routes.chat_1);
                           },
                         ),
                       ],
@@ -80,7 +77,7 @@ class HelpView extends StatelessWidget {
                         TextButtonSection(
                           text: "What is a dash board?",
                           onPressed: () {
-                            //effect here
+                            Get.toNamed(Routes.dashBoard_1);
                           },
                         ),
                       ],

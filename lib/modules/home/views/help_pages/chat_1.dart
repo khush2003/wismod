@@ -1,14 +1,14 @@
 import 'package:flutter/material.dart';
 
-class HelpEvent2 extends StatelessWidget {
-  const HelpEvent2({super.key});
+class HelpChat1 extends StatelessWidget {
+  const HelpChat1({super.key});
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
         appBar: AppBar(
             title: const Text(
-          "Event creating",
+          "Chatting",
           style: TextStyle(
               fontFamily: "Gotham",
               fontWeight: FontWeight.bold,
@@ -26,12 +26,11 @@ class HelpEvent2 extends StatelessWidget {
                     child: Column(
                       children: const [
                         Topic(
-                          label: 'How to Create an event',
+                          label: 'How to join a chat',
                         ),
-                        BodyCreate1(icon: Icons.circle),
-                        BodyCreate2(icon: Icons.circle),
+                        BodyChat1(icon: Icons.circle),
+                        BodyChat2(icon: Icons.circle),
                         BodyCreate3(icon: Icons.circle),
-                        BodyCreate4(),
                         BodyCreate5(icon: Icons.star),
                       ],
                     ),
@@ -59,9 +58,9 @@ class Topic extends StatelessWidget {
   }
 }
 
-class BodyCreate1 extends StatelessWidget {
+class BodyChat1 extends StatelessWidget {
   final IconData icon;
-  const BodyCreate1({
+  const BodyChat1({
     Key? key,
     required this.icon,
   }) : super(key: key);
@@ -76,7 +75,7 @@ class BodyCreate1 extends StatelessWidget {
           children: [
             Transform.translate(
               offset: const Offset(0,
-                  -8), // Adjust the offset to align the icon with the desired position
+                  -18), // Adjust the offset to align the icon with the desired position
               child: Icon(
                 icon,
                 size: 17,
@@ -92,17 +91,8 @@ class BodyCreate1 extends StatelessWidget {
                   text: TextSpan(
                     children: [
                       TextSpan(
-                        text: "Go to Home page by clicking Home icon",
-                        style: Theme.of(context).textTheme.bodyMedium,
-                      ),
-                      const WidgetSpan(
-                        child: Padding(
-                          padding: EdgeInsets.only(right: 1.0),
-                          child: Icon(Icons.home, size: 20),
-                        ),
-                      ),
-                      TextSpan(
-                        text: "far left in the bottom bar",
+                        text:
+                            "When you click \"Read more\" button of events, you will see more details, which including the option to join the chat of that event",
                         style: Theme.of(context).textTheme.bodyMedium,
                       ),
                     ],
@@ -117,9 +107,9 @@ class BodyCreate1 extends StatelessWidget {
   }
 }
 
-class BodyCreate2 extends StatelessWidget {
+class BodyChat2 extends StatelessWidget {
   final IconData icon;
-  const BodyCreate2({
+  const BodyChat2({
     Key? key,
     required this.icon,
   }) : super(key: key);
@@ -151,7 +141,7 @@ class BodyCreate2 extends StatelessWidget {
                     children: [
                       TextSpan(
                         text:
-                            "Click on the create button that's under a search bar",
+                            "In event's details, click on the \"Chat\" button to join a group chat of that event. You will autumatically got moved to the group chat page",
                         style: Theme.of(context).textTheme.bodyMedium,
                       ),
                     ],
@@ -202,56 +192,7 @@ class BodyCreate3 extends StatelessWidget {
                     children: [
                       TextSpan(
                         text:
-                            "In creating page, you can create event that will require these details",
-                        style: Theme.of(context).textTheme.bodyMedium,
-                      ),
-                    ],
-                  ),
-                ),
-              ),
-            ),
-          ],
-        ),
-      ),
-    );
-  }
-}
-
-class BodyCreate4 extends StatelessWidget {
-  final IconData? icon;
-  const BodyCreate4({
-    Key? key,
-    this.icon,
-  }) : super(key: key);
-
-  @override
-  Widget build(BuildContext context) {
-    return Align(
-      alignment: Alignment.topLeft,
-      child: Padding(
-        padding: const EdgeInsets.only(bottom: 10.0),
-        child: Row(
-          children: [
-            Container(
-              alignment: Alignment.center,
-              child: Icon(
-                icon,
-                size: 17,
-                color: const Color.fromARGB(255, 151, 54, 248),
-              ),
-            ),
-            const SizedBox(
-              width: 10,
-            ),
-            Expanded(
-              child: Align(
-                alignment: Alignment.topLeft,
-                child: RichText(
-                  text: TextSpan(
-                    children: [
-                      TextSpan(
-                        text:
-                            "-Event name. \n-Picture of the event(optional) \n-Event detail. \n-Amout of people that can join the event. \n-Location of the evnt \n-Date of the event. \n-Category of the event \n-Tags that you can include in the event(optional). \nThen you can click create event button to create the event",
+                            "In group chat page, you can start chatting with the event owner. Including other people who join in this chat",
                         style: Theme.of(context).textTheme.bodyMedium,
                       ),
                     ],
@@ -303,7 +244,27 @@ class BodyCreate5 extends StatelessWidget {
                     children: [
                       TextSpan(
                         text:
-                            "You can allow other people to join your event automatically By toggle on the option\"Allow Automatic Join\" at the bottom of the creating event page",
+                            "Group chat of events will be saved in chat room page. You can always comeback to this page to see and continue your chatting by click on the Chat icon",
+                        style: Theme.of(context).textTheme.bodyMedium,
+                      ),
+                      const WidgetSpan(
+                        child: Padding(
+                          padding: EdgeInsets.only(right: 1.0),
+                          child: Icon(Icons.chat, size: 20),
+                        ),
+                      ),
+                      TextSpan(
+                        text: "next to Home icon",
+                        style: Theme.of(context).textTheme.bodyMedium,
+                      ),
+                      const WidgetSpan(
+                        child: Padding(
+                          padding: EdgeInsets.only(right: 1.0),
+                          child: Icon(Icons.home, size: 20),
+                        ),
+                      ),
+                      TextSpan(
+                        text: "in the bottom bar",
                         style: Theme.of(context).textTheme.bodyMedium,
                       ),
                     ],

@@ -1,9 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:wismod/theme/global_widgets.dart';
-import 'package:get/get.dart';
-import '../../../../routes/routes.dart';
-import '../../controller/password_controller.dart';
-import 'package:firebase_auth/firebase_auth.dart';
 
 class HelpEvent1 extends StatelessWidget {
   const HelpEvent1({super.key});
@@ -21,7 +16,7 @@ class HelpEvent1 extends StatelessWidget {
               color: Colors.black),
         )),
         body: Padding(
-            padding: EdgeInsets.fromLTRB(0.0, 20.0, 0.0, 0.0),
+            padding: const EdgeInsets.fromLTRB(0.0, 20.0, 0.0, 0.0),
             child: Align(
                 alignment: Alignment.topLeft,
                 child: SingleChildScrollView(
@@ -31,7 +26,7 @@ class HelpEvent1 extends StatelessWidget {
                     child: Column(
                       children: const [
                         Topic(
-                          label: 'How to search event?',
+                          label: 'How to search event',
                         ),
                         BodySearch1(icon: Icons.circle),
                         BodySearch2(icon: Icons.circle),
@@ -106,7 +101,7 @@ class BodySearch1 extends StatelessWidget {
                         ),
                       ),
                       TextSpan(
-                        text: "\nfar left in the bottom bar",
+                        text: " in far left of the bottom bar",
                         style: Theme.of(context).textTheme.bodyMedium,
                       ),
                     ],
@@ -216,7 +211,7 @@ class BodySearch3 extends StatelessWidget {
                         ),
                       ),
                       TextSpan(
-                        text: "\nThat's next to a search bar.",
+                        text: " That's next to a search bar.",
                         style: Theme.of(context).textTheme.bodyMedium,
                       ),
                     ],

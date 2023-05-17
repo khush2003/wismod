@@ -1,9 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:wismod/theme/global_widgets.dart';
-import 'package:get/get.dart';
-import '../../../../routes/routes.dart';
-import '../../controller/password_controller.dart';
-import 'package:firebase_auth/firebase_auth.dart';
 
 class HelpEvent3 extends StatelessWidget {
   const HelpEvent3({super.key});
@@ -21,7 +16,7 @@ class HelpEvent3 extends StatelessWidget {
               color: Colors.black),
         )),
         body: Padding(
-            padding: EdgeInsets.fromLTRB(0.0, 20.0, 0.0, 0.0),
+            padding: const EdgeInsets.fromLTRB(0.0, 20.0, 0.0, 0.0),
             child: Align(
                 alignment: Alignment.topLeft,
                 child: SingleChildScrollView(
@@ -31,12 +26,12 @@ class HelpEvent3 extends StatelessWidget {
                     child: Column(
                       children: const [
                         Topic(
-                          label: 'How to search event?',
+                          label: 'How to manage event',
                         ),
-                        BodySearch1(icon: Icons.circle),
-                        BodySearch2(icon: Icons.circle),
-                        BodySearch3(icon: Icons.star),
-                        BodySearch4(),
+                        BodyManage1(icon: Icons.circle),
+                        BodyManage2(icon: Icons.circle),
+                        BodyManage3(icon: Icons.circle),
+                        BodyManage4(icon: Icons.circle),
                       ],
                     ),
                   ),
@@ -63,9 +58,9 @@ class Topic extends StatelessWidget {
   }
 }
 
-class BodySearch1 extends StatelessWidget {
+class BodyManage1 extends StatelessWidget {
   final IconData icon;
-  const BodySearch1({
+  const BodyManage1({
     Key? key,
     required this.icon,
   }) : super(key: key);
@@ -96,17 +91,17 @@ class BodySearch1 extends StatelessWidget {
                   text: TextSpan(
                     children: [
                       TextSpan(
-                        text: "Go to Home page by clicking Home icon",
+                        text: "Go to Dashboard page by clicking Dashboard icon",
                         style: Theme.of(context).textTheme.bodyMedium,
                       ),
                       const WidgetSpan(
                         child: Padding(
                           padding: EdgeInsets.only(right: 1.0),
-                          child: Icon(Icons.home, size: 20),
+                          child: Icon(Icons.dashboard, size: 20),
                         ),
                       ),
                       TextSpan(
-                        text: "\nfar left in the bottom bar",
+                        text: " in the middle of the bottom bar",
                         style: Theme.of(context).textTheme.bodyMedium,
                       ),
                     ],
@@ -121,9 +116,9 @@ class BodySearch1 extends StatelessWidget {
   }
 }
 
-class BodySearch2 extends StatelessWidget {
+class BodyManage2 extends StatelessWidget {
   final IconData icon;
-  const BodySearch2({
+  const BodyManage2({
     Key? key,
     required this.icon,
   }) : super(key: key);
@@ -155,7 +150,7 @@ class BodySearch2 extends StatelessWidget {
                     children: [
                       TextSpan(
                         text:
-                            "Click on the search bar and then type the event you want to search by entering a name or tag of the event.",
+                            "In the Dashbaord page, click into the \"Events You Own\" tab, will show all of events that you're the owner",
                         style: Theme.of(context).textTheme.bodyMedium,
                       ),
                     ],
@@ -170,9 +165,9 @@ class BodySearch2 extends StatelessWidget {
   }
 }
 
-class BodySearch3 extends StatelessWidget {
+class BodyManage3 extends StatelessWidget {
   final IconData icon;
-  const BodySearch3({
+  const BodyManage3({
     Key? key,
     required this.icon,
   }) : super(key: key);
@@ -182,7 +177,7 @@ class BodySearch3 extends StatelessWidget {
     return Align(
       alignment: Alignment.topLeft,
       child: Padding(
-        padding: const EdgeInsets.only(bottom: 0.0),
+        padding: const EdgeInsets.only(bottom: 10.0),
         child: Row(
           crossAxisAlignment: CrossAxisAlignment.baseline,
           textBaseline: TextBaseline.alphabetic,
@@ -192,13 +187,10 @@ class BodySearch3 extends StatelessWidget {
                   4), // Adjust the offset to align the icon with the desired position
               child: Icon(
                 icon,
-                size: 20,
-                color: Colors.purple,
+                size: 17,
               ),
             ),
-            const SizedBox(
-              width: 7,
-            ),
+            const SizedBox(width: 10),
             Expanded(
               child: Align(
                 alignment: Alignment.topLeft,
@@ -206,17 +198,8 @@ class BodySearch3 extends StatelessWidget {
                   text: TextSpan(
                     children: [
                       TextSpan(
-                        text: "You can sort event by clicking the Sort icon",
-                        style: Theme.of(context).textTheme.bodyMedium,
-                      ),
-                      const WidgetSpan(
-                        child: Padding(
-                          padding: EdgeInsets.only(right: 1.0),
-                          child: Icon(Icons.filter_alt_outlined, size: 20),
-                        ),
-                      ),
-                      TextSpan(
-                        text: "\nThat's next to a search bar.",
+                        text:
+                            "Click into your event will show the page of your event in owner view.",
                         style: Theme.of(context).textTheme.bodyMedium,
                       ),
                     ],
@@ -231,9 +214,9 @@ class BodySearch3 extends StatelessWidget {
   }
 }
 
-class BodySearch4 extends StatelessWidget {
+class BodyManage4 extends StatelessWidget {
   final IconData? icon;
-  const BodySearch4({
+  const BodyManage4({
     Key? key,
     this.icon,
   }) : super(key: key);
@@ -245,18 +228,18 @@ class BodySearch4 extends StatelessWidget {
       child: Padding(
         padding: const EdgeInsets.only(bottom: 10.0),
         child: Row(
+          crossAxisAlignment: CrossAxisAlignment.baseline,
+          textBaseline: TextBaseline.alphabetic,
           children: [
-            Container(
-              alignment: Alignment.center,
+            Transform.translate(
+              offset: const Offset(0,
+                  4), // Adjust the offset to align the icon with the desired position
               child: Icon(
                 icon,
                 size: 17,
-                color: const Color.fromARGB(255, 151, 54, 248),
               ),
             ),
-            const SizedBox(
-              width: 10,
-            ),
+            const SizedBox(width: 10),
             Expanded(
               child: Align(
                 alignment: Alignment.topLeft,
@@ -264,8 +247,12 @@ class BodySearch4 extends StatelessWidget {
                   text: TextSpan(
                     children: [
                       TextSpan(
+                        text: "In this owner view, you can",
+                        style: Theme.of(context).textTheme.bodyMedium,
+                      ),
+                      TextSpan(
                         text:
-                            "You can can sort by\n  -Choose category of event that you want to see.\n  -Choose the sort by date which will show order from latest or oldest event",
+                            "\n-Edit event. You can edit all of details of your event, by clicking an \"Edit event button\". \n-Remove event. You can remove your event by cliking \"Remove\" button at the bottom of the page",
                         style: Theme.of(context).textTheme.bodyMedium,
                       ),
                     ],

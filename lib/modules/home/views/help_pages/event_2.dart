@@ -1,9 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:wismod/theme/global_widgets.dart';
-import 'package:get/get.dart';
-import '../../../../routes/routes.dart';
-import '../../controller/password_controller.dart';
-import 'package:firebase_auth/firebase_auth.dart';
 
 class HelpEvent2 extends StatelessWidget {
   const HelpEvent2({super.key});
@@ -21,7 +16,7 @@ class HelpEvent2 extends StatelessWidget {
               color: Colors.black),
         )),
         body: Padding(
-            padding: EdgeInsets.fromLTRB(0.0, 20.0, 0.0, 0.0),
+            padding: const EdgeInsets.fromLTRB(0.0, 20.0, 0.0, 0.0),
             child: Align(
                 alignment: Alignment.topLeft,
                 child: SingleChildScrollView(
@@ -31,7 +26,7 @@ class HelpEvent2 extends StatelessWidget {
                     child: Column(
                       children: const [
                         Topic(
-                          label: 'How to Create an event?',
+                          label: 'How to Create an event',
                         ),
                         BodyCreate1(icon: Icons.circle),
                         BodyCreate2(icon: Icons.circle),
@@ -208,16 +203,6 @@ class BodyCreate3 extends StatelessWidget {
                       TextSpan(
                         text:
                             "In creating page, you can create event that will require these details",
-                        style: Theme.of(context).textTheme.bodyMedium,
-                      ),
-                      const WidgetSpan(
-                        child: Padding(
-                          padding: EdgeInsets.only(right: 1.0),
-                          child: Icon(Icons.filter_alt_outlined, size: 20),
-                        ),
-                      ),
-                      TextSpan(
-                        text: "\nThat's next to a search bar.",
                         style: Theme.of(context).textTheme.bodyMedium,
                       ),
                     ],

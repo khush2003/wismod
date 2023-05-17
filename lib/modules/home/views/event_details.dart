@@ -9,10 +9,12 @@ import 'package:wismod/modules/auth/controllers/auth_controller.dart';
 import '../../../shared/models/event.dart';
 import '../../../shared/models/user.dart';
 import '../../../theme/theme_data.dart';
+import '../controller/dashboard_controller.dart';
 import 'dashboard.dart';
 
 class EventDetailView extends StatelessWidget {
   EventDetailView({super.key});
+  final profilePictureController = Get.put(ProfilePictureController());
   final controller = Get.put(EventDetailController());
   final auth = AuthController.instance;
   Event eventData() => controller.eventData.value;
@@ -159,6 +161,8 @@ class EventDetailView extends StatelessWidget {
 }
 
 class MemberBox extends StatelessWidget {
+  final profilePictureController = Get.put(ProfilePictureController());
+  final _auth = AuthController.instance;
   final controller = Get.put(EventDetailController());
   MemberBox({super.key});
   Event eventData() => controller.eventData.value;
@@ -235,6 +239,9 @@ class MemberBox extends StatelessWidget {
                                 itemCount: controller.memberList.length,
                                 itemBuilder: (context, index) {
                                   return UserRowWidget(
+                                      auth: _auth,
+                                      profilePictureController:
+                                          profilePictureController,
                                       user: controller.memberList[index]);
                                 },
                               ),
@@ -272,9 +279,17 @@ class MemberBox extends StatelessWidget {
 }
 
 class UserRowWidget extends StatelessWidget {
+  UserRowWidget(
+      {super.key,
+      required this.user,
+      required AuthController auth,
+      required this.profilePictureController})
+      : _auth = auth;
   final AppUser user;
   final controller = Get.put(EventDetailController());
-  UserRowWidget({super.key, required this.user});
+  final AuthController _auth;
+  final ProfilePictureController profilePictureController;
+
   // final UserData userData;
   // final auth = AuthController.instance;
   // final controller = Get.put(EventDetailController());
@@ -303,10 +318,10 @@ class UserRowWidget extends StatelessWidget {
               ClipRRect(
                 borderRadius: BorderRadius.circular(20),
                 child: Image.network(
-                  user.profilePicture ??
-                      'https://perspectives.agf.com/wp-content/plugins/accelerated-mobile-pages/images/SD-default-image.png',
+                  _auth.appUser.value.profilePicture ??
+                      placeholderImageUserPurple,
                   errorBuilder: (context, error, stackTrace) => Image.network(
-                    'https://perspectives.agf.com/wp-content/plugins/accelerated-mobile-pages/images/SD-default-image.png',
+                    placeholderImageUserPurple,
                     width: 40,
                     height: 40,
                     fit: BoxFit.cover,

@@ -4,6 +4,7 @@ import 'package:wismod/modules/auth/controllers/log_in_controller.dart';
 import 'package:wismod/theme/global_widgets.dart';
 import 'package:wismod/utils/app_utils.dart';
 import '../../../routes/routes.dart';
+
 class LogInView extends StatelessWidget {
   LogInView({super.key});
   final logInController = Get.put(LogInController());
@@ -36,12 +37,23 @@ class LogInView extends StatelessWidget {
                   ],
                 ),
                 addVerticalSpace(20),
-                const Text("Password",
-                    style: TextStyle(
-                        fontFamily: "Gotham",
-                        fontSize: 20,
-                        fontWeight: FontWeight.w500)),
-                addVerticalSpace(),
+                Row(children: [
+                  Text("Password",
+                      style: TextStyle(
+                          fontFamily: "Gotham",
+                          fontSize: 20,
+                          fontWeight: FontWeight.w500)),
+                  TextButton(
+                      onPressed: () {
+                        Get.toNamed(Routes.forgot);
+                      },
+                      child: Text("Forgot password?",
+                          style: TextStyle(
+                              fontFamily: "Gotham",
+                              fontSize: 15,
+                              fontWeight: FontWeight.w500)))
+                ]),
+                // addVerticalSpace(),
                 Obx(
                   () => SizedBox(
                     child: TextFormFeildThemed(
@@ -63,7 +75,7 @@ class LogInView extends StatelessWidget {
                 Center(
                   child: SizedBox(
                     child: PrimaryButtonMedium(
-                      onPressed:  () async => await logInController.loginUser(),
+                      onPressed: () async => await logInController.loginUser(),
                       child: const Text("Log In"),
                     ),
                   ),

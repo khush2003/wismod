@@ -137,7 +137,7 @@ class CreateEventController extends GetxController {
       return 'Please enter an amount of people';
     }
     int? amount = int.tryParse(value);
-    if (amount == null || amount <= 2 || amount >= 500) {
+    if (amount == null || amount < 2 || amount > 500) {
       return 'Please enter a valid amount of people';
     }
     return null;

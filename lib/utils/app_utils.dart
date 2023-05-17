@@ -30,7 +30,7 @@ const placeholderImage =
 SizedBox addHorizontalSpace([double gap = 8]) {
   return SizedBox(width: gap);
 }
-
+const chatboxWidthRatio = 0.7;
 String formatDateTime(DateTime dateTime) {
   final now = DateTime.now();
   final today = DateTime(now.year, now.month, now.day);

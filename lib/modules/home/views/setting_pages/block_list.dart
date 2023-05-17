@@ -4,7 +4,7 @@ import 'package:wismod/modules/home/controller/block_list_controller.dart';
 import 'package:wismod/shared/models/event.dart';
 import 'package:wismod/utils/app_utils.dart';
 
-import '../controller/chat_controller.dart';
+import '../../controller/chat_controller.dart';
 
 class BlockListView extends StatelessWidget {
   BlockListView({super.key});
@@ -30,8 +30,7 @@ class BlockListView extends StatelessWidget {
             child: Obx(() => ListView.separated(
                 itemCount: _chat.blockedChatGroups.length,
                 itemBuilder: (context, index) {
-                  return BlockedPerson(
-                      event: _chat.blockedChatGroups[index]);
+                  return BlockedPerson(event: _chat.blockedChatGroups[index]);
                 },
                 separatorBuilder: (context, index) => addVerticalSpace(20)))),
       ),

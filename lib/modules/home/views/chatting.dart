@@ -9,134 +9,167 @@ import 'package:wismod/modules/home/controller/message_controller.dart';
 
 const double textTimeMargin = 30;
 
+// class ScrollPositionController extends GetxController {
+//   final ScrollController scrollController = ScrollController();
+//   @override
+//   void onReady() {
+//     scrollController.animateTo(scrollController.position.maxScrollExtent,
+//         duration: const Duration(milliseconds: 500), curve: Curves.bounceIn);
+//     super.onReady();
+//   }
+// }
+
 class ChattingView extends StatelessWidget {
   ChattingView({super.key});
   final controller = Get.put(MessageController());
-
+  // final _scrollController = Get.put(ScrollPositionController());
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        title: Obx(() => controller.isLoading.value
-            ? const LoadingWidget()
-            : Column(
-                mainAxisAlignment: MainAxisAlignment.center,
-                crossAxisAlignment: CrossAxisAlignment.center,
-                mainAxisSize: MainAxisSize.min,
-                children: [
-                  Text(
-                    controller.eventData.value.title,
-                    style: const TextStyle(
-                      fontSize: 28,
-                      color: Color.fromRGBO(0, 0, 0, 1),
-                      fontWeight: FontWeight.bold,
-                    ),
-                    maxLines: 1,
-                    overflow: TextOverflow.ellipsis,
-                  ),
-                  addVerticalSpace(5),
-                  Text(
-                    controller.eventData.value.eventOwner.name,
-                    style: const TextStyle(
-                      fontSize: 20,
-                      color: Color.fromRGBO(0, 0, 0, 1),
-                      fontWeight: FontWeight.w400,
-                    ),
-                    maxLines: 1,
-                    overflow: TextOverflow.ellipsis,
-                  ),
-                ],
-              )),
-        actions: [
-          IconButton(
-            onPressed: () {
-              controller.blockChatGroup();
-            },
-            icon: const Icon(Icons.block),
-          ),
-        ],
-        centerTitle: true,
-        backgroundColor: const Color.fromRGBO(201, 173, 255, 1),
-        toolbarHeight: 100,
-        shape: const RoundedRectangleBorder(
-          borderRadius: BorderRadius.vertical(
-            bottom: Radius.circular(30),
-          ),
-        ),
-      ),
+      appBar: _buildAppBar(),
       body: Obx(() => controller.isLoading.value
           ? const LoadingWidget()
           : Padding(
-              padding: const EdgeInsets.all(sideWidth),
-              child: Align(
-                alignment: Alignment.topCenter,
-                child: Obx(() => ListView.builder(
-                      shrinkWrap: true,
-                      itemCount: controller.messages.length,
-                      itemBuilder: (context, index) {
-                        return ChatBoxUser(message: controller.messages[index]);
-                      },
-                    )),
-              ),
+              padding: const EdgeInsets.symmetric(horizontal: 0),
+              child: Column(children: [
+                Expanded(
+                  child: Obx(() => ListView.separated(
+                        // controller: _scrollController.scrollController,
+                        separatorBuilder: (context, index) =>
+                            addVerticalSpace(),
+                        shrinkWrap: true,
+                        itemCount: controller.messages.length,
+                        itemBuilder: (context, index) {
+                          if (index == 0 ||
+                              index == controller.messages.length - 1) {
+                            return Padding(
+                              padding: EdgeInsets.only(
+                                  top: index == 0 ? 16 : 0,
+                                  bottom: index == 0 ? 16 : 8),
+                              child: ChatBubble(
+                                  message: controller.messages[index]),
+                            );
+                          }
+                          return ChatBubble(
+                              message: controller.messages[index]);
+                        },
+                      )),
+                ),
+              ]),
             )),
-      bottomNavigationBar: Padding(
-        padding:
-            EdgeInsets.only(bottom: MediaQuery.of(context).viewInsets.bottom),
-        child: Container(
-          height: 80,
-          width: MediaQuery.of(context).size.width,
-          color: const Color.fromRGBO(201, 173, 255, 1),
-          child: Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 25, vertical: 15),
-            child: Stack(
-              children: <Widget>[
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.start,
-                  mainAxisSize: MainAxisSize.max,
-                  children: [
-                    Expanded(
-                      child: SizedBox(
-                        width: 20,
-                        child: TextFormField(
-                          controller: controller.messageTextController,
-                          style: const TextStyle(
-                            color: Colors.black,
-                            fontSize: 14,
-                            fontFamily: 'Gotham',
-                          ),
-                          //textAlignVertical: TextAlignVertical.center,
-                          decoration: const InputDecoration(
-                            filled: true,
-                            fillColor: Colors.white,
-                            hintText: "Type Something...",
-                            hintStyle: TextStyle(
-                                color: Colors.black,
-                                fontSize: 20,
-                                fontFamily: 'Gotham'),
-                            border: OutlineInputBorder(
-                              borderSide: BorderSide(color: Colors.white),
-                            ),
-                          ),
-                        ),
-                      ),
-                    ),
-                    const SizedBox(
-                      width: 20,
-                    ),
-                    // Send Button
-                    SizedBox(
-                      width: 80,
-                      height: double.infinity,
-                      child: ElevatedButton(
-                        // Send text
-                        onPressed: () => controller.createMessage(),
-                        child: const Text('Send'),
-                      ),
-                    ),
-                  ],
+      bottomNavigationBar: EnterMessageBar(
+        controller: controller,
+        // scrollController: _scrollController.scrollController,
+      ),
+    );
+  }
+
+  AppBar _buildAppBar() {
+    return AppBar(
+      title: Obx(() => controller.isLoading.value
+          ? const LoadingWidget()
+          : Column(
+              mainAxisAlignment: MainAxisAlignment.center,
+              crossAxisAlignment: CrossAxisAlignment.start,
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                Text(
+                  controller.eventData.value.title,
+                  style: const TextStyle(
+                    fontSize: 22,
+                    color: Color.fromRGBO(0, 0, 0, 1),
+                    fontWeight: FontWeight.bold,
+                  ),
+                  maxLines: 1,
+                  overflow: TextOverflow.ellipsis,
+                ),
+                addVerticalSpace(5),
+                Text(
+                  controller.eventData.value.eventOwner.name,
+                  style: const TextStyle(
+                    fontSize: 18,
+                    color: Color.fromRGBO(0, 0, 0, 1),
+                    fontWeight: FontWeight.w400,
+                  ),
+                  maxLines: 1,
+                  overflow: TextOverflow.ellipsis,
                 ),
               ],
-            ),
+            )),
+      actions: [
+        IconButton(
+          onPressed: () {
+            controller.blockChatGroup();
+          },
+          icon: const Icon(Icons.block),
+        ),
+      ],
+      centerTitle: false,
+      shape:
+          const Border(bottom: BorderSide(color: Colors.black26, width: 0.5)),
+      backgroundColor: Colors.white,
+      toolbarHeight: 80,
+    );
+  }
+}
+
+class EnterMessageBar extends StatelessWidget {
+  // final ScrollController scrollController;
+  const EnterMessageBar({
+    super.key,
+    required this.controller,
+    // required this.scrollController,
+  });
+
+  final MessageController controller;
+
+  @override
+  Widget build(BuildContext context) {
+    return Padding(
+      padding:
+          EdgeInsets.only(bottom: MediaQuery.of(context).viewInsets.bottom),
+      child: Container(
+        height: 70,
+        width: MediaQuery.of(context).size.width,
+        color: Colors.grey[100],
+        child: Padding(
+          padding: const EdgeInsets.symmetric(horizontal: 25, vertical: 0),
+          child: Row(
+            mainAxisAlignment: MainAxisAlignment.start,
+            mainAxisSize: MainAxisSize.max,
+            children: [
+              Expanded(
+                child: TextFormField(
+                  style: Theme.of(context).textTheme.displayMedium,
+                  decoration: InputDecoration(
+                    border: OutlineInputBorder(
+                        borderRadius: BorderRadius.circular(20)),
+                    hintText: "Type Something...",
+                    hintStyle: TextStyle(
+                        fontFamily: "Gotham",
+                        fontSize: 16,
+                        fontWeight: FontWeight.w400,
+                        color: Colors.grey[600]),
+                  ),
+                  controller: controller.messageTextController,
+                ),
+              ),
+              addHorizontalSpace(),
+              ElevatedButton(
+                style: ElevatedButton.styleFrom(
+                    fixedSize: const Size(50, 50),
+                    alignment: Alignment.center,
+                    minimumSize: Size.zero,
+                    backgroundColor: primary,
+                    shape: const CircleBorder()),
+                child: const Icon(Icons.send),
+                onPressed: () {
+                  if (controller.messageTextController.text.isNotEmpty) {
+                    controller.createMessage();
+                  }
+                },
+              ),
+            ],
           ),
         ),
       ),
@@ -144,154 +177,184 @@ class ChattingView extends StatelessWidget {
   }
 }
 
-class ChatBoxUser extends StatelessWidget {
+class ChatBubble extends StatelessWidget {
   final Message message;
   final _auth = AuthController.instance;
-  ChatBoxUser({super.key, required this.message});
+  ChatBubble({super.key, required this.message});
 
   @override
   Widget build(BuildContext context) {
-    // final DateTime timeNow = DateTime.now();
-    // final String formattedTime = formatDate(timeNow);
-    //final TextDirection? textDirection;
+    if (message.sentBy == _auth.appUser.value.uid) {
+      return ChatBubbleRight(message: message);
+    }
+    return ChatBubbleLeft(message: message);
+  }
+}
 
-    return Column(
+class ChatBubbleRight extends StatelessWidget {
+  final Message message;
+  const ChatBubbleRight({super.key, required this.message});
+
+  @override
+  Widget build(BuildContext context) {
+    return Padding(
+      padding: const EdgeInsets.only(right: 16.0),
+      child: Column(
+        mainAxisSize: MainAxisSize.min,
+        crossAxisAlignment: CrossAxisAlignment.end,
+        children: <Widget>[
+          Row(
+            mainAxisAlignment: MainAxisAlignment.end,
+            children: [
+              SendDate(message: message),
+              addHorizontalSpace(),
+              UserName(message: message, isOwner: true)
+            ],
+          ),
+          addVerticalSpace(),
+          MessageBox(message: message, isOwner: true),
+        ],
+      ),
+    );
+  }
+}
+
+class ChatBubbleLeft extends StatelessWidget {
+  final Message message;
+  const ChatBubbleLeft({super.key, required this.message});
+
+  @override
+  Widget build(BuildContext context) {
+    return Row(
+      mainAxisSize: MainAxisSize.max,
+      crossAxisAlignment: CrossAxisAlignment.start,
       children: <Widget>[
-        Row(
-          mainAxisAlignment: message.sentBy == _auth.firebaseUser.value!.uid
-              ? MainAxisAlignment.end
-              : MainAxisAlignment.start,
-          mainAxisSize: MainAxisSize.max,
+        ProfilePicture(message: message),
+        Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            Container(
-              margin: EdgeInsets.only(
-                  right: message.sentBy == _auth.firebaseUser.value!.uid
-                      ? 0
-                      : textTimeMargin,
-                  left: message.sentBy == _auth.firebaseUser.value!.uid
-                      ? textTimeMargin
-                      : 0),
-              child: Text(
-                //chatUserName,
-                message.userName,
-                style: const TextStyle(
-                  fontFamily: "Gotham",
-                  fontWeight: FontWeight.bold,
-                  color: Colors.black,
-                  fontSize: 20,
-                ),
-                textDirection: TextDirection.rtl,
-                maxLines: 1,
-                overflow: TextOverflow.ellipsis,
-              ),
-            )
-          ],
-        ),
-        addVerticalSpace(5),
-        Container(
-          width: MediaQuery.of(context).size.width,
-          margin: EdgeInsets.only(
-              left: message.sentBy == _auth.firebaseUser.value!.uid
-                  ? textTimeMargin
-                  : 0,
-              right: message.sentBy == _auth.firebaseUser.value!.uid
-                  ? 0
-                  : textTimeMargin),
-          child: Padding(
-            padding: EdgeInsets.only(
-                left: message.sentBy == _auth.firebaseUser.value!.uid
-                    ? textTimeMargin
-                    : 0,
-                right: message.sentBy == _auth.firebaseUser.value!.uid
-                    ? 0
-                    : textTimeMargin),
-            child: Column(
-              children: <Widget>[
-                Row(
-                  textDirection: message.sentBy == _auth.firebaseUser.value!.uid
-                      ? TextDirection.ltr
-                      : TextDirection.rtl,
-                  crossAxisAlignment: CrossAxisAlignment.center,
-                  children: [
-                    // Chat msg
-                    Expanded(
-                      child: Container(
-                        width: MediaQuery.of(context).size.width,
-                        padding: const EdgeInsets.all(sideWidth),
-                        //margin:
-                        //    const EdgeInsets.only(right: textTimeMargin),
-                        decoration: BoxDecoration(
-                          // Circular Edge Chat
-                          //borderRadius: BorderRadius.circular(50),
-                          color: message.sentBy == _auth.firebaseUser.value!.uid
-                              ? AppThemeData.themedata.colorScheme.secondary
-                              : Colors.white,
-                          boxShadow: const [
-                            BoxShadow(
-                              color: Color.fromRGBO(0, 0, 0, 1),
-                              offset: Offset(0, 4),
-                              blurRadius: 6,
-                            ),
-                          ],
-                        ),
-                        child: Column(
-                          mainAxisAlignment: MainAxisAlignment.start,
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          mainAxisSize: MainAxisSize.min,
-                          children: [
-                            Text(
-                              message.message,
-                              style: const TextStyle(
-                                fontFamily: "Gotham",
-                                color: Colors.black,
-                                fontSize: 18,
-                              ),
-                              textDirection: TextDirection.rtl,
-                            )
-                          ],
-                        ),
-                      ),
-                    ),
-                    addHorizontalSpace(10),
-                    // UserProfilePic
-                    Column(
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      mainAxisSize: MainAxisSize.min,
-                      children: [
-                        SizedBox(
-                          child: CircleAvatar(
-                            radius: 30,
-                            backgroundImage: Image.network(
-                              message.profilePicture ?? placeholderImage,
-                              errorBuilder: (context, error, stackTrace) =>
-                                  Image.network(
-                                placeholderImage,
-                                fit: BoxFit.cover,
-                              ),
-                            ).image,
-                          ),
-                        ),
-                      ],
-                    ),
-                  ],
-                ),
-                addVerticalSpace(10),
-                Row(
-                  mainAxisAlignment:
-                      message.sentBy == _auth.firebaseUser.value!.uid
-                          ? MainAxisAlignment.start
-                          : MainAxisAlignment.end,
-                  mainAxisSize: MainAxisSize.max,
-                  children: [
-                    Text(formatDateTime(message.sentOn!)),
-                  ],
-                ),
+            Row(
+              mainAxisSize: MainAxisSize.max,
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: [
+                UserName(message: message),
+                addHorizontalSpace(),
+                SendDate(message: message)
               ],
             ),
-          ),
-        ),
-        addVerticalSpace(10),
+            addVerticalSpace(),
+            MessageBox(message: message)
+          ],
+        )
       ],
+    );
+  }
+}
+
+class MessageBox extends StatelessWidget {
+  const MessageBox({super.key, required this.message, this.isOwner = false});
+  final bool isOwner;
+  final Message message;
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      padding: const EdgeInsets.symmetric(vertical: 20, horizontal: 16),
+      constraints: BoxConstraints(
+          maxWidth: MediaQuery.of(context).size.width * chatboxWidthRatio,
+          maxHeight: MediaQuery.of(context).size.height),
+      decoration: BoxDecoration(
+          borderRadius: BorderRadius.only(
+              topRight: const Radius.circular(20),
+              bottomLeft: const Radius.circular(20),
+              bottomRight: isOwner
+                  ? const Radius.circular(0)
+                  : const Radius.circular(20),
+              topLeft: isOwner
+                  ? const Radius.circular(20)
+                  : const Radius.circular(0)),
+          color: isOwner ? primary : const Color(0xfff0f0f0)),
+      child: Row(
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          Expanded(
+            child: Text(
+              message.message,
+              style: TextStyle(
+                fontFamily: "Gotham",
+                color: isOwner ? Colors.white : Colors.black,
+                fontSize: 18,
+              ),
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+}
+
+class SendDate extends StatelessWidget {
+  const SendDate({
+    super.key,
+    required this.message,
+  });
+
+  final Message message;
+
+  @override
+  Widget build(BuildContext context) {
+    return Text(formatDateTime(message.sentOn!),
+        style: const TextStyle(
+            fontSize: 16, fontWeight: FontWeight.w300, color: Colors.black));
+  }
+}
+
+class UserName extends StatelessWidget {
+  const UserName({super.key, required this.message, this.isOwner = false});
+  final bool isOwner;
+  final Message message;
+
+  @override
+  Widget build(BuildContext context) {
+    return Text(
+      //chatUserName,
+      isOwner ? 'You' : message.userName,
+      style: const TextStyle(
+        fontFamily: "Gotham",
+        fontWeight: FontWeight.w500,
+        color: Colors.black,
+        fontSize: 18,
+      ),
+      maxLines: 1,
+      overflow: TextOverflow.ellipsis,
+    );
+  }
+}
+
+class ProfilePicture extends StatelessWidget {
+  const ProfilePicture({
+    super.key,
+    required this.message,
+  });
+
+  final Message message;
+
+  @override
+  Widget build(BuildContext context) {
+    return Padding(
+      padding: const EdgeInsets.symmetric(horizontal: 10.0),
+      child: SizedBox(
+        child: CircleAvatar(
+          radius: 25,
+          backgroundImage: Image.network(
+            message.profilePicture ?? placeholderImage,
+            errorBuilder: (context, error, stackTrace) => Image.network(
+              placeholderImage,
+              fit: BoxFit.cover,
+            ),
+          ).image,
+        ),
+      ),
     );
   }
 }

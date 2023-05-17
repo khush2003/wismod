@@ -2,9 +2,9 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:get/get.dart';
 import 'package:wismod/theme/global_widgets.dart';
-import '../controller/account_controller.dart';
-import '../../../routes/routes.dart';
-import '../../../utils/app_utils.dart';
+import '../../controller/account_controller.dart';
+import '../../../../routes/routes.dart';
+import '../../../../utils/app_utils.dart';
 
 class AccountsView extends StatelessWidget {
   AccountsView({super.key});

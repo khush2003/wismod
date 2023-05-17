@@ -1,12 +1,18 @@
 import 'package:get/get.dart';
 import 'package:wismod/modules/auth/views/log_in_view.dart';
 import 'package:wismod/modules/auth/views/signup_view.dart';
-import 'package:wismod/modules/home/views/accounts.dart';
+import 'package:wismod/modules/home/views/help_pages/chat_1.dart';
+import 'package:wismod/modules/home/views/help_pages/dashboard_1.dart';
+import 'package:wismod/modules/home/views/setting_pages/accounts.dart';
 import 'package:wismod/modules/home/views/all_pages_nav.dart';
-import 'package:wismod/modules/home/views/block_list.dart';
+import 'package:wismod/modules/home/views/setting_pages/block_list.dart';
 import 'package:wismod/modules/home/views/edit_event.dart';
-import 'package:wismod/modules/home/views/notification.dart';
-import 'package:wismod/modules/home/views/password.dart';
+import 'package:wismod/modules/home/views/help_pages/event_1.dart';
+import 'package:wismod/modules/home/views/help_pages/event_2.dart';
+import 'package:wismod/modules/home/views/help_pages/event_3.dart';
+import 'package:wismod/modules/home/views/help_pages/help.dart';
+import 'package:wismod/modules/home/views/setting_pages/notification.dart';
+import 'package:wismod/modules/home/views/setting_pages/password.dart';
 import '../modules/home/views/event_details.dart';
 import '../modules/home/views/onboarding.dart';
 import '../modules/home/views/create_event.dart';
@@ -27,6 +33,12 @@ abstract class Routes {
   static const String blockList = '/blockList';
   static const String eventDetials = '/eventDetails';
   static const String chatting = '/chatting';
+  static const String help = '/help';
+  static const String event_1 = '/event_1';
+  static const String event_2 = '/event_2';
+  static const String event_3 = '/event_3';
+  static const String chat_1 = '/chat_1';
+  static const String dashBoard_1 = '/dashBoard_1';
   // Add page string (route) here
 }
 
@@ -46,5 +58,11 @@ final getPages = [
   GetPage(name: Routes.blockList, page: () => BlockListView()),
   GetPage(name: Routes.eventDetials, page: () => EventDetailView()),
   GetPage(name: Routes.chatting, page: () => ChattingView()),
+  GetPage(name: Routes.help, page: () => const HelpView()),
+  GetPage(name: Routes.event_1, page: () => const HelpEvent1()),
+  GetPage(name: Routes.event_2, page: () => const HelpEvent2()),
+  GetPage(name: Routes.event_3, page: () => const HelpEvent3()),
+  GetPage(name: Routes.chat_1, page: () => const HelpChat1()),
+  GetPage(name: Routes.dashBoard_1, page: () => const HelpDashBoard1()),
   // Initialize route here
 ];

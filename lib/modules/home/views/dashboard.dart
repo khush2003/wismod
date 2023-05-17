@@ -82,7 +82,9 @@ class DashboardView extends StatelessWidget {
                                 activityType: 'Archived Events',
                                 activityNumber: _event.archivedEvents.length,
                                 onPressed: () => Get.bottomSheet(
-                                  DisplayList(eventList: _event.archivedEvents),
+                                  DisplayList(
+                                      eventList: _event.archivedEvents,
+                                      isClickable: false),
                                   isScrollControlled: true,
                                 ),
                               ),
@@ -365,9 +367,11 @@ class ProfileSection extends StatelessWidget {
 }
 
 class DisplayList extends StatelessWidget {
+  final bool isClickable;
   const DisplayList({
     super.key,
     required this.eventList,
+    this.isClickable = true,
   });
   final RxList<Event> eventList;
 
@@ -403,8 +407,10 @@ class DisplayList extends StatelessWidget {
                         final event = eventList[index];
                         return GestureDetector(
                           onTap: () {
-                            Get.toNamed(Routes.eventDetials,
-                                parameters: {'id': event.id!});
+                            if (isClickable) {
+                              Get.toNamed(Routes.eventDetials,
+                                  parameters: {'id': event.id!});
+                            }
                           },
                           child: SizedBox(
                             height: 210,

@@ -216,7 +216,6 @@ class EventsController extends GetxController {
     });
   }
 
-//TODO: Add a check for member limit
 
   void approveJoin(AppUser user, Event event) async {
     if ((event.members?.length ?? 0) < (event.totalCapacity ?? 2)) {

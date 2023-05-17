@@ -4,6 +4,8 @@ import 'package:flutter/material.dart';
 // Text("..", style: Theme.of(context).textTheme.displayLarge) DisplayLarge or any other of your choice defined below
 // To get primary color of app or any color in the colorScheme: Theme.of(context).colorScheme.primary
 // Predefined Compoenets in global_widgets.dart
+
+const primary = Color.fromRGBO(123, 56, 255, 1);
 class AppThemeData {
   static ThemeData themedata = ThemeData(
     // Scaffold Background Color

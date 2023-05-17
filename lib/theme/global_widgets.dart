@@ -206,6 +206,8 @@ class TextFormFeildThemed extends StatelessWidget {
       keyboardType: keyboardType,
       inputFormatters: inputFormatters,
       decoration: InputDecoration(
+        filled: true,
+        fillColor: Colors.white,
           suffixIcon: suffixIcon,
           errorText: errorText,
           hintText: hintText,

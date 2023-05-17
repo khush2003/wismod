@@ -16,23 +16,40 @@ class OnboardingView extends StatelessWidget {
           mainAxisAlignment: MainAxisAlignment.spaceAround,
           crossAxisAlignment: CrossAxisAlignment.center,
           children: [
-            Image.asset(
-              'assets/images/WisModLonger.png',
-              height: 175,
-              fit: BoxFit.fill,
-            ),
             Column(
               children: [
-                Text(
-                  'Welcome',
-                  textAlign: TextAlign.center,
-                  style: Theme.of(context).textTheme.titleMedium,
+                Image.asset(
+                  'assets/images/IconWisMod.png',
+                  height: 90,
+                  fit: BoxFit.fill,
+                  color: const Color.fromRGBO(123, 56, 255, 1),
                 ),
-                addVerticalSpace(20),
-                const Text(
-                  'Join the community of KMUTT changemakers with WisMod',
-                  textAlign: TextAlign.center,
-                  style: TextStyle(fontSize: 24),
+                Column(
+                  children: [
+                    Column(
+                      children: [
+                        const Text(
+                          'WISMOD',
+                          textAlign: TextAlign.center,
+                          style: TextStyle(
+                              fontFamily: "Gotham",
+                              fontWeight: FontWeight.bold,
+                              fontSize: 72,
+                              color: Color.fromRGBO(123, 56, 255, 1)),
+                        ),
+                        addVerticalSpace(2),
+                        const Text(
+                          'Work like mods',
+                          textAlign: TextAlign.center,
+                          style: TextStyle(
+                              fontFamily: "Gotham",
+                              fontWeight: FontWeight.w500,
+                              fontSize: 20,
+                              color: Colors.black),
+                        ),
+                      ],
+                    ),
+                  ],
                 ),
               ],
             ),

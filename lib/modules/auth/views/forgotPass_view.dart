@@ -83,7 +83,7 @@ class _MyStatefulWidgetState extends State<MyStatefulWidget> {
           logInController.sendMail();
           if (logInController.isButtonClicked() == true) {
             setState(() {
-              text = "Send Password changing mail again";
+              _changeText();
             });
           }
         },

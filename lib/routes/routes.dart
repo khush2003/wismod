@@ -48,7 +48,7 @@ final getPages = [
   GetPage(name: Routes.allPagesNav, page: () => AllPagesNav()),
   GetPage(
       name: Routes.onboarding,
-      page: () => const OnboardingView(),
+      page: () => OnboardingView(),
       middlewares: [AuthManager()]),
   GetPage(name: Routes.login, page: () => LogInView()),
   GetPage(name: Routes.signup, page: () => SignUpView()),

@@ -23,7 +23,9 @@ class EventDetailView extends StatelessWidget {
     return Scaffold(
         appBar: AppBar(
           actions: [
-            AlertReport(controller: controller),
+            if (eventData().eventOwner.uid != auth.user.uid &&
+                auth.user.isAdmin == false)
+              AlertReport(controller: controller),
             IconButton(
                 onPressed: () {
                   controller.bookmarkEvent();

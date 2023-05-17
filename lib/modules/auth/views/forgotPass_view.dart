@@ -42,27 +42,58 @@ class ForgotView extends StatelessWidget {
                         "We'll sent the password changing mail to your email ")),
                 addVerticalSpace(20),
                 Center(
-                  child: SizedBox(
-                    width: double.infinity,
-                    child: PrimaryButtonMedium(
-                      onPressed: () {
-                        logInController.sendMail();
-                      },
-                      child: Row(
-                        mainAxisAlignment: MainAxisAlignment.center,
-                        children: [
-                          Icon(Icons.mail_outlined),
-                          addHorizontalSpace(10),
-                          Text("LOL")
-                        ],
-                      ),
-                    ),
-                  ),
+                  //button was here
+                  child: MyStatefulWidget(),
                 ),
                 addVerticalSpace(10),
               ],
             ),
           ),
+        ),
+      ),
+    );
+  }
+}
+
+class MyStatefulWidget extends StatefulWidget {
+  MyStatefulWidget({
+    Key? key,
+  }) : super(key: key);
+
+  @override
+  _MyStatefulWidgetState createState() => _MyStatefulWidgetState();
+}
+
+class _MyStatefulWidgetState extends State<MyStatefulWidget> {
+  final LogInController logInController = Get.put(LogInController());
+  String text = "Send Password changing mail";
+
+  void _changeText() {
+    setState(() {
+      text = "Send Password changing mail again";
+    });
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return SizedBox(
+      width: double.infinity,
+      child: PrimaryButtonMedium(
+        onPressed: () {
+          logInController.sendMail();
+          if (logInController.isButtonClicked() == true) {
+            setState(() {
+              text = "Send Password changing mail again";
+            });
+          }
+        },
+        child: Row(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            Icon(Icons.mail_outlined),
+            addHorizontalSpace(10),
+            Text('$text')
+          ],
         ),
       ),
     );

@@ -87,10 +87,11 @@ class ChatEvent extends StatelessWidget {
                   borderRadius: const BorderRadius.only(
                       topLeft: Radius.circular(20),
                       bottomLeft: Radius.circular(20)),
-                  child: Image.network(event.imageUrl ?? placeholderImageEvent,
+                  child: Image.network(
+                      event.imageUrl ?? placeholderImageEventButE,
                       errorBuilder: (context, error, stackTrace) =>
                           Image.network(
-                            placeholderImageEvent,
+                            placeholderImageEventButE,
                             fit: BoxFit.cover,
                           ),
                       fit: BoxFit.cover)),

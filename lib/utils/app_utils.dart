@@ -26,7 +26,9 @@ void errorSnackBar(String message) {
 const placeholderImage =
     'https://perspectives.agf.com/wp-content/plugins/accelerated-mobile-pages/images/SD-default-image.png';
 
-const placeholderImageEvent = 'https://i.imgur.com/OqJd9F6.jpg';
+const placeholderImageEvent = 'https://imgur.com/AHyN72z.png';
+
+const placeholderImageEventButE = 'https://i.imgur.com/xZ79vFv.png';
 
 const placeholderImageUser = 'https://i.imgur.com/cM8lKpP.png';
 

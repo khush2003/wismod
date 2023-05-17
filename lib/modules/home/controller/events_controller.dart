@@ -313,6 +313,25 @@ class EventsController extends GetxController {
       }
     }
   }
+  List<String> sortTagsByFrequency() {
+  // Count the frequency of each tag
+  final tagFrequency = <String, int>{};
+  for (final event in joinedEvents) {
+    for (final tag in event.tags ?? []) {
+      if (tagFrequency.containsKey(tag)) {
+        tagFrequency[tag] = tagFrequency[tag]! + 1;
+      } else {
+        tagFrequency[tag] = 1;
+      }
+    }
+  }
+
+  // Sort the tags based on frequency in descending order
+  final sortedTags = tagFrequency.keys.toList();
+  sortedTags.sort((a, b) => tagFrequency[b]!.compareTo(tagFrequency[a]!));
+
+  return sortedTags;
+}
 
   void deleteEvent(Event event) async {
     events.removeWhere((e) => e.id == event.id);

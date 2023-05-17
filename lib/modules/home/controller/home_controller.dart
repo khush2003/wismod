@@ -1,3 +1,5 @@
+import 'dart:math';
+
 import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
@@ -29,11 +31,43 @@ class HomeController extends GetxController {
   @override
   void onInit() async {
     categoryOptions = await _firestore.getCategories() ?? [];
-    filteredEvents(_event.events);
+    generateSmartFeed();
     isLoading(false);
     super.onInit();
     /*requestPermission();
     getToken();*/
+  }
+
+  void generateSmartFeed() {
+    final newFilteredEvents = _event.events.toList();
+    final userTags = _event.sortTagsByFrequency();
+    sortEventByTagList(newFilteredEvents, userTags);
+    // Add every third event as a random event
+    randomizeUnvisitedEvents(newFilteredEvents, 5, 2);
+
+    filteredEvents.assignAll(newFilteredEvents);
+  }
+
+  void randomizeUnvisitedEvents(
+      List<Event> eventsList, int lastFewCount, int interval) {
+    if (eventsList.length < interval * lastFewCount) {
+      return;
+    }
+
+    List<Event> lastFewEvents =
+        eventsList.sublist(eventsList.length - lastFewCount);
+
+    // Shuffle the last few events randomly
+    Random random = Random();
+    lastFewEvents.shuffle(random);
+
+    int index = interval;
+    for (int i = 0; i < lastFewEvents.length; i++) {
+      eventsList.remove(lastFewEvents[
+          i]); // Remove the event if it already exists in eventsList
+      eventsList.insert(index, lastFewEvents[i]);
+      index += interval + 1;
+    }
   }
 
 /*  void getToken() async {
@@ -153,5 +187,29 @@ class HomeController extends GetxController {
 
   void logOut() {
     _auth.logout();
+  }
+
+  void sortEventByTagList(List<Event> eventList, List<String> tagList) {
+    // Sort the joinedEvents list based on tagList
+    eventList.sort((a, b) {
+      final aTags = (a.tags ?? []).toSet();
+      final bTags = (b.tags ?? []).toSet();
+
+      // Compare the presence of tags from tagList in each event
+      for (final tag in tagList) {
+        final aHasTag = aTags.contains(tag);
+        final bHasTag = bTags.contains(tag);
+
+        // Sort events with the tag first, then those without
+        if (aHasTag && !bHasTag) {
+          return -1;
+        } else if (!aHasTag && bHasTag) {
+          return 1;
+        }
+      }
+
+      // If both events have the same tags from tagList, sort by event upvotes
+      return b.upvotes.compareTo(a.upvotes);
+    });
   }
 }

@@ -52,13 +52,12 @@ class SettingsView extends StatelessWidget {
       title: const Text(
         "Settings",
         style: TextStyle(
-          fontFamily: "Gotham",
           fontWeight: FontWeight.bold,
           fontSize: 24,
         ),
       ),
       centerTitle: true,
-      toolbarHeight: 100,
+      toolbarHeight: 60,
     );
   }
 }

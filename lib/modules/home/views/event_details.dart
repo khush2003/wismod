@@ -52,10 +52,10 @@ class EventDetailView extends StatelessWidget {
                               borderRadius: BorderRadius.circular(5),
                               child: Image.network(
                                   eventData().imageUrl ??
-                                      'https://perspectives.agf.com/wp-content/plugins/accelerated-mobile-pages/images/SD-default-image.png',
+                                      placeholderImage,
                                   errorBuilder: (context, error, stackTrace) =>
                                       Image.network(
-                                        'https://perspectives.agf.com/wp-content/plugins/accelerated-mobile-pages/images/SD-default-image.png',
+                                        placeholderImage,
                                         fit: BoxFit.cover,
                                       ),
                                   fit: BoxFit.cover)),

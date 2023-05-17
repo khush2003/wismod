@@ -65,11 +65,14 @@ final getPages = [
       name: Routes.blockList,
       page: () => BlockListView(),
       transition: Transition.rightToLeft),
-  GetPage(name: Routes.eventDetials, page: () => EventDetailView()),
+  GetPage(
+      name: Routes.eventDetials,
+      page: () => EventDetailView(),
+      transition: Transition.circularReveal),
   GetPage(name: Routes.chatting, page: () => ChattingView()),
   GetPage(
       name: Routes.help,
-      page: () => const HelpView(),
+      page: () => const HelpView(), 
       transition: Transition.rightToLeft),
   GetPage(name: Routes.event_1, page: () => const HelpEvent1()),
   GetPage(name: Routes.event_2, page: () => const HelpEvent2()),

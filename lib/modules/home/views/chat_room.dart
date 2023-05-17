@@ -99,7 +99,6 @@ class ChatEvent extends StatelessWidget {
                   Text(
                     event.title,
                     style: const TextStyle(
-                        fontFamily: "Gotham",
                         fontWeight: FontWeight.bold,
                         color: Colors.white,
                         fontSize: 20),
@@ -113,7 +112,6 @@ class ChatEvent extends StatelessWidget {
                               ? '${_chat.latestMessages[event.id!]!.userName}: ${_chat.latestMessages[event.id!]!.message}'
                               : '',
                           style: const TextStyle(
-                            fontFamily: "Gotham",
                             fontWeight: FontWeight.w400,
                             color: Colors.white,
                             fontSize: 16,

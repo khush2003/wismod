@@ -17,7 +17,8 @@ class HomeView extends StatelessWidget {
     final th = Theme.of(context);
     return Scaffold(
       body: Padding(
-        padding: const EdgeInsets.all(sideWidth),
+        padding: const EdgeInsets.only(
+            top: sideWidth, left: sideWidth, right: sideWidth),
         child: Obx(() => homeController.isLoading.value
             ? const LoadingWidget()
             : Column(
@@ -180,11 +181,8 @@ class SearchBox extends StatelessWidget {
                 fontSize: 16,
                 fontWeight: FontWeight.w500,
                 color: th.colorScheme.primary),
-            enabledBorder: OutlineInputBorder(
-                borderRadius: BorderRadius.circular(5),
-                borderSide: BorderSide(color: th.colorScheme.primary)),
             border: OutlineInputBorder(
-                borderRadius: BorderRadius.circular(5),
+                borderRadius: BorderRadius.circular(30),
                 borderSide: BorderSide(color: th.colorScheme.primary))),
         maxLines: 1,
         style: Theme.of(context).textTheme.displayMedium,

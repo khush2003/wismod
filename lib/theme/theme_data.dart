@@ -6,6 +6,7 @@ import 'package:flutter/material.dart';
 // Predefined Compoenets in global_widgets.dart
 
 const primary = Color.fromRGBO(123, 56, 255, 1);
+
 class AppThemeData {
   static ThemeData themedata = ThemeData(
     // Scaffold Background Color
@@ -66,13 +67,6 @@ class AppThemeData {
             minimumSize: const Size(136, 53),
             shape: const RoundedRectangleBorder(
                 borderRadius: BorderRadius.all(Radius.circular(5))))),
-    // Bottom Nav Theme
-    navigationBarTheme: const NavigationBarThemeData(
-        backgroundColor: Color.fromRGBO(236, 228, 252, 1),
-        indicatorColor: Color.fromARGB(255, 254, 163, 196),
-        height: 90,
-        labelTextStyle: MaterialStatePropertyAll(TextStyle(
-            fontFamily: "Gotham", fontSize: 10, fontWeight: FontWeight.bold))),
 
     // AppBar Theme (Make it Transparent)
     appBarTheme: const AppBarTheme(

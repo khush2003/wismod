@@ -63,9 +63,9 @@ class ChatEvent extends StatelessWidget {
     return Container(
       margin: const EdgeInsets.only(bottom: 20),
       width: MediaQuery.of(context).size.width,
-      decoration: BoxDecoration(
-        color: Theme.of(context).navigationBarTheme.backgroundColor,
-        boxShadow: const [
+      decoration: const BoxDecoration(
+        color: Colors.white,
+        boxShadow: [
           BoxShadow(
               color: Color.fromRGBO(107, 41, 237, 1),
               offset: Offset(0, 4),

@@ -6,6 +6,7 @@ import 'package:wismod/routes/routes.dart';
 import 'package:wismod/theme/theme_data.dart';
 import 'package:get/get.dart';
 
+
 void main() async {
   // Initializing Firebase
   WidgetsFlutterBinding.ensureInitialized();

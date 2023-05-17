@@ -2,6 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:wismod/theme/global_widgets.dart';
 import 'package:wismod/modules/auth/controllers/auth_controller.dart';
+import 'package:wismod/theme/theme_data.dart';
+import 'package:wismod/utils/app_utils.dart';
 
 import '../../../../routes/routes.dart';
 
@@ -13,24 +15,7 @@ class SettingsView extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        title: const Text(
-          "Settings",
-          style: TextStyle(
-              fontFamily: "Gotham",
-              fontWeight: FontWeight.bold,
-              fontSize: 32,
-              color: Color.fromARGB(255, 255, 255, 255)),
-        ),
-        centerTitle: true,
-        backgroundColor: const Color.fromRGBO(201, 173, 255, 1),
-        toolbarHeight: 100,
-        shape: const RoundedRectangleBorder(
-          borderRadius: BorderRadius.vertical(
-            bottom: Radius.circular(30),
-          ),
-        ),
-      ),
+      appBar: _buildAppBar(),
       body: Padding(
           padding: const EdgeInsets.fromLTRB(0.0, 20.0, 0.0, 0.0),
           child: Align(
@@ -38,90 +23,83 @@ class SettingsView extends StatelessWidget {
             child: SingleChildScrollView(
                 child: Column(
               children: [
-                Padding(
-                  padding: const EdgeInsets.fromLTRB(50.0, 0.0, 50.0, 20.0),
-                  child: SizedBox(
-                    width: double.infinity,
-                    child: OutlineButtonMedium(
-                      child: const Text("Account",
-                          style: TextStyle(
-                              fontFamily: "Gotham",
-                              fontWeight: FontWeight.w500,
-                              fontSize: 20,
-                              color: Color.fromRGBO(123, 56, 255, 1))),
-                      onPressed: () {
-                        Get.toNamed(Routes.accounts);
-                        // Get.offAllNamed(Routes.accounts);
-                        // Get.offNamed(Routes.accounts);
-                      },
-                    ),
-                  ),
+                TileButton(
+                  onPressed: () => Get.toNamed(Routes.accounts),
+                  text: 'Account',
                 ),
-                Padding(
-                  padding: const EdgeInsets.fromLTRB(50.0, 0.0, 50.0, 20.0),
-                  child: SizedBox(
-                    width: double.infinity,
-                    child: OutlineButtonMedium(
-                      child: const Text("Notification",
-                          style: TextStyle(
-                              fontFamily: "Gotham",
-                              fontWeight: FontWeight.w500,
-                              fontSize: 20,
-                              color: Color.fromRGBO(123, 56, 255, 1))),
-                      onPressed: () {
-                        Get.toNamed(Routes.notficaition);
-                        // Get.offAllNamed(Routes.accounts);
-                        // Get.offNamed(Routes.accounts);
-                      },
-                    ),
-                  ),
+                TileButton(
+                  onPressed: () => Get.toNamed(Routes.notficaition),
+                  text: 'Notification',
                 ),
-                Padding(
-                  padding: const EdgeInsets.fromLTRB(50.0, 0.0, 50.0, 16.0),
-                  child: SizedBox(
-                    width: double.infinity,
-                    child: OutlineButtonMedium(
-                      child: const Text("Help",
-                          style: TextStyle(
-                              fontFamily: "Gotham",
-                              fontWeight: FontWeight.w500,
-                              fontSize: 20,
-                              color: Color.fromRGBO(123, 56, 255, 1))),
-                      onPressed: () {
-                        Get.toNamed(Routes.help);
-                        // Get.offAllNamed(Routes.accounts);
-                        // Get.offNamed(Routes.accounts);
-                      },
-                    ),
-                  ),
+                TileButton(
+                  onPressed: () => Get.toNamed(Routes.help),
+                  text: 'Help',
                 ),
-                Padding(
-                  padding: const EdgeInsets.fromLTRB(50.0, 0.0, 50.0, 20.0),
-                  child: SizedBox(
-                    width: double.infinity,
-                    child: OutlineButtonMedium(
-                      child: const Text("Block list",
-                          style: TextStyle(
-                              fontFamily: "Gotham",
-                              fontWeight: FontWeight.w500,
-                              fontSize: 20,
-                              color: Color.fromRGBO(123, 56, 255, 1))),
-                      onPressed: () {
-                        Get.toNamed(Routes.blockList);
-                        // Get.offAllNamed(Routes.accounts);
-                        // Get.offNamed(Routes.accounts);
-                      },
-                    ),
-                  ),
+                TileButton(
+                  onPressed: () => Get.toNamed(Routes.blockList),
+                  text: 'Blocked Chat Groups',
                 ),
-                Padding(
-                  padding: const EdgeInsets.fromLTRB(50.0, 0.0, 50.0, 20.0),
-                  child: AlertLogOut(),
-                ),
+                addVerticalSpace(),
+                AlertLogOut(),
               ],
             )),
           )),
     );
+  }
+
+  AppBar _buildAppBar() {
+    return AppBar(
+      title: const Text(
+        "Settings",
+        style: TextStyle(
+          fontFamily: "Gotham",
+          fontWeight: FontWeight.bold,
+          fontSize: 24,
+        ),
+      ),
+      centerTitle: true,
+      toolbarHeight: 100,
+    );
+  }
+}
+
+class TileButton extends StatelessWidget {
+  final VoidCallback onPressed;
+  final String text;
+  const TileButton({
+    super.key,
+    required this.onPressed,
+    required this.text,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    return Padding(
+        padding: const EdgeInsets.fromLTRB(10.0, 0.0, 10.0, 20.0),
+        child: SizedBox(
+            width: double.infinity,
+            child: ElevatedButton(
+                style: ElevatedButton.styleFrom(
+                    backgroundColor: primary,
+                    shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(8))),
+                onPressed: onPressed,
+                child: Padding(
+                  padding: const EdgeInsets.symmetric(
+                      horizontal: 25.0, vertical: 40),
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      Text(text,
+                          style: const TextStyle(
+                              fontFamily: "Gotham",
+                              fontWeight: FontWeight.w500,
+                              fontSize: 20,
+                              color: Colors.white)),
+                      const Icon(Icons.arrow_forward_ios, size: 24)
+                    ],
+                  ),
+                ))));
   }
 }
 
@@ -131,57 +109,67 @@ class AlertLogOut extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return SizedBox(
-      width: double.infinity,
-      child: PrimaryButtonMedium(
-        onPressed: () => showDialog(
-          context: context,
-          builder: (BuildContext context) => AlertDialog(
-            // contentPadding: EdgeInsets.all(24.0),
-            title: const Text('Do you want to logout?',
+    return Padding(
+      padding: const EdgeInsets.fromLTRB(10.0, 0.0, 10.0, 20.0),
+      child: SizedBox(
+        width: double.infinity,
+        child: ElevatedButton(
+          style: ElevatedButton.styleFrom(
+              backgroundColor: secondary,
+              shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(8))),
+          onPressed: () => showDialog(
+            context: context,
+            builder: (BuildContext context) => AlertDialog(
+              // contentPadding: EdgeInsets.all(24.0),
+              title: const Text('Do you want to logout?',
+                  style: TextStyle(
+                      fontFamily: "Gotham",
+                      fontWeight: FontWeight.bold,
+                      fontSize: 32,
+                      color: Colors.black)),
+              // content: const Text('AlertDialog description'),
+              actions: [
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                  children: <Widget>[
+                    Padding(
+                        padding: const EdgeInsets.fromLTRB(0.0, 0.0, 0.0, 20.0),
+                        child: OutlineButtonMedium(
+                          onPressed: () => Navigator.pop(context, 'Cancel'),
+                          child: const Text('No',
+                              style: TextStyle(
+                                  fontFamily: "Gotham",
+                                  fontWeight: FontWeight.bold,
+                                  fontSize: 32,
+                                  color: Color.fromRGBO(123, 56, 255, 1))),
+                        )),
+                    Padding(
+                        padding: const EdgeInsets.fromLTRB(0.0, 0.0, 0.0, 20.0),
+                        child: OutlineButtonMedium(
+                          onPressed: () async => await _auth.logout(),
+                          child: const Text('Yes',
+                              style: TextStyle(
+                                  fontFamily: "Gotham",
+                                  fontWeight: FontWeight.bold,
+                                  fontSize: 32,
+                                  color: Color.fromRGBO(123, 56, 255, 1))),
+                        )),
+                  ],
+                ),
+              ],
+            ),
+          ),
+          child: const Padding(
+            padding: EdgeInsets.symmetric(horizontal: 25.0, vertical: 40),
+            child: Text("Log out",
                 style: TextStyle(
                     fontFamily: "Gotham",
-                    fontWeight: FontWeight.bold,
-                    fontSize: 32,
-                    color: Colors.black)),
-            // content: const Text('AlertDialog description'),
-            actions: [
-              Row(
-                mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                children: <Widget>[
-                  Padding(
-                      padding: const EdgeInsets.fromLTRB(0.0, 0.0, 0.0, 20.0),
-                      child: OutlineButtonMedium(
-                        onPressed: () => Navigator.pop(context, 'Cancel'),
-                        child: const Text('No',
-                            style: TextStyle(
-                                fontFamily: "Gotham",
-                                fontWeight: FontWeight.bold,
-                                fontSize: 32,
-                                color: Color.fromRGBO(123, 56, 255, 1))),
-                      )),
-                  Padding(
-                      padding: const EdgeInsets.fromLTRB(0.0, 0.0, 0.0, 20.0),
-                      child: OutlineButtonMedium(
-                        onPressed: () async => await _auth.logout(),
-                        child: const Text('Yes',
-                            style: TextStyle(
-                                fontFamily: "Gotham",
-                                fontWeight: FontWeight.bold,
-                                fontSize: 32,
-                                color: Color.fromRGBO(123, 56, 255, 1))),
-                      )),
-                ],
-              ),
-            ],
+                    fontWeight: FontWeight.w500,
+                    fontSize: 20,
+                    color: Color.fromARGB(255, 255, 255, 255))),
           ),
         ),
-        child: const Text("Log out",
-            style: TextStyle(
-                fontFamily: "Gotham",
-                fontWeight: FontWeight.w500,
-                fontSize: 20,
-                color: Color.fromARGB(255, 255, 255, 255))),
       ),
     );
   }

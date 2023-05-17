@@ -124,16 +124,16 @@ class DetailSection extends StatelessWidget {
             ],
           ),
           addVerticalSpace(4),
-          Row(
-            children: [
-              Text(
-                event.title,
-                style: const TextStyle(
-                    fontWeight: FontWeight.bold,
-                    fontSize: 18,
-                    color: Colors.white),
-              ),
-            ],
+          ConstrainedBox(
+            constraints: const BoxConstraints(maxHeight: 100),
+            child: Text(
+              event.title,
+              style: const TextStyle(
+                  fontWeight: FontWeight.bold,
+                  fontSize: 18,
+                  color: Colors.white,
+                  overflow: TextOverflow.ellipsis),
+            ),
           ),
           addVerticalSpace(),
           ConstrainedBox(

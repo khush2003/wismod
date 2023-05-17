@@ -233,9 +233,9 @@ class ChatBubbleLeft extends StatelessWidget {
         Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            Row(
-              mainAxisSize: MainAxisSize.max,
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            Wrap(
+              direction: Axis.horizontal,
+              alignment: WrapAlignment.spaceBetween,
               children: [
                 UserName(message: message),
                 addHorizontalSpace(),
@@ -305,7 +305,7 @@ class SendDate extends StatelessWidget {
   Widget build(BuildContext context) {
     return Text(formatDateTime(message.sentOn!),
         style: const TextStyle(
-            fontSize: 16, fontWeight: FontWeight.w300, color: Colors.black));
+            fontSize: 12, fontWeight: FontWeight.w300, color: Colors.black));
   }
 }
 
@@ -318,12 +318,16 @@ class UserName extends StatelessWidget {
   Widget build(BuildContext context) {
     return Text(
       //chatUserName,
-      isOwner ? 'You' : message.userName,
+      isOwner
+          ? 'You'
+          : message.userName.length > 15
+              ? '${message.userName.substring(0, 15)}..'
+              : message.userName,
       style: const TextStyle(
         fontFamily: "Gotham",
         fontWeight: FontWeight.w500,
         color: Colors.black,
-        fontSize: 18,
+        fontSize: 16,
       ),
       maxLines: 1,
       overflow: TextOverflow.ellipsis,

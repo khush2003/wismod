@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:wismod/modules/home/controller/block_list_controller.dart';
 import 'package:wismod/shared/models/event.dart';
+import 'package:wismod/theme/theme_data.dart';
 import 'package:wismod/utils/app_utils.dart';
 
 import '../../controller/chat_controller.dart';
@@ -48,14 +49,8 @@ class BlockedPerson extends StatelessWidget {
     return Container(
       width: MediaQuery.of(context).size.width,
       decoration: BoxDecoration(
-        color: Theme.of(context).navigationBarTheme.backgroundColor,
-        borderRadius: BorderRadius.circular(30.0),
-        boxShadow: const [
-          BoxShadow(
-              color: Color.fromRGBO(107, 41, 237, 1),
-              offset: Offset(0, 4),
-              blurRadius: 6),
-        ],
+        color: primary,
+        borderRadius: BorderRadius.circular(20.0),
       ),
       child: Padding(
         padding: const EdgeInsets.all(sideWidth),
@@ -78,7 +73,7 @@ class BlockedPerson extends StatelessWidget {
                   ),
                 ),
               ),
-            addHorizontalSpace(10),
+            addHorizontalSpace(20),
             Expanded(
               child: Column(
                 mainAxisAlignment: MainAxisAlignment.center,
@@ -89,7 +84,7 @@ class BlockedPerson extends StatelessWidget {
                     style: const TextStyle(
                         fontFamily: "Gotham",
                         fontWeight: FontWeight.bold,
-                        color: Colors.black,
+                        color: Colors.white,
                         fontSize: 22),
                     maxLines: 1,
                     softWrap: false,
@@ -101,7 +96,7 @@ class BlockedPerson extends StatelessWidget {
                     style: const TextStyle(
                         fontFamily: "Gotham",
                         fontWeight: FontWeight.w500,
-                        color: Colors.black,
+                        color: Colors.white,
                         fontSize: 16),
                     maxLines: 1,
                     softWrap: false,
@@ -128,7 +123,10 @@ class CancelBlock extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return IconButton(
-      icon: const Icon(Icons.cancel_rounded),
+      icon: const Icon(
+        Icons.cancel_outlined,
+        color: secondary,
+      ),
       iconSize: 50.0,
       tooltip: 'Remove from block list',
       color: Theme.of(context).colorScheme.secondary,

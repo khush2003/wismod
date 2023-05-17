@@ -552,10 +552,10 @@ class ChatBox extends StatelessWidget {
                       borderRadius: BorderRadius.circular(10),
                       child: Image.network(
                         eventData().eventOwner.userPhotoUrl ??
-                            'https://perspectives.agf.com/wp-content/plugins/accelerated-mobile-pages/images/SD-default-image.png',
+                            'https://i.imgur.com/cM8lKpP.png',
                         errorBuilder: (context, error, stackTrace) =>
                             Image.network(
-                          'https://perspectives.agf.com/wp-content/plugins/accelerated-mobile-pages/images/SD-default-image.png',
+                          'https://i.imgur.com/cM8lKpP.png',
                           width: 82,
                           height: 82,
                           fit: BoxFit.cover,

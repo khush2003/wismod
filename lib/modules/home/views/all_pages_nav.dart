@@ -4,7 +4,7 @@ import 'package:wismod/modules/home/controller/chat_controller.dart';
 import 'package:wismod/modules/home/controller/events_controller.dart';
 import 'package:wismod/modules/home/views/chat_room.dart';
 import 'package:wismod/modules/home/views/home.dart';
-import 'package:wismod/modules/home/views/settings.dart';
+import 'package:wismod/modules/home/views/setting_pages/settings.dart';
 
 import '../controller/all_pages_nav_controller.dart';
 import 'dashboard.dart';

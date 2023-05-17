@@ -3,7 +3,7 @@ import 'package:get/get.dart';
 import 'package:wismod/theme/global_widgets.dart';
 import 'package:wismod/modules/auth/controllers/auth_controller.dart';
 
-import '../../../routes/routes.dart';
+import '../../../../routes/routes.dart';
 
 //explaine this code to me
 class SettingsView extends StatelessWidget {
@@ -88,7 +88,7 @@ class SettingsView extends StatelessWidget {
                               fontSize: 20,
                               color: Color.fromRGBO(123, 56, 255, 1))),
                       onPressed: () {
-                        // Get.toNamed(Routes.accounts);
+                        Get.toNamed(Routes.help);
                         // Get.offAllNamed(Routes.accounts);
                         // Get.offNamed(Routes.accounts);
                       },

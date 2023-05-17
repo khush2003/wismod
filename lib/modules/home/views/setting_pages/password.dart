@@ -1,10 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:wismod/theme/global_widgets.dart';
 import 'package:get/get.dart';
-import '../controller/password_controller.dart';
+import '../../controller/password_controller.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 
-import '../../../utils/app_utils.dart';
+import '../../../../utils/app_utils.dart';
 
 class PassWordView extends StatelessWidget {
   PassWordView({Key? key}) : super(key: key);

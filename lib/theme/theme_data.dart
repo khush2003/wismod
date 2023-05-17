@@ -6,6 +6,7 @@ import 'package:flutter/material.dart';
 // Predefined Compoenets in global_widgets.dart
 
 const primary = Color.fromRGBO(123, 56, 255, 1);
+const secondary = Color.fromARGB(255, 255, 77, 143);
 
 class AppThemeData {
   static ThemeData themedata = ThemeData(

@@ -1,12 +1,14 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:salomon_bottom_bar/salomon_bottom_bar.dart';
+import 'package:unicons/unicons.dart';
 import 'package:wismod/modules/home/controller/chat_controller.dart';
 import 'package:wismod/modules/home/controller/events_controller.dart';
 import 'package:wismod/modules/home/views/chat_room.dart';
 import 'package:wismod/modules/home/views/home.dart';
 import 'package:wismod/modules/home/views/setting_pages/settings.dart';
 import 'package:wismod/theme/theme_data.dart';
+import 'package:wismod/utils/uni_icon.dart';
 
 import '../controller/all_pages_nav_controller.dart';
 import 'dashboard.dart';
@@ -31,9 +33,7 @@ class AllPagesNav extends StatelessWidget {
                     AdminView()
                   ],
                 ))),
-        floatingActionButton:
-            FloatingActionButton(onPressed: () {}, child: const Text('+')),
-        floatingActionButtonLocation: FloatingActionButtonLocation.miniEndFloat,
+
         bottomNavigationBar: Obx(() => DecoratedBox(
               decoration: const BoxDecoration(
                   border:
@@ -49,33 +49,60 @@ class AllPagesNav extends StatelessWidget {
                   items: k.checkIsAdmin()
                       ? [
                           SalomonBottomBarItem(
-                              icon: const Icon(Icons.home),
+                              icon: const UnIcon(
+                                UniconsLine.estate,
+                                size: 20,
+                              ),
                               title: const Text("Home")),
                           SalomonBottomBarItem(
-                              icon: const Icon(Icons.chat_rounded),
+                              icon: const UnIcon(
+                                UniconsLine.comment,
+                                size: 20,
+                              ),
                               title: const Text("Chat")),
                           SalomonBottomBarItem(
-                              icon: const Icon(Icons.dashboard),
+                              icon: const UnIcon(
+                                UniconsLine.apps,
+                                size: 20,
+                              ),
                               title: const Text("Dashboard")),
                           SalomonBottomBarItem(
-                              icon: const Icon(Icons.settings),
+                              icon: const UnIcon(
+                                UniconsLine.setting,
+                                size: 20,
+                              ),
                               title: const Text("Settings")),
                           SalomonBottomBarItem(
-                              icon: const Icon(Icons.admin_panel_settings),
+                              icon: const UnIcon(
+                                UniconsLine.shield,
+                                size: 20,
+                              ),
                               title: const Text("Admin")),
                         ]
                       : [
                           SalomonBottomBarItem(
-                              icon: const Icon(Icons.home),
+                              icon: const UnIcon(
+                                UniconsLine.estate,
+                                size: 20,
+                              ),
                               title: const Text("Home")),
                           SalomonBottomBarItem(
-                              icon: const Icon(Icons.chat_rounded),
+                              icon: const UnIcon(
+                                UniconsLine.comment,
+                                size: 20,
+                              ),
                               title: const Text("Chat")),
                           SalomonBottomBarItem(
-                              icon: const Icon(Icons.dashboard),
+                              icon: const UnIcon(
+                                UniconsLine.apps,
+                                size: 20,
+                              ),
                               title: const Text("Dashboard")),
                           SalomonBottomBarItem(
-                              icon: const Icon(Icons.settings),
+                              icon: const UnIcon(
+                                UniconsLine.setting,
+                                size: 20,
+                              ),
                               title: const Text("Settings")),
                         ]),
             )));

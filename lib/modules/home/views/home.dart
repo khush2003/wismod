@@ -1,12 +1,15 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:unicons/unicons.dart';
 import 'package:wismod/modules/home/controller/home_controller.dart';
 import 'package:wismod/shared/services/notification_service.dart';
 import 'package:wismod/utils/app_utils.dart';
+import 'package:wismod/utils/uni_icon.dart';
 
 import '../../../routes/routes.dart';
 import '../../../shared/models/event.dart';
 import '../../../theme/global_widgets.dart';
+import '../../../theme/theme_data.dart';
 import 'filter_options.dart';
 
 class HomeView extends StatelessWidget {
@@ -17,6 +20,11 @@ class HomeView extends StatelessWidget {
   Widget build(BuildContext context) {
     final th = Theme.of(context);
     return Scaffold(
+      floatingActionButton: FloatingActionButton(
+        backgroundColor: secondary,
+        onPressed: () => Get.toNamed(Routes.createEvent),
+        child: const UnIcon(UniconsLine.plus),
+      ),
       body: Padding(
         padding: const EdgeInsets.only(
             top: sideWidth, left: sideWidth, right: sideWidth),
@@ -36,11 +44,6 @@ class HomeView extends StatelessWidget {
                           const FilterButton()
                         ],
                       ),
-                      addVerticalSpace(8),
-                      OutlineButtonMedium(
-                        onPressed: () => Get.toNamed(Routes.createEvent),
-                        child: const Text('Create Event'),
-                      ),
                       addVerticalSpace(16),
                     ],
                   ),
@@ -48,13 +51,43 @@ class HomeView extends StatelessWidget {
                     child: Obx(() => ListView.builder(
                           itemCount: homeController.filteredEvents.length,
                           itemBuilder: (context, index) {
-                            return EventCard(
+                            return EventCard2(
                                 event: homeController.filteredEvents[index]);
                           },
                         )),
                   )
                 ],
               )),
+      ),
+    );
+  }
+}
+
+class EventCard2 extends StatelessWidget {
+  final Event event;
+  const EventCard2({super.key, required this.event});
+
+  @override
+  Widget build(BuildContext context) {
+    return Padding(
+      padding: const EdgeInsets.only(bottom: 20.0),
+      child: DecoratedBox(
+        decoration: BoxDecoration(
+          color: Color(0xd37b38ff),
+          borderRadius: BorderRadius.circular(25),
+        ),
+        child: InkWell(
+          onTap: () =>
+              Get.toNamed(Routes.eventDetials, parameters: {'id': event.id!}),
+          child: Column(
+            children: [
+              PictureSection(
+                event: event,
+              ),
+              DetailSection(event: event),
+            ],
+          ),
+        ),
       ),
     );
   }
@@ -91,30 +124,9 @@ class EventCard extends StatelessWidget {
                       fontWeight: FontWeight.bold),
                 ),
                 addVerticalSpace(),
-                Wrap(
-                  direction: Axis.horizontal,
-                  alignment: WrapAlignment.spaceBetween,
-                  runAlignment: WrapAlignment.spaceBetween,
-                  runSpacing: 10,
-                  spacing: 10,
-                  children: [
-                    Text(event.title,
-                        style: const TextStyle(
-                            fontSize: 20, fontWeight: FontWeight.w500)),
-                    Text('${event.upvotes} upvotes',
-                        style: Theme.of(context).textTheme.bodyMedium)
-                  ],
-                ),
+                DetailSection(event: event),
                 addVerticalSpace(20),
-                ClipRRect(
-                    borderRadius: BorderRadius.circular(5),
-                    child: Image.network(event.imageUrl ?? placeholderImage,
-                        errorBuilder: (context, error, stackTrace) =>
-                            Image.network(
-                              placeholderImage,
-                              fit: BoxFit.cover,
-                            ),
-                        fit: BoxFit.cover)),
+                PictureSection(event: event),
                 addVerticalSpace(20),
                 if (event.eventDate != null)
                   Text(
@@ -132,13 +144,97 @@ class EventCard extends StatelessWidget {
               OutlineButtonMedium(
                   child: const Text("Read More"),
                   onPressed: () {
-                    // Todo: Function to go to event detail page
                     Get.toNamed(Routes.eventDetials,
                         parameters: {'id': event.id!});
                   })
             ],
           ),
         ));
+  }
+}
+
+class DetailSection extends StatelessWidget {
+  const DetailSection({
+    super.key,
+    required this.event,
+  });
+
+  final Event event;
+
+  @override
+  Widget build(BuildContext context) {
+    return Padding(
+      padding: const EdgeInsets.all(16.0),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Row(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            children: [
+              Text(event.category.toUpperCase(),
+                  style: const TextStyle(
+                      fontSize: 16,
+                      fontWeight: FontWeight.w500,
+                      color: Colors.white70)),
+              Text('${event.upvotes} ▲',
+                  style: const TextStyle(
+                      fontSize: 16,
+                      fontWeight: FontWeight.w500,
+                      color: Colors.white70))
+            ],
+          ),
+          addVerticalSpace(4),
+          Row(
+            children: [
+              Text(
+                event.title,
+                style: TextStyle(
+                    fontWeight: FontWeight.bold,
+                    fontSize: 18,
+                    color: Colors.white),
+              ),
+            ],
+          ),
+          addVerticalSpace(),
+          ConstrainedBox(
+              constraints: BoxConstraints(maxHeight: 100),
+              child: Expanded(
+                child: Text(
+                  event.description,
+                  overflow: TextOverflow.ellipsis,
+                  maxLines: 2,
+                  style: TextStyle(color: Colors.white, height: 1.3),
+                ),
+              ))
+        ],
+      ),
+    );
+  }
+}
+
+class PictureSection extends StatelessWidget {
+  const PictureSection({
+    super.key,
+    required this.event,
+  });
+
+  final Event event;
+
+  @override
+  Widget build(BuildContext context) {
+    return SizedBox(
+      height: 150,
+      width: MediaQuery.of(context).size.width,
+      child: ClipRRect(
+          borderRadius: const BorderRadius.only(
+              topLeft: Radius.circular(20), topRight: Radius.circular(20)),
+          child: Image.network(event.imageUrl ?? placeholderImage,
+              errorBuilder: (context, error, stackTrace) => Image.network(
+                    placeholderImage,
+                    fit: BoxFit.cover,
+                  ),
+              fit: BoxFit.cover)),
+    );
   }
 }
 
@@ -149,16 +245,22 @@ class FilterButton extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return IconButton(
-        padding: const EdgeInsets.all(0),
-        onPressed: () {
-          Get.bottomSheet(FilterOptionsView());
-        },
-        icon: const Icon(
-          Icons.filter_alt_outlined,
-          color: Colors.black,
-          size: 35,
-        ));
+    return ElevatedButton(
+      style: ElevatedButton.styleFrom(
+          fixedSize: const Size(53, 50),
+          alignment: Alignment.centerLeft,
+          minimumSize: Size.zero,
+          backgroundColor: primary,
+          shape: const CircleBorder()),
+      child: const UnIcon(
+        UniconsLine.sliders_v,
+        color: Colors.white,
+        size: 20,
+      ),
+      onPressed: () {
+        Get.bottomSheet(FilterOptionsView());
+      },
+    );
   }
 }
 
@@ -176,15 +278,19 @@ class SearchBox extends StatelessWidget {
           controller.searchEvents();
         },
         decoration: InputDecoration(
-            hintText: "Search",
-            hintStyle: TextStyle(
+            hintText: "Search Events...",
+            contentPadding: const EdgeInsets.all(20),
+            hintStyle: const TextStyle(
                 fontFamily: "Gotham",
                 fontSize: 16,
                 fontWeight: FontWeight.w500,
-                color: th.colorScheme.primary),
+                color: Colors.black54),
+            filled: true,
+            fillColor: const Color(0xfff1f3f5),
             border: OutlineInputBorder(
                 borderRadius: BorderRadius.circular(30),
-                borderSide: BorderSide(color: th.colorScheme.primary))),
+                borderSide:
+                    const BorderSide(width: 0, style: BorderStyle.none))),
         maxLines: 1,
         style: Theme.of(context).textTheme.displayMedium,
       ),

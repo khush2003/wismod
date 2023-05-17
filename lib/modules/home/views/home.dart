@@ -73,7 +73,7 @@ class EventCard extends StatelessWidget {
       padding: const EdgeInsets.only(bottom: 20.0),
       child: DecoratedBox(
         decoration: BoxDecoration(
-          color: const Color(0xd37b38ff),
+          color: primary,
           borderRadius: BorderRadius.circular(25),
         ),
         child: InkWell(

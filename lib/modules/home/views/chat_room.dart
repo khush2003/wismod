@@ -9,6 +9,7 @@ import 'package:wismod/routes/routes.dart';
 import 'package:wismod/modules/home/controller/home_controller.dart';
 
 import '../../../shared/models/event.dart';
+import '../../../theme/theme_data.dart';
 import '../controller/chat_controller.dart';
 
 class ChatRoomView extends StatelessWidget {
@@ -63,7 +64,7 @@ class ChatEvent extends StatelessWidget {
       width: MediaQuery.of(context).size.width,
       decoration: const BoxDecoration(
         borderRadius: BorderRadius.all(Radius.circular(20)),
-        color: Color(0xd37b38ff),
+        color: primary,
       ),
       child: InkWell(
         onTap: () {

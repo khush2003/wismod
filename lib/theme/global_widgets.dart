@@ -23,18 +23,20 @@ class PrimaryButtonMedium extends StatelessWidget {
   final Widget child;
   final Size? size;
   final Size? maxSize;
+  final Color? color;
   const PrimaryButtonMedium(
       {super.key,
       required this.child,
       required this.onPressed,
       this.size,
-      this.maxSize});
+      this.maxSize, this.color});
 
   @override
   Widget build(BuildContext context) {
     return ElevatedButton(
       onPressed: onPressed,
       style: ElevatedButton.styleFrom(
+          backgroundColor: color,
           fixedSize: size,
           maximumSize: maxSize,
           padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 20),
@@ -88,14 +90,14 @@ class ImageWithErrorHandling extends StatelessWidget {
   final String? imageUrl;
   const ImageWithErrorHandling({super.key, required this.imageUrl});
 
-   ImageProvider<Object> image () => Image.network(imageUrl ?? placeholderImage,
+  ImageProvider<Object> image() => Image.network(imageUrl ?? placeholderImage,
           errorBuilder: (context, error, stackTrace) => Image.network(
                 placeholderImage,
                 fit: BoxFit.cover,
               ),
           fit: BoxFit.cover)
       .image;
-      
+
   @override
   Widget build(BuildContext context) {
     return Image.network(imageUrl ?? placeholderImage,
@@ -113,20 +115,23 @@ class OutlineButtonMedium extends StatelessWidget {
   final Size? size;
   final Size? maxSize;
   final TextStyle? textStyle;
-  const OutlineButtonMedium({
-    super.key,
-    required this.child,
-    required this.onPressed,
-    this.size,
-    this.maxSize,
-    this.textStyle,
-  });
+  final double borderRadius;
+  const OutlineButtonMedium(
+      {super.key,
+      required this.child,
+      required this.onPressed,
+      this.size,
+      this.maxSize,
+      this.textStyle,
+      this.borderRadius = 8});
 
   @override
   Widget build(BuildContext context) {
     return OutlinedButton(
       onPressed: onPressed,
       style: OutlinedButton.styleFrom(
+          shape: RoundedRectangleBorder(
+              borderRadius: BorderRadius.all(Radius.circular(borderRadius))),
           fixedSize: size,
           maximumSize: maxSize,
           padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 20),
@@ -206,8 +211,8 @@ class TextFormFeildThemed extends StatelessWidget {
       keyboardType: keyboardType,
       inputFormatters: inputFormatters,
       decoration: InputDecoration(
-        filled: true,
-        fillColor: Colors.white,
+          filled: true,
+          fillColor: Colors.white,
           suffixIcon: suffixIcon,
           errorText: errorText,
           hintText: hintText,

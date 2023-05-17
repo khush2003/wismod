@@ -35,7 +35,7 @@ class AppThemeData {
       displayLarge: TextStyle(
           fontFamily: "Gotham",
           fontWeight: FontWeight.w500,
-          fontSize: 20,
+          fontSize: 18,
           color: Colors.black),
       displayMedium: TextStyle(
           fontFamily: "Gotham",
@@ -45,7 +45,7 @@ class AppThemeData {
       titleMedium: TextStyle(
           fontFamily: "Gotham",
           fontWeight: FontWeight.bold,
-          fontSize: 32,
+          fontSize: 24,
           color: Colors.black),
       bodyMedium: TextStyle(
           fontFamily: "Gotham",

@@ -48,12 +48,17 @@ class HomeView extends StatelessWidget {
                     ],
                   ),
                   Flexible(
-                    child: Obx(() => ListView.builder(
-                          itemCount: homeController.filteredEvents.length,
-                          itemBuilder: (context, index) {
-                            return EventCard(
-                                event: homeController.filteredEvents[index]);
-                          },
+                    child: Obx(() => ScrollConfiguration(
+                          behavior: ScrollConfiguration.of(context)
+                              .copyWith(scrollbars: false),
+                          child: ListView.builder(
+                            itemCount: homeController.filteredEvents.length,
+                            itemBuilder: (context, index) {
+                              return EventCard(
+                                event: homeController.filteredEvents[index],
+                              );
+                            },
+                          ),
                         )),
                   )
                 ],

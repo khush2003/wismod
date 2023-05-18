@@ -38,6 +38,11 @@ class AuthController extends GetxController {
     }
   }
 
+  Future<void> updateToken(String token) async {
+    await _firestore.updateToken(token, _auth.currentUser!.uid);
+    await updateUser();
+  }
+
   Future<void> updateUser() async {
     if (_auth.currentUser != null) {
       appUser(await _firestore.getUserById(_auth.currentUser!.uid));

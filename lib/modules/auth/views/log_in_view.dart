@@ -86,7 +86,7 @@ class LogInView extends StatelessWidget {
                   child: Column(
                     children: [
                       const Text(
-                        "Don't have an account? ",
+                        "Didn't have an account? ",
                         textAlign: TextAlign.center,
                         style: TextStyle(fontSize: 16, fontFamily: "Gotham"),
                       ),

@@ -1,3 +1,5 @@
+import 'dart:developer';
+
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:wismod/modules/home/controller/event_detail_controller.dart';
@@ -70,7 +72,8 @@ class EventDetailView extends StatelessWidget {
                                       fontSize: 16,
                                       fontWeight: FontWeight.w500,
                                       color: Colors.grey)),
-                              Obx(() => Text('${controller.eventData.value.upvotes} ▲',
+                              Obx(() => Text(
+                                  '${controller.eventData.value.upvotes} ▲',
                                   style: const TextStyle(
                                       fontSize: 16,
                                       fontWeight: FontWeight.w500,
@@ -548,24 +551,24 @@ class ChatBox extends StatelessWidget {
                   crossAxisAlignment: CrossAxisAlignment.center,
                   mainAxisSize: MainAxisSize.min,
                   children: [
-                    ClipRRect(
-                      borderRadius: BorderRadius.circular(10),
-                      child: Image.network(
-                        eventData().eventOwner.userPhotoUrl ??
-                            'https://i.imgur.com/cM8lKpP.png',
-                        errorBuilder: (context, error, stackTrace) =>
-                            Image.network(
-                          'https://i.imgur.com/cM8lKpP.png',
-                          width: 82,
-                          height: 82,
-                          fit: BoxFit.cover,
-                        ),
-                        // Image size adjustment here
-                        width: 82,
-                        height: 82,
-                        fit: BoxFit.cover,
-                      ),
-                    ),
+                    // ClipRRect(
+                    //   borderRadius: BorderRadius.circular(10),
+                    //   child: Image.network(
+                    //     eventData().eventOwner.userPhotoUrl ??
+                    //         'https://i.imgur.com/cM8lKpP.png',
+                    //     errorBuilder: (context, error, stackTrace) =>
+                    //         Image.network(
+                    //       'https://i.imgur.com/cM8lKpP.png',
+                    //       width: 82,
+                    //       height: 82,
+                    //       fit: BoxFit.cover,
+                    //     ),
+                    //     // Image size adjustment here
+                    //     width: 82,
+                    //     height: 82,
+                    //     fit: BoxFit.cover,
+                    //   ),
+                    // ),
                   ],
                 ),
                 addHorizontalSpace(10),

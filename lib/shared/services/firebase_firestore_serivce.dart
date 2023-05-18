@@ -364,6 +364,7 @@ class FirebaseService {
       'Department': user.department,
       'ProfilePicture': user.profilePicture,
       'Year': user.year,
+      'Token': user.token ?? '',
       'BlockedChatGroups': user.blockedChatGroups ?? [],
       'BookmarkedEvents': user.bookmarkedEvents ?? [],
       'JoinedEvents': user.joinedEvents ?? [],
@@ -522,6 +523,13 @@ class FirebaseService {
     // Updating department in users
     await _firestore.collection('Users').doc(userId).update({
       'Department': department,
+    });
+  }
+  Future<void> updateToken(
+    String token, String userId) async {
+    // Updating token in users
+    await _firestore.collection('Users').doc(userId).set({
+      'Token': token,
     });
   }
 

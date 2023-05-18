@@ -13,8 +13,10 @@ class AppUser {
   final List<String>? requestedEvents;
   final List<String>? upvotedEvents;
   final List<String>? joinedChatGroups;
+  final String? token;
 
-  AppUser({
+  AppUser( {
+    this.token,
     this.uid,
     this.isAdmin,
     required this.firstName,
@@ -48,7 +50,6 @@ class AppUser {
     return '$firstName $lastName';
   }
 
-
   List<String> getJoinedChatGroups() {
     List<String> eventIds = [];
     if (joinedChatGroups != null && joinedChatGroups!.isNotEmpty) {
@@ -61,6 +62,7 @@ class AppUser {
 
   factory AppUser.fromMap(Map<String, dynamic> map, String userId) {
     return AppUser(
+      token: map['Token'] ?? '',
       isAdmin: map['IsAdmin'] ?? false,
       uid: userId,
       firstName: map['Firstname'],
@@ -78,6 +80,7 @@ class AppUser {
     );
   }
 }
+
 bool checkUserInList(String userId, List<AppUser> list) {
   return list.any((user) => user.uid == userId);
 }
@@ -88,5 +91,4 @@ AppUser? getUserInList(String userId, List<AppUser> list) {
   } catch (e) {
     return null;
   }
-  
 }

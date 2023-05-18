@@ -46,6 +46,7 @@ class HomeController extends GetxController {
     randomizeUnvisitedEvents(newFilteredEvents, 5, 2);
 
     filteredEvents.assignAll(newFilteredEvents);
+    print(filteredEvents);
   }
 
   void randomizeUnvisitedEvents(

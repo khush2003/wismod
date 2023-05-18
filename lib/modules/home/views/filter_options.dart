@@ -12,7 +12,6 @@ class FilterOptionsView extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Container(
-      height: 200,
       padding: const EdgeInsets.all(sideWidth),
       decoration: const BoxDecoration(
           color: Colors.white,

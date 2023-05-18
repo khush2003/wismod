@@ -26,7 +26,7 @@ class ChatController extends GetxController {
 
   @override
   void onInit() async {
-    await _eventController.fetchEvents();
+    await _eventController.fetchEventsStream();
     initializeLists();
     await fetchLatestMessages();
     isInitialzed(true);

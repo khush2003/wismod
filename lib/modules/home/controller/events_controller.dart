@@ -1,4 +1,4 @@
-import 'dart:developer';
+import 'dart:async';
 
 import 'package:get/get.dart';
 import 'package:wismod/modules/auth/controllers/auth_controller.dart';
@@ -24,6 +24,8 @@ class EventsController extends GetxController {
   final RxList<Event> reportedEvents = <Event>[].obs;
   final RxList<Event> archivedEvents = <Event>[].obs;
 
+  StreamSubscription<List<Event>>? eventSubscription;
+
   final _firestore = FirebaseService();
   final _auth = AuthController.instance;
 
@@ -31,11 +33,7 @@ class EventsController extends GetxController {
 
   @override
   void onInit() async {
-    await fetchEvents();
-    initializeLists();
-    try{
-      Get.find<HomeController>().generateSmartFeed();
-    } catch(e){}
+    await fetchEventsStream();
     isInitialized(true);
     super.onInit();
   }
@@ -62,24 +60,33 @@ class EventsController extends GetxController {
     return membersData;
   }
 
-  Future<void> fetchEvents() async {
-    try {
-      final eventsTemp = await _firestore.getAllEvents();
+  Future<void> fetchEventsStream() async {
+    eventSubscription = _firestore.getEventsStream().listen((updatedEvents) {
       final archived = <Event>[];
-      archived.addAll(eventsTemp);
-      if (eventsTemp.isNotEmpty) {
+      archived.addAll(updatedEvents);
+      if (updatedEvents.isNotEmpty) {
         // For now removing every event whose deadline has passed, and putting them in archoived list
         final currentDate = DateTime.now();
         final today =
             DateTime(currentDate.year, currentDate.month, currentDate.day);
-        eventsTemp
+        updatedEvents
             .removeWhere((event) => event.eventDate?.isBefore(today) ?? false);
         archived.removeWhere(
             (event) => !(event.eventDate?.isBefore(today) ?? false));
-        events(eventsTemp);
+        events(updatedEvents);
         archivedEvents(archived);
+        initializeLists();
+        try {
+          Get.find<HomeController>().generateSmartFeed();
+        } catch (e) {}
       }
-    } finally {}
+    });
+  }
+  @override
+  void onClose() {
+    eventSubscription
+        ?.cancel(); // Cancel the subscription when closing the controller
+    super.onClose();
   }
 
   void _setOwnedEvents(AppUser user) {

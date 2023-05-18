@@ -170,6 +170,18 @@ class FirebaseService {
     });
   }
 
+  Stream<List<Event>> getEventsStream() {
+    return FirebaseFirestore.instance
+        .collection('Events')
+        .snapshots()
+        .map((querySnapshot) {
+      return querySnapshot.docs.map((doc) {
+        final data = doc.data();
+        return Event.fromMap(data, doc.id);
+      }).toList();
+    });
+  }
+
   Future<void> updateProfilePicture(String userId, String imagePath) async {
     // Update the user's profile picture in Firestore
     await _firestore.collection('Users').doc(userId).update({
@@ -491,8 +503,8 @@ class FirebaseService {
           message.userName = '$firstName $lastName';
           try {
             await _firestore.collection('Messages').doc(message.id).update({
-            'UserName': message.userName,
-          });
+              'UserName': message.userName,
+            });
           } catch (e) {
             continue;
           }
@@ -506,9 +518,8 @@ class FirebaseService {
       'Lastname': lastName,
     });
   }
-  
-  Future<void> updateDepartment(
-    String department, String userId) async {
+
+  Future<void> updateDepartment(String department, String userId) async {
     final events = await getAllEvents();
 
     for (Event event in events) {
@@ -525,16 +536,15 @@ class FirebaseService {
       'Department': department,
     });
   }
-  Future<void> updateToken(
-    String token, String userId) async {
+
+  Future<void> updateToken(String token, String userId) async {
     // Updating token in users
     await _firestore.collection('Users').doc(userId).set({
       'Token': token,
     });
   }
 
-  Future<void> updateYear(
-    int year, String userId) async {
+  Future<void> updateYear(int year, String userId) async {
     final events = await getAllEvents();
 
     for (Event event in events) {

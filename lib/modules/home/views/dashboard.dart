@@ -251,8 +251,8 @@ class ProfileSection extends StatelessWidget {
               child: ClipRRect(
                 borderRadius: BorderRadiusDirectional.circular(500),
                 child: Image.network(
-                    _auth.appUser.value.profilePicture ??
-                        placeholderImageUserPurple,
+                   profilePictureController.imageUrl.value.isEmpty ?  _auth.appUser.value.profilePicture ??
+                        placeholderImageUserPurple : profilePictureController.imageUrl.value,
                     errorBuilder: (context, error, stackTrace) => Image.network(
                           placeholderImageUserPurple,
                           fit: BoxFit.fill,

@@ -177,11 +177,9 @@ class CreateEventController extends GetxController {
         /*NotificationService().showNotification(
             title: eventNameController.text.trim(), body: 'Come and join!');*/
         await FirebaseService().addEvent(event, _auth.appUser.value);
-        sucessSnackBar('Event was created sucessfulyy!');
+        sucessSnackBar('Event was created sucessfully!');
+        // EventsController.instance.events.add(event);
         Get.offAllNamed(Routes.allPagesNav);
-        EventsController.instance.events.add(event);
-        EventsController.instance.initializeLists();
-        Get.find<HomeController>().generateSmartFeed();
       } catch (e) {
         errorSnackBar(
             'There was a problem creating the event. Please recheck your values and try again!');

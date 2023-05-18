@@ -1,3 +1,4 @@
+import 'dart:developer' as d;
 import 'dart:math';
 
 import 'package:firebase_messaging/firebase_messaging.dart';
@@ -39,6 +40,7 @@ class HomeController extends GetxController {
   }
 
   void generateSmartFeed() {
+    d.log(_event.events.toString());
     final newFilteredEvents = _event.events.toList();
     final userTags = _event.sortTagsByFrequency();
     sortEventByTagList(newFilteredEvents, userTags);
@@ -46,7 +48,7 @@ class HomeController extends GetxController {
     randomizeUnvisitedEvents(newFilteredEvents, 5, 2);
 
     filteredEvents.assignAll(newFilteredEvents);
-    print(filteredEvents);
+    d.log(filteredEvents.toString());
   }
 
   void randomizeUnvisitedEvents(
@@ -64,10 +66,12 @@ class HomeController extends GetxController {
 
     int index = interval;
     for (int i = 0; i < lastFewEvents.length; i++) {
-      eventsList.remove(lastFewEvents[
-          i]); // Remove the event if it already exists in eventsList
-      eventsList.insert(index, lastFewEvents[i]);
-      index += interval + 1;
+      try {
+        eventsList.remove(lastFewEvents[
+            i]); // Remove the event if it already exists in eventsList
+        eventsList.insert(index, lastFewEvents[i]);
+        index += interval + 1;
+      } catch (e) {}
     }
   }
 

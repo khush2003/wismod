@@ -11,6 +11,7 @@ import 'package:wismod/shared/services/notification_service.dart';
 import 'package:wismod/utils/app_utils.dart';
 
 import '../../../routes/routes.dart';
+import 'home_controller.dart';
 
 class CreateEventController extends GetxController {
   final imageUrl = ''.obs;
@@ -180,6 +181,7 @@ class CreateEventController extends GetxController {
         Get.offAllNamed(Routes.allPagesNav);
         EventsController.instance.events.add(event);
         EventsController.instance.initializeLists();
+        Get.find<HomeController>().generateSmartFeed();
       } catch (e) {
         errorSnackBar(
             'There was a problem creating the event. Please recheck your values and try again!');

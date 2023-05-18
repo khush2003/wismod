@@ -251,7 +251,8 @@ class ProfileSection extends StatelessWidget {
               child: ClipRRect(
                 borderRadius: BorderRadiusDirectional.circular(500),
                 child: Image.network(
-                    _auth.appUser.value.profilePicture ?? placeholderImageUserPurple,
+                    _auth.appUser.value.profilePicture ??
+                        placeholderImageUserPurple,
                     errorBuilder: (context, error, stackTrace) => Image.network(
                           placeholderImageUserPurple,
                           fit: BoxFit.fill,
@@ -298,9 +299,11 @@ class ProfileSection extends StatelessWidget {
                           () => OutlinedButton.icon(
                             icon: profilePictureController.imageUrl.value == ''
                                 ? const Icon(Icons.image_outlined)
-                                : Image.network(
-                                    profilePictureController.imageUrl.value,
-                                    fit: BoxFit.cover,
+                                : Expanded(
+                                    child: Image.network(
+                                      profilePictureController.imageUrl.value,
+                                      fit: BoxFit.cover,
+                                    ),
                                   ),
                             onPressed: () =>
                                 profilePictureController.uploadImage(),

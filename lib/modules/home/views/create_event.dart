@@ -53,17 +53,19 @@ class CreateEventView extends StatelessWidget {
                             padding: const EdgeInsets.fromLTRB(
                                 14.0, 0.0, 14.0, 16.0),
                             child: SizedBox(
-                              width: double.infinity,
+                              width: Size.infinite.width,
                               // Button Height Change Here
                               height: 250,
                               child: Obx(
                                 () => OutlinedButton.icon(
                                   icon: controller.imageUrl.value == ''
                                       ? const Icon(Icons.image_outlined)
-                                      : Image.network(
-                                          controller.imageUrl.value,
-                                          fit: BoxFit.cover,
-                                        ),
+                                      : Expanded(
+                                        child: Image.network(
+                                            controller.imageUrl.value,
+                                            fit: BoxFit.fill,
+                                          ),
+                                      ),
                                   onPressed: () => controller.uploadImage(),
                                   label: const Text(''),
                                   style: ElevatedButton.styleFrom(

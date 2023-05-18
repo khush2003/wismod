@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:unicons/unicons.dart';
+import 'package:wismod/utils/uni_icon.dart';
 
 class HelpDashBoard1 extends StatelessWidget {
   const HelpDashBoard1({super.key});
@@ -8,7 +10,7 @@ class HelpDashBoard1 extends StatelessWidget {
     return Scaffold(
         appBar: AppBar(
             title: const Text(
-          "What is a dashboard?",
+          "Dashboard?",
           style: TextStyle(
               fontFamily: "Gotham",
               fontWeight: FontWeight.bold,
@@ -26,7 +28,7 @@ class HelpDashBoard1 extends StatelessWidget {
                     child: Column(
                       children: const [
                         Topic(
-                          label: 'Dashboard',
+                          label: 'What is dashboard',
                         ),
                         BodyChat1(icon: Icons.circle),
                         BodyChat2(icon: Icons.circle),
@@ -93,7 +95,7 @@ class BodyChat1 extends StatelessWidget {
                     children: [
                       TextSpan(
                         text:
-                            "Dashboard is a page which contains contain your personal profile and all of information of your participanted event",
+                            "Dashboard is a page that's contained your personal profile and all of information of your participanted event.",
                         style: Theme.of(context).textTheme.bodyMedium,
                       ),
                     ],
@@ -142,7 +144,7 @@ class BodyChat2 extends StatelessWidget {
                     children: [
                       TextSpan(
                         text:
-                            "Dashboard contain your information in these following.",
+                            "Dashboard contains your information in these following.",
                         style: Theme.of(context).textTheme.bodyMedium,
                       ),
                     ],
@@ -303,11 +305,12 @@ class BodyCreate5 extends StatelessWidget {
                       const WidgetSpan(
                         child: Padding(
                           padding: EdgeInsets.only(right: 1.0),
-                          child: Icon(Icons.dashboard, size: 20),
+                          child: UnIcon(UniconsLine.apps,
+                              size: 20, color: Color.fromRGBO(123, 56, 255, 1)),
                         ),
                       ),
                       TextSpan(
-                        text: "in the middle of the bottom bar",
+                        text: " in the middle of the bottom bar",
                         style: Theme.of(context).textTheme.bodyMedium,
                       ),
                     ],

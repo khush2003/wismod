@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:unicons/unicons.dart';
+import 'package:wismod/utils/uni_icon.dart';
 
 class HelpEvent3 extends StatelessWidget {
   const HelpEvent3({super.key});
@@ -98,11 +100,15 @@ class BodyManage1 extends StatelessWidget {
                       const WidgetSpan(
                         child: Padding(
                           padding: EdgeInsets.only(right: 1.0),
-                          child: Icon(Icons.dashboard, size: 20),
+                          child: UnIcon(
+                            UniconsLine.apps,
+                            size: 20,
+                            color: Color.fromRGBO(123, 56, 255, 1),
+                          ),
                         ),
                       ),
                       TextSpan(
-                        text: "in the middle of the bottom bar",
+                        text: " in the middle of the bottom bar",
                         style: Theme.of(context).textTheme.bodyMedium,
                       ),
                     ],

@@ -4,6 +4,7 @@ import 'package:wismod/modules/auth/views/log_in_view.dart';
 import 'package:wismod/modules/auth/views/signup_view.dart';
 import 'package:wismod/modules/home/views/help_pages/chat_1.dart';
 import 'package:wismod/modules/home/views/help_pages/dashboard_1.dart';
+import 'package:wismod/modules/home/views/help_pages/whatWisMod.dart';
 import 'package:wismod/modules/home/views/setting_pages/accounts.dart';
 import 'package:wismod/modules/home/views/all_pages_nav.dart';
 import 'package:wismod/modules/home/views/setting_pages/block_list.dart';
@@ -41,6 +42,7 @@ abstract class Routes {
   static const String chat_1 = '/chat_1';
   static const String dashBoard_1 = '/dashBoard_1';
   static const String forgot = '/forgot';
+  static const String whatWismod = '/whatWismod';
   // Add page string (route) here
 }
 
@@ -82,5 +84,6 @@ final getPages = [
   GetPage(name: Routes.chat_1, page: () => const HelpChat1()),
   GetPage(name: Routes.dashBoard_1, page: () => const HelpDashBoard1()),
   GetPage(name: Routes.forgot, page: () => ForgotView()),
+  GetPage(name: Routes.whatWismod, page: () => WhatWisMod()),
   // Initialize route here
 ];

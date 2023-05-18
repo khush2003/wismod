@@ -40,15 +40,11 @@ class HomeController extends GetxController {
   }
 
   void generateSmartFeed() {
-    d.log(_event.events.toString());
     final newFilteredEvents = _event.events.toList();
     final userTags = _event.sortTagsByFrequency();
     sortEventByTagList(newFilteredEvents, userTags);
-    // Add every third event as a random event
     randomizeUnvisitedEvents(newFilteredEvents, 5, 2);
-
     filteredEvents.assignAll(newFilteredEvents);
-    d.log(filteredEvents.toString());
   }
 
   void randomizeUnvisitedEvents(

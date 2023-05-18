@@ -83,13 +83,29 @@ class LogInView extends StatelessWidget {
                 ),
                 addVerticalSpace(10),
                 Center(
-                  child: SizedBox(
-                    child: OutlineButtonMedium(
-                      child: const Text("Register"),
-                      onPressed: () {
-                        Get.offNamed(Routes.signup);
-                      },
-                    ),
+                  child: Column(
+                    children: [
+                      const Text(
+                        "Don't have an account? ",
+                        textAlign: TextAlign.center,
+                        style: TextStyle(fontSize: 16, fontFamily: "Gotham"),
+                      ),
+                      TextButton(
+                        onPressed: () {
+                          Get.toNamed(Routes.signup);
+                        },
+                        child: const Text(
+                          'Create Account',
+                          style: TextStyle(
+                            fontFamily: 'Gotham',
+                            decoration: TextDecoration.underline,
+                            color: Color.fromRGBO(123, 56, 255, 1),
+                            fontSize: 16,
+                            fontWeight: FontWeight.bold,
+                          ),
+                        ),
+                      ),
+                    ],
                   ),
                 ),
               ],

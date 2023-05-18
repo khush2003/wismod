@@ -16,8 +16,8 @@ void main() async {
   FirebaseMessaging messaging = FirebaseMessaging.instance;
 
   //Get device token here
-  /*final fcmToken = await FirebaseMessaging.instance.getToken();
-  print(fcmToken);*/
+  final fcmToken = await FirebaseMessaging.instance.getToken();
+  print(fcmToken);
 
   NotificationSettings settings = await messaging.requestPermission(
     alert: true,
@@ -47,7 +47,6 @@ void main() async {
 class Application extends StatelessWidget {
   const Application({Key? key}) : super(key: key);
 
-  @override
   void initState() {
     FirebaseMessaging _firebaseMessaging =
         FirebaseMessaging.instance; // Change here

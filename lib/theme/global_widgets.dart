@@ -18,6 +18,50 @@ import '../utils/app_utils.dart';
 // Column( children: [ThemedSwitch(),
 // Obx(() => Text(thc.isOn.value.toString()))]) in Scaffold body (This line shows the value)
 
+
+class VerticalSpace extends StatelessWidget {
+  /// Creates a vertical space.
+  ///
+  /// The [s] parameter specifies the scale of the gap.
+  ///
+  /// Scale is a multiple of 4
+  /// The default value of [s] is 1.0 which is also equivalent to 4 pixels.
+  const VerticalSpace({
+    this.s = 1.0,
+    Key? key,
+  }) : super(key: key);
+
+  /// The scale of the gap.
+  final double s;
+
+  @override
+  Widget build(BuildContext context) {
+    return SizedBox(height: s * 4);
+  }
+}
+
+class HorizontalSpace extends StatelessWidget {
+  /// Creates a horizontal space.
+  ///
+  /// The [s] parameter specifies the scale of the gap.
+  ///
+  /// Scale is a multiple of 4
+  /// The default value of [s] is 1.0 which is also equivalent to 4 pixels.
+  const HorizontalSpace({
+    this.s = 1.0,
+    Key? key,
+  }) : super(key: key);
+
+  /// The width of the space.
+  final double s;
+
+  @override
+  Widget build(BuildContext context) {
+    return SizedBox(width: s * 4);
+  }
+}
+
+
 class PrimaryButtonMedium extends StatelessWidget {
   final VoidCallback? onPressed;
   final Widget child;

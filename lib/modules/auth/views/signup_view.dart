@@ -64,24 +64,18 @@ class SignUpView extends StatelessWidget {
                     controller: signUpController.confirmPasswordController,
                     validator: signUpController.validateConfirmPassword,
                     obscureText: true),
-                const SizedBox(height: 24),
-                // Buttons
+                const SizedBox(height: 16),
                 Center(
                   child: Column(
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: [
-                      PrimaryButtonMedium(
-                        onPressed: () async {
-                          await signUpController.registerUser();
-                        },
-                        child: const Text('Create Account'),
-                      ),
-                      const SizedBox(height: 16),
-                      OutlineButtonMedium(
-                        onPressed: () => Get.offNamed(Routes.login),
-                        child: const Padding(
-                          padding: EdgeInsets.symmetric(horizontal: 38.0),
-                          child: Text('Log In'),
+                      SizedBox(
+                        width: double.infinity,
+                        child: PrimaryButtonMedium(
+                          onPressed: () async {
+                            await signUpController.registerUser();
+                          },
+                          child: const Text('Create Account'),
                         ),
                       ),
                     ],

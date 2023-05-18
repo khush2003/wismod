@@ -180,9 +180,9 @@ class PictureSection extends StatelessWidget {
       child: ClipRRect(
           borderRadius: const BorderRadius.only(
               topLeft: Radius.circular(20), topRight: Radius.circular(20)),
-          child: Image.network(event.imageUrl ?? placeholderImage,
+          child: Image.network(event.imageUrl ?? placeholderImageEvent,
               errorBuilder: (context, error, stackTrace) => Image.network(
-                    placeholderImage,
+                    placeholderImageEvent,
                     fit: BoxFit.cover,
                   ),
               fit: BoxFit.cover)),

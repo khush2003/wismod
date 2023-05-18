@@ -15,6 +15,7 @@ void sucessSnackBar(String message) {
       colorText: Colors.white,
       backgroundColor: Colors.green);
 }
+
 void errorSnackBar(String message) {
   Get.snackbar("Error", message,
       snackPosition: SnackPosition.BOTTOM,
@@ -25,11 +26,20 @@ void errorSnackBar(String message) {
 const placeholderImage =
     'https://perspectives.agf.com/wp-content/plugins/accelerated-mobile-pages/images/SD-default-image.png';
 
+const placeholderImageEvent = 'https://imgur.com/AHyN72z.png';
+
+const placeholderImageEventButE = 'https://i.imgur.com/xZ79vFv.png';
+
+const placeholderImageUser = 'https://i.imgur.com/cM8lKpP.png';
+
+const placeholderImageUserPurple = 'https://imgur.com/jcVOD5C.png';
+
 /// Returns a SizedBox widget with a specified width [gap].
 /// By default, [gap] is set to 8.
 SizedBox addHorizontalSpace([double gap = 8]) {
   return SizedBox(width: gap);
 }
+
 const chatboxWidthRatio = 0.7;
 String formatDateTime(DateTime dateTime) {
   final now = DateTime.now();

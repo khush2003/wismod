@@ -41,7 +41,6 @@ class LogInController extends GetxController {
       final email = getCorrectEmail(emailController.text.trim());
       try {
         await FirebaseAuth.instance.sendPasswordResetEmail(email: email);
-        print(email);
         buttonclicked = true;
       } catch (error) {
         errorSnackBar(error.toString());

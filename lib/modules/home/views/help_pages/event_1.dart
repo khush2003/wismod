@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:unicons/unicons.dart';
+import 'package:wismod/utils/uni_icon.dart';
 
 class HelpEvent1 extends StatelessWidget {
   const HelpEvent1({super.key});
@@ -95,11 +97,13 @@ class BodySearch1 extends StatelessWidget {
                         style: Theme.of(context).textTheme.bodyMedium,
                       ),
                       const WidgetSpan(
-                        child: Padding(
-                          padding: EdgeInsets.only(right: 1.0),
-                          child: Icon(Icons.home, size: 20),
+                          child: Padding(
+                        padding: EdgeInsets.only(
+                          right: 1.0,
                         ),
-                      ),
+                        child: UnIcon(UniconsLine.estate,
+                            size: 20, color: Color.fromRGBO(123, 56, 255, 1)),
+                      )),
                       TextSpan(
                         text: "in far left of the bottom bar",
                         style: Theme.of(context).textTheme.bodyMedium,
@@ -207,7 +211,11 @@ class BodySearch3 extends StatelessWidget {
                       const WidgetSpan(
                         child: Padding(
                           padding: EdgeInsets.only(right: 1.0),
-                          child: Icon(Icons.filter_alt_outlined, size: 20),
+                          child: UnIcon(
+                            UniconsLine.sliders_v,
+                            color: Color.fromRGBO(123, 56, 255, 1),
+                            size: 20,
+                          ),
                         ),
                       ),
                       TextSpan(

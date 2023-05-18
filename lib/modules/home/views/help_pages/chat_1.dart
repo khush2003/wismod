@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:unicons/unicons.dart';
+import 'package:wismod/utils/uni_icon.dart';
 
 class HelpChat1 extends StatelessWidget {
   const HelpChat1({super.key});
@@ -92,7 +94,7 @@ class BodyChat1 extends StatelessWidget {
                     children: [
                       TextSpan(
                         text:
-                            "When you click \"Read more\" button of events, you will see more details, which including the option to join the chat of that event",
+                            "When you click \"Read more\" button of events, you will see more details, which's including the option to join the chat of that event.",
                         style: Theme.of(context).textTheme.bodyMedium,
                       ),
                     ],
@@ -250,7 +252,8 @@ class BodyCreate5 extends StatelessWidget {
                       const WidgetSpan(
                         child: Padding(
                           padding: EdgeInsets.only(right: 1.0),
-                          child: Icon(Icons.chat, size: 20),
+                          child: UnIcon(UniconsLine.comment,
+                              size: 20, color: Color.fromRGBO(123, 56, 255, 1)),
                         ),
                       ),
                       TextSpan(
@@ -260,7 +263,8 @@ class BodyCreate5 extends StatelessWidget {
                       const WidgetSpan(
                         child: Padding(
                           padding: EdgeInsets.only(right: 1.0),
-                          child: Icon(Icons.home, size: 20),
+                          child: UnIcon(UniconsLine.estate,
+                              size: 20, color: Color.fromRGBO(123, 56, 255, 1)),
                         ),
                       ),
                       TextSpan(

@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:wismod/utils/app_utils.dart';
 
 class WhatWisMod extends StatelessWidget {
   const WhatWisMod({super.key});
@@ -8,7 +9,7 @@ class WhatWisMod extends StatelessWidget {
     return Scaffold(
         appBar: AppBar(
             title: const Text(
-          "Event managing",
+          "WisMod!?",
           style: TextStyle(
               fontFamily: "Gotham",
               fontWeight: FontWeight.bold,
@@ -25,13 +26,7 @@ class WhatWisMod extends StatelessWidget {
                     padding: const EdgeInsets.fromLTRB(50.0, 0.0, 50.0, 20.0),
                     child: Column(
                       children: const [
-                        Topic(
-                          label: 'How to manage event',
-                        ),
                         BodyManage1(icon: Icons.circle),
-                        BodyManage2(icon: Icons.circle),
-                        BodyManage3(icon: Icons.circle),
-                        BodyManage4(),
                       ],
                     ),
                   ),
@@ -67,52 +62,63 @@ class BodyManage1 extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Align(
-      alignment: Alignment.topLeft,
-      child: Padding(
-        padding: const EdgeInsets.only(bottom: 10.0),
-        child: Row(
+    return Column(
+      children: [
+        Column(
           children: [
-            Transform.translate(
-              offset: const Offset(0,
-                  -19), // Adjust the offset to align the icon with the desired position
-              child: Icon(
-                icon,
-                size: 17,
-              ),
+            Image.asset(
+              'assets/images/IconWisMod.png',
+              height: 90,
+              fit: BoxFit.fill,
+              color: const Color.fromRGBO(123, 56, 255, 1),
             ),
-            const SizedBox(
-              width: 10,
-            ),
-            Expanded(
-              child: Align(
-                alignment: Alignment.topLeft,
-                child: RichText(
-                  text: TextSpan(
-                    children: [
-                      TextSpan(
-                        text:
-                            "Go to Dashboard page by clicking on the Dashboard icon",
-                        style: Theme.of(context).textTheme.bodyMedium,
-                      ),
-                      const WidgetSpan(
-                        child: Padding(
-                          padding: EdgeInsets.only(right: 1.0),
-                          child: Icon(Icons.dashboard, size: 20),
-                        ),
-                      ),
-                      TextSpan(
-                        text: "in the middle of the bottom bar",
-                        style: Theme.of(context).textTheme.bodyMedium,
-                      ),
-                    ],
-                  ),
+            Column(
+              children: [
+                Column(
+                  children: [
+                    const Text(
+                      'WISMOD',
+                      textAlign: TextAlign.center,
+                      style: TextStyle(
+                          fontFamily: "Gotham",
+                          fontWeight: FontWeight.bold,
+                          fontSize: 72,
+                          color: Color.fromRGBO(123, 56, 255, 1)),
+                    ),
+                    addVerticalSpace(20)
+                  ],
                 ),
-              ),
+              ],
             ),
           ],
         ),
-      ),
+        Align(
+          alignment: Alignment.topLeft,
+          child: Padding(
+            padding: const EdgeInsets.only(bottom: 10.0),
+            child: Row(
+              children: [
+                Expanded(
+                  child: Align(
+                    alignment: Alignment.center,
+                    child: RichText(
+                      text: TextSpan(
+                        children: [
+                          TextSpan(
+                            text:
+                                "WisMod is a mobile application that connects KMUTT students with like-minded individuals. You can find events that you liked or even start it by yourself! Find new friends. Work and do activities together to make your events have experiences that're unforgettable! ",
+                            style: Theme.of(context).textTheme.bodyMedium,
+                          ),
+                        ],
+                      ),
+                    ),
+                  ),
+                ),
+              ],
+            ),
+          ),
+        ),
+      ],
     );
   }
 }

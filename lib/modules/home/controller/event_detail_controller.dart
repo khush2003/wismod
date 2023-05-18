@@ -99,6 +99,7 @@ class EventDetailController extends GetxController {
 
   void upvoteEvent() async {
     _event.upvoteEvent(eventData.value);
+    eventData.refresh();
     setIsUpvoted();
   }
 
@@ -141,7 +142,6 @@ class EventDetailController extends GetxController {
       memberList.addAll(_event.allEventMemberList[eventData.value]!);
     }
     if (_event.allEventJoinRequests.containsKey(eventData.value)) {
-      
       requestedUsers.addAll(_event.allEventJoinRequests[eventData.value]!);
     }
   }

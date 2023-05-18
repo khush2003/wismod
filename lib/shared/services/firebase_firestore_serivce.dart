@@ -182,6 +182,21 @@ class FirebaseService {
     });
   }
 
+  Stream<AppUser> getUserStream(String userId) {
+  return FirebaseFirestore.instance
+      .collection('Users')
+      .doc(userId)
+      .snapshots()
+      .map((docSnapshot) {
+        if (docSnapshot.data() != null) {
+          return AppUser.fromMap(docSnapshot.data()!, userId);
+        } else {
+          return AppUser.empty(); // or return an appropriate default value
+        }
+      });
+}
+
+
   Future<void> updateProfilePicture(String userId, String imagePath) async {
     // Update the user's profile picture in Firestore
     await _firestore.collection('Users').doc(userId).update({

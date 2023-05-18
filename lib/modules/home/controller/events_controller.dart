@@ -82,6 +82,7 @@ class EventsController extends GetxController {
       }
     });
   }
+
   @override
   void onClose() {
     eventSubscription
@@ -249,6 +250,7 @@ class EventsController extends GetxController {
   }
 
   void denyJoin(AppUser user, Event event) async {
+    print('Sucess!');
     requestedEvents.removeWhere((e) => e.id == event.id);
     allEventJoinRequests[event]?.removeWhere((u) => u.uid == user.uid);
     allEventJoinRequests.update(event, (value) {

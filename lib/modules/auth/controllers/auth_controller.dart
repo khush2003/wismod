@@ -1,5 +1,8 @@
+import 'dart:async';
+
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:get/get.dart';
+import 'package:wismod/modules/home/controller/events_controller.dart';
 import 'package:wismod/shared/models/user.dart';
 import 'package:wismod/shared/services/firebase_firestore_serivce.dart';
 import 'package:wismod/utils/app_utils.dart';
@@ -16,6 +19,7 @@ class AuthController extends GetxController {
 
   /// A reactive variable that holds the currently signed-in user
   late Rx<User?> firebaseUser;
+  StreamSubscription<AppUser>? userSubscription;
 
   @override
   void onInit() async {
@@ -27,7 +31,26 @@ class AuthController extends GetxController {
       appUser(await _firestore.getUserById(_auth.currentUser!.uid));
     }
     firebaseUser.bindStream(_auth.userChanges());
+    await fetchUserStream();
     ever(firebaseUser, _updateUserAuto);
+  }
+
+  Future<void> fetchUserStream() async {
+    if (_auth.currentUser != null) {
+      userSubscription = _firestore
+          .getUserStream(_auth.currentUser!.uid)
+          .listen((updatedUser) {
+        appUser(updatedUser);
+        try {EventsController.instance.initializeLists();} catch(e) {}
+      });
+    }
+  }
+
+  @override
+  void onClose() {
+    userSubscription
+        ?.cancel(); // Cancel the subscription when closing the controller
+    super.onClose();
   }
 
   Future<void> _updateUserAuto(User? u) async {

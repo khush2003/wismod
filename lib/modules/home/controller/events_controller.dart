@@ -1,5 +1,7 @@
 import 'dart:async';
 
+import 'package:firebase_core/firebase_core.dart';
+import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:get/get.dart';
 import 'package:wismod/modules/auth/controllers/auth_controller.dart';
 import 'package:wismod/modules/home/controller/chat_controller.dart';
@@ -267,6 +269,7 @@ class EventsController extends GetxController {
       errorSnackBar("Event has reached it's member limit! ");
     } else {
       final event = getEventInList(eventData.id!, events);
+      //Firebase.messaging.subscribeToTopic();
       if (event == null) {
         return;
       }

@@ -7,7 +7,6 @@ import 'package:wismod/modules/auth/controllers/auth_controller.dart';
 import 'package:wismod/modules/home/controller/events_controller.dart';
 import 'package:wismod/shared/models/event.dart';
 import 'package:wismod/shared/services/firebase_firestore_serivce.dart';
-import 'package:wismod/shared/services/notification_service.dart';
 import 'package:wismod/utils/app_utils.dart';
 
 import '../../../routes/routes.dart';

@@ -1,10 +1,20 @@
+import 'dart:convert';
+
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_messaging/firebase_messaging.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'package:get/get.dart';
 import 'package:unicons/unicons.dart';
+import 'package:wismod/modules/auth/controllers/auth_controller.dart';
 import 'package:wismod/modules/home/controller/home_controller.dart';
-import 'package:wismod/shared/services/notification_service.dart';
+import 'package:wismod/modules/home/controller/message_controller.dart';
+//import 'package:wismod/shared/services/firebase_firestore_serivce.dart';
+//import 'package:wismod/shared/services/notification_service.dart';
 import 'package:wismod/utils/app_utils.dart';
 import 'package:wismod/utils/uni_icon.dart';
+import 'package:http/http.dart' as http;
 
 import '../../../routes/routes.dart';
 import '../../../shared/models/event.dart';
@@ -12,9 +22,109 @@ import '../../../theme/global_widgets.dart';
 import '../../../theme/theme_data.dart';
 import 'filter_options.dart';
 
-class HomeView extends StatelessWidget {
-  HomeView({super.key});
+class HomeScreenView extends StatefulWidget {
+  const HomeScreenView({Key? key}) : super(key: key);
+
+  @override
+  State<HomeScreenView> createState() => HomeView();
+}
+
+class HomeView extends State<HomeScreenView> {
   final homeController = Get.put(HomeController());
+  final msgController = Get.put(MessageController());
+  final _auth = AuthController.instance;
+
+  late FlutterLocalNotificationsPlugin flutterLocalNotificationsPlugin =
+      FlutterLocalNotificationsPlugin();
+
+  String? mtoken = " ";
+
+  @override
+  void initState() {
+    super.initState();
+    requestPermission();
+    getToken();
+    initInfo();
+    msgController.setupInteractMessage(context);
+  }
+
+  initInfo() {
+    var androidInitialize =
+        const AndroidInitializationSettings('@mipmap/icon_wismod');
+    var iOSInitialize = const DarwinInitializationSettings(
+      requestAlertPermission: true,
+      requestBadgePermission: true,
+      requestSoundPermission: true,
+    );
+    var initializationsSettings =
+        InitializationSettings(android: androidInitialize, iOS: iOSInitialize);
+    flutterLocalNotificationsPlugin.initialize(initializationsSettings,
+        onDidReceiveNotificationResponse:
+            (NotificationResponse notificationResponse) async {});
+
+    FirebaseMessaging.onMessage.listen((RemoteMessage message) async {
+      print(".............On Message.............");
+      print(
+          "onMessage: ${message.notification?.title}/${message.notification?.body}}");
+
+      BigTextStyleInformation bigTextStyleInformation = BigTextStyleInformation(
+        message.notification!.body.toString(),
+        htmlFormatBigText: true,
+        contentTitle: message.notification!.title.toString(),
+        htmlFormatContentTitle: true,
+      );
+      AndroidNotificationDetails androidPlatformChannelSpecifics =
+          AndroidNotificationDetails(
+        'dbfood',
+        'dbfood',
+        importance: Importance.max,
+        styleInformation: bigTextStyleInformation,
+        priority: Priority.max,
+        playSound: false,
+      );
+      NotificationDetails platformChannelSpecifics = NotificationDetails(
+          android: androidPlatformChannelSpecifics,
+          iOS: DarwinNotificationDetails());
+      await flutterLocalNotificationsPlugin.show(0, message.notification?.title,
+          message.notification?.body, platformChannelSpecifics,
+          payload: message.data['body']);
+    });
+  }
+
+  void getToken() async {
+    await FirebaseMessaging.instance.getToken().then((token) {
+      setState(() {
+        mtoken = token;
+        //print('$mtoken');
+      });
+      saveToken('$mtoken');
+    });
+  }
+
+  void saveToken(String token) async {
+    await FirebaseFirestore.instance
+        .collection('Users')
+        .doc(_auth.firebaseUser.value!.uid)
+        .set({'Token': token}, SetOptions(merge: true)).then((value) {
+      //print(token);
+    });
+  }
+
+  void requestPermission() async {
+    FirebaseMessaging messaging = FirebaseMessaging.instance;
+
+    NotificationSettings settings = await messaging.requestPermission(
+      alert: true,
+      announcement: false,
+      badge: true,
+      carPlay: false,
+      criticalAlert: false,
+      provisional: false,
+      sound: true,
+    );
+
+    print('User granted permission: ${settings.authorizationStatus}');
+  }
 
   @override
   Widget build(BuildContext context) {

@@ -1,3 +1,4 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:wismod/modules/auth/controllers/auth_controller.dart';
 import 'package:wismod/shared/models/message.dart';
@@ -9,6 +10,13 @@ import 'package:wismod/modules/home/controller/message_controller.dart';
 
 const double textTimeMargin = 30;
 
+final _auth = AuthController.instance;
+
+/*final DocumentSnapshot snap = FirebaseFirestore.instance
+    .collection('Users')
+    .doc(_auth.firebaseUser.value!.uid)
+    .get() as DocumentSnapshot<Map<String, dynamic>>;*/
+//String token = snap['Token'];
 // class ScrollPositionController extends GetxController {
 //   final ScrollController scrollController = ScrollController();
 //   @override
@@ -192,6 +200,13 @@ class EnterMessageBar extends StatelessWidget {
                 onPressed: () {
                   if (controller.messageTextController.text.isNotEmpty) {
                     controller.createMessage();
+
+                    controller.sendPushMessage(
+                        _auth.appUser.value.token.toString(),
+                        _auth.appUser.value.getName() +
+                            ": " +
+                            controller.messageTextController.text,
+                        controller.eventData.value.title);
                   }
                 },
               ),

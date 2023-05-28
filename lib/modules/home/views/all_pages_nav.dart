@@ -26,14 +26,13 @@ class AllPagesNav extends StatelessWidget {
             child: Obx(() => IndexedStack(
                   index: k.tabIndex.value,
                   children: [
-                    HomeView(),
+                    HomeScreenView(),
                     ChatRoomView(),
                     DashboardView(),
                     const SettingsView(),
                     AdminView()
                   ],
                 ))),
-
         bottomNavigationBar: Obx(() => DecoratedBox(
               decoration: const BoxDecoration(
                   border:

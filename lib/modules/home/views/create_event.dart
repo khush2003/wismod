@@ -3,7 +3,6 @@ import 'package:flutter/services.dart';
 import 'package:get/get.dart';
 import 'package:wismod/modules/home/controller/create_event_controller.dart';
 import 'package:wismod/modules/home/controller/notification_controller.dart';
-import 'package:wismod/shared/services/notification_service.dart';
 import 'package:wismod/theme/theme_data.dart';
 import 'package:wismod/utils/app_utils.dart';
 // import 'package:image_picker_windows/image_picker_windows.dart';
@@ -61,11 +60,11 @@ class CreateEventView extends StatelessWidget {
                                   icon: controller.imageUrl.value == ''
                                       ? const Icon(Icons.image_outlined)
                                       : Expanded(
-                                        child: Image.network(
+                                          child: Image.network(
                                             controller.imageUrl.value,
                                             fit: BoxFit.fill,
                                           ),
-                                      ),
+                                        ),
                                   onPressed: () => controller.uploadImage(),
                                   label: const Text(''),
                                   style: ElevatedButton.styleFrom(
@@ -243,14 +242,7 @@ class CreateEventView extends StatelessWidget {
                                 onPressed: () => [
                                   controller.createEvent(),
                                   if (notiController.isEventNotification(true))
-                                    {
-                                      NotificationService().showNotification(
-                                          title:
-                                              'New Event from ${controller.eventNameController.text}',
-                                          body: controller
-                                              .eventDetailController.text
-                                              .trim())
-                                    }
+                                    {}
                                 ],
                                 child: const Text('Create Event'),
                               ),

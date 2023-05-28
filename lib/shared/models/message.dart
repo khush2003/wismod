@@ -9,7 +9,7 @@ class Message {
   final DateTime? sentOn;
   final String? eventId;
 
-  Message( {
+  Message({
     this.id,
     required this.message,
     required this.sentBy,

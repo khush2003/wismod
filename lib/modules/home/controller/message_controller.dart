@@ -1,5 +1,9 @@
 import 'dart:async';
+import 'dart:convert';
+import 'package:firebase_messaging/firebase_messaging.dart';
+import 'package:http/http.dart' as http;
 
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:wismod/modules/home/controller/chat_controller.dart';
@@ -81,5 +85,59 @@ class MessageController extends GetxController {
     } catch (e) {
       errorSnackBar('Message has not been sent!');
     }
+  }
+
+  void sendPushMessage(String token, String body, String title) async {
+    try {
+      await http.post(
+        Uri.parse('https://fcm.googleapis.com/fcm/send'),
+        headers: <String, String>{
+          'Content-Type': 'application/json',
+          'Authorization':
+              'key=AAAAq4O_glM:APA91bG_b1Bqqc3nU0SnJ39DZRjvGz_DFOEcrYFUOB6GUtTn7k7ML8EIva60g4ucTaBb_wSzR6CGtOmjCj9eqo4fUidkQuDJMGYyQl5n51zGyQ5X-x5BnTo9blRSRja-cEFpzSTHKU2P'
+        },
+        body: jsonEncode(
+          <String, dynamic>{
+            'priority': 'high',
+            'data': <String, dynamic>{
+              'click_action': 'WISMOD',
+              'status': 'done',
+              'body': body,
+              'title': title,
+            },
+            'notification': <String, dynamic>{
+              'title': title,
+              'body': body,
+              'android channel id': 'dbfood'
+            },
+            'to': token,
+          },
+        ),
+      );
+    } catch (e) {
+      if (kDebugMode) {
+        print("error push notification");
+      }
+    }
+  }
+
+  Future<void> setupInteractMessage(BuildContext context) async {
+    RemoteMessage? initialMessage =
+        await FirebaseMessaging.instance.getInitialMessage();
+
+    if (initialMessage != null) {
+      handlerMessage(context, initialMessage);
+    }
+
+    FirebaseMessaging.onMessageOpenedApp.listen((event) {
+      handlerMessage(context, event);
+    });
+  }
+
+  void handlerMessage(BuildContext context, RemoteMessage message) {
+    _initialize();
+    /*final eventId = Get.parameters['id'] ?? '2l8UVLQgFin3dthssdlI';
+    eventData(_event.events.where((event) => event.id == eventId).first);*/
+    //Get.toNamed(Routes.chatting, parameters: {'id': event.id!});
   }
 }

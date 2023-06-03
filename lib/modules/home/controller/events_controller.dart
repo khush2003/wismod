@@ -234,15 +234,15 @@ class EventsController extends GetxController {
 
   void approveJoin(AppUser user, Event event) async {
     if ((event.members?.length ?? 0) < (event.totalCapacity ?? 2)) {
-      //TODO: Subscribe to changes in joined List and requested List
       requestedEvents.removeWhere((e) => e.id == event.id);
       allEventJoinRequests[event]?.removeWhere((u) => u.uid == user.uid);
-      joinedEvents.add(event);
       events[getIndexOfEvent(event, events)].members!.add(user.uid!);
       allEventJoinRequests.update(event, (value) {
         value.remove(user);
         return value;
       });
+
+
       await _firestore.approveJoin(user, event).catchError((e) {
         errorSnackBar("Error! ${e.toString()}");
       });
@@ -252,7 +252,6 @@ class EventsController extends GetxController {
   }
 
   void denyJoin(AppUser user, Event event) async {
-    print('Sucess!');
     requestedEvents.removeWhere((e) => e.id == event.id);
     allEventJoinRequests[event]?.removeWhere((u) => u.uid == user.uid);
     allEventJoinRequests.update(event, (value) {
@@ -261,6 +260,31 @@ class EventsController extends GetxController {
     });
     await _firestore.denyJoin(user, event).catchError((e) {
       errorSnackBar("Error! ${e.toString()}");
+    });
+  }
+  
+  Future<void> requestJoin(Event event) async {
+    var isAdd = true;
+    if (checkEventInList(event.id!, requestedEvents)) {
+      isAdd = false;
+      requestedEvents.removeWhere((e) => e.id == event.id);
+      _auth.appUser.value.requestedEvents?.remove(event.id!);
+    } else {
+      requestedEvents.add(event);
+      _auth.appUser.value.requestedEvents?.add(event.id!);
+    }
+    await _firestore
+        .requestEvent(_auth.user.uid!, event.id!)
+        .catchError((e) {
+      errorSnackBar(
+          "Error Connecting to Database, Please check network connection!");
+      if (isAdd) {
+        requestedEvents.removeWhere((e) => e.id == event.id);
+        _auth.appUser.value.requestedEvents?.remove(event.id!);
+      } else {
+        requestedEvents.add(event);
+        _auth.appUser.value.requestedEvents?.add(event.id!);
+      }
     });
   }
 
@@ -305,31 +329,11 @@ class EventsController extends GetxController {
           }
         });
       } else {
-        var isAdd = true;
-        if (checkEventInList(event.id!, requestedEvents)) {
-          isAdd = false;
-          requestedEvents.removeWhere((e) => e.id == event.id);
-          _auth.appUser.value.requestedEvents?.remove(event.id!);
-        } else {
-          requestedEvents.add(event);
-          _auth.appUser.value.requestedEvents?.add(event.id!);
-        }
-        await _firestore
-            .requestEvent(_auth.user.uid!, event.id!)
-            .catchError((e) {
-          errorSnackBar(
-              "Error Connecting to Database, Please check network connection!");
-          if (isAdd) {
-            requestedEvents.removeWhere((e) => e.id == event.id);
-            _auth.appUser.value.requestedEvents?.remove(event.id!);
-          } else {
-            requestedEvents.add(event);
-            _auth.appUser.value.requestedEvents?.add(event.id!);
-          }
-        });
+        await requestJoin(event);
       }
     }
   }
+
 
   List<String> sortTagsByFrequency() {
     // Count the frequency of each tag

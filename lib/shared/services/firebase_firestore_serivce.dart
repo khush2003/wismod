@@ -183,19 +183,18 @@ class FirebaseService {
   }
 
   Stream<AppUser> getUserStream(String userId) {
-  return FirebaseFirestore.instance
-      .collection('Users')
-      .doc(userId)
-      .snapshots()
-      .map((docSnapshot) {
-        if (docSnapshot.data() != null) {
-          return AppUser.fromMap(docSnapshot.data()!, userId);
-        } else {
-          return AppUser.empty(); // or return an appropriate default value
-        }
-      });
-}
-
+    return FirebaseFirestore.instance
+        .collection('Users')
+        .doc(userId)
+        .snapshots()
+        .map((docSnapshot) {
+      if (docSnapshot.data() != null) {
+        return AppUser.fromMap(docSnapshot.data()!, userId);
+      } else {
+        return AppUser.empty(); // or return an appropriate default value
+      }
+    });
+  }
 
   Future<void> updateProfilePicture(String userId, String imagePath) async {
     // Update the user's profile picture in Firestore
@@ -220,6 +219,7 @@ class FirebaseService {
     final documentUsers = _firestore.collection('Users').doc(user.uid!);
     final documentEvents = _firestore.collection('Events').doc(event.id);
     var members = <String>[];
+    var upvotes = 0;
     var joinedEvents = <String>[];
     var requestedEvents = <String>[];
     await documentUsers.get().then((doc) {
@@ -244,6 +244,7 @@ class FirebaseService {
     });
     await documentEvents.get().then((doc) {
       if (doc.exists) {
+        upvotes = doc['Upvotes'] as int;
         members = doc['Members'] != null
             ? List<String>.from(doc['Members'] as List<dynamic>)
             : <String>[]; // Handle the case where tags is null or undefined.
@@ -261,7 +262,7 @@ class FirebaseService {
     await _firestore
         .collection('Events')
         .doc(event.id)
-        .update({'Members': members});
+        .update({'Members': members, 'Upvotes': upvotes});
   }
 
   Future<void> denyJoin(AppUser user, Event event) async {
@@ -703,6 +704,26 @@ class FirebaseService {
   Future<void> requestEvent(String userId, String eventId) async {
     final documentUsers = _firestore.collection('Users').doc(userId);
     var requestedEvents = <String>[];
+    final documentEvents = _firestore.collection('Events').doc(eventId);
+
+    var updated = false;
+
+    await documentEvents.get().then((doc) {
+      if (doc.exists) {
+        try {
+           updated = doc['Updated'] as bool? ??
+            false; // Handle the case where upvotes is null or undefined.
+        } catch (_){
+          updated = false;
+        }
+       
+      } else {
+        throw Exception('Event does not exist!');
+      }
+    });
+
+    updated = !updated;
+
     await documentUsers.get().then((doc) {
       if (doc.exists) {
         requestedEvents = doc['RequestedEvents'] != null
@@ -721,6 +742,10 @@ class FirebaseService {
         .collection('Users')
         .doc(userId)
         .update({'RequestedEvents': requestedEvents});
+    await _firestore
+        .collection('Events')
+        .doc(eventId)
+        .update({'Updated': updated});
   }
 
   Future<void> bookmarkEvent(String userId, String eventId) async {

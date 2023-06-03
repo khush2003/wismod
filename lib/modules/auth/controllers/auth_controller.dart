@@ -41,7 +41,9 @@ class AuthController extends GetxController {
           .getUserStream(_auth.currentUser!.uid)
           .listen((updatedUser) {
         appUser(updatedUser);
-        try {EventsController.instance.initializeLists();} catch(e) {}
+        try {
+          EventsController.instance.initializeLists();
+        } catch (e) {}
       });
     }
   }

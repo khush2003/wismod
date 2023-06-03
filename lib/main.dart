@@ -12,9 +12,25 @@ Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
   await Firebase.initializeApp(options: DefaultFirebaseOptions.currentPlatform);
   await FirebaseMessaging.instance.getInitialMessage();
+  await FirebaseMessaging.instance.subscribeToTopic('all');
   //FirebaseMessaging.onBackgroundMessage(_firebaseMessagingBackgroundHandler);
 
   //NotificationService().initNotification();
+
+  /*try{
+    if(GetPlatform.isMobile){
+      final RemoteMessage? remoteMessage = await FirebaseMessaging.instance.getInitialMessage();
+      if(remoteMessage != null){
+        print("Remote Message: ${remoteMessage.notification!.title}");
+        print("Remote Message: ${remoteMessage.notification!.body}");
+      }
+      FirebaseMessaging.onBackgroundMessage()
+    }
+  }
+  catch(e){
+    print(e);
+  }*/
+
   Get.put(AuthController());
   runApp(const Application());
 }

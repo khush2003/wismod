@@ -242,7 +242,9 @@ class CreateEventView extends StatelessWidget {
                                 onPressed: () => [
                                   controller.createEvent(),
                                   if (notiController.isEventNotification(true))
-                                    {}
+                                    {
+                                      controller.sendPushMessage(controller.eventDetailController.text, controller.eventNameController.text)
+                                    }
                                 ],
                                 child: const Text('Create Event'),
                               ),

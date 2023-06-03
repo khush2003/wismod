@@ -200,7 +200,7 @@ class EnterMessageBar extends StatelessWidget {
                 onPressed: () {
                   if (controller.messageTextController.text.isNotEmpty) {
                     controller.createMessage();
-
+                    //for()
                     controller.sendPushMessage(
                         // change this token to people who subscribe to the event
                         _auth.appUser.value.token.toString(),

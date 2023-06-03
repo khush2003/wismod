@@ -1,3 +1,4 @@
+
 import 'dart:async';
 import 'dart:convert';
 import 'package:firebase_messaging/firebase_messaging.dart';
@@ -121,6 +122,9 @@ class MessageController extends GetxController {
     }
   }
 
+  
+
+  /*
   Future<void> setupInteractMessage(BuildContext context) async {
     RemoteMessage? initialMessage =
         await FirebaseMessaging.instance.getInitialMessage();
@@ -133,11 +137,13 @@ class MessageController extends GetxController {
       handlerMessage(context, event);
     });
   }
-
+  
   void handlerMessage(BuildContext context, RemoteMessage message) {
-    _initialize();
-    /*final eventId = Get.parameters['id'] ?? '2l8UVLQgFin3dthssdlI';
-    eventData(_event.events.where((event) => event.id == eventId).first);*/
-    //Get.toNamed(Routes.chatting, parameters: {'id': event.id!});
+    //_initialize();
+    final eventId = Get.parameters['id'] ?? '2l8UVLQgFin3dthssdlI';
+    eventData(_event.events.where((event) => event.id == eventId).first);
+    Get.toNamed(Routes.chatting, parameters: {'id': event.id!});
   }
+  */
+  
 }

@@ -1,20 +1,17 @@
-import 'dart:convert';
-
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
-import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'package:get/get.dart';
 import 'package:unicons/unicons.dart';
 import 'package:wismod/modules/auth/controllers/auth_controller.dart';
+import 'package:wismod/modules/home/controller/chat_controller.dart';
 import 'package:wismod/modules/home/controller/home_controller.dart';
 import 'package:wismod/modules/home/controller/message_controller.dart';
 //import 'package:wismod/shared/services/firebase_firestore_serivce.dart';
 //import 'package:wismod/shared/services/notification_service.dart';
 import 'package:wismod/utils/app_utils.dart';
 import 'package:wismod/utils/uni_icon.dart';
-import 'package:http/http.dart' as http;
 
 import '../../../routes/routes.dart';
 import '../../../shared/models/event.dart';
@@ -31,8 +28,9 @@ class HomeScreenView extends StatefulWidget {
 
 class HomeView extends State<HomeScreenView> {
   final homeController = Get.put(HomeController());
-  final msgController = Get.put(MessageController());
+  //final msgController = Get.put(MessageController());
   final _auth = AuthController.instance;
+  final _chat = ChatController.instance;
 
   late FlutterLocalNotificationsPlugin flutterLocalNotificationsPlugin =
       FlutterLocalNotificationsPlugin();
@@ -45,7 +43,8 @@ class HomeView extends State<HomeScreenView> {
     requestPermission();
     getToken();
     initInfo();
-    msgController.setupInteractMessage(context);
+    //msgController.setupInteractMessage(context);
+    _chat.setupInteractMessage(context);
   }
 
   initInfo() {
@@ -80,7 +79,7 @@ class HomeView extends State<HomeScreenView> {
         importance: Importance.max,
         styleInformation: bigTextStyleInformation,
         priority: Priority.max,
-        playSound: false,
+        playSound: true,
       );
       NotificationDetails platformChannelSpecifics = NotificationDetails(
           android: androidPlatformChannelSpecifics,

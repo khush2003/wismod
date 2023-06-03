@@ -72,8 +72,7 @@ class EventDetailView extends StatelessWidget {
                                       fontSize: 16,
                                       fontWeight: FontWeight.w500,
                                       color: Colors.grey)),
-                              Obx(() => Text(
-                                  '${controller.eventData.value.upvotes} ▲',
+                              Obx(() => Text('${controller.upvotes} ▲',
                                   style: const TextStyle(
                                       fontSize: 16,
                                       fontWeight: FontWeight.w500,

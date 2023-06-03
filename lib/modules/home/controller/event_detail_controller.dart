@@ -3,7 +3,6 @@ import 'package:wismod/modules/auth/controllers/auth_controller.dart';
 import 'package:wismod/modules/home/controller/events_controller.dart';
 import 'package:wismod/shared/models/event.dart';
 import 'package:wismod/shared/models/user.dart';
-import '../../../shared/services/firebase_firestore_serivce.dart';
 import 'chat_controller.dart';
 
 class EventDetailController extends GetxController {
@@ -22,6 +21,7 @@ class EventDetailController extends GetxController {
   final Rx<bool> isRequested = false.obs;
   final Rx<bool> isOwnedEvent = false.obs;
   final Rx<bool> isMemberLimitReached = false.obs;
+  final Rx<int> upvotes = 0.obs;
 
   final memberList = <AppUser>[].obs;
   final requestedUsers = <AppUser>[].obs;
@@ -46,8 +46,13 @@ class EventDetailController extends GetxController {
     setIsBookmarked();
     setIsOwnedEvent();
     setIsMemberLimitReached();
+    setUpvotes();
     tags(eventData.value.tags);
     isLoading(false);
+  }
+
+  void setUpvotes() {
+    upvotes(eventData.value.upvotes);
   }
 
   void setIsUpvoted() {
@@ -99,8 +104,12 @@ class EventDetailController extends GetxController {
 
   void upvoteEvent() async {
     _event.upvoteEvent(eventData.value);
-    eventData.refresh();
     setIsUpvoted();
+    if (isUpvoted.value) {
+      upvotes(upvotes.value + 1);
+    } else {
+      upvotes(upvotes.value - 1);
+    }
   }
 
   void reportEvent() async {

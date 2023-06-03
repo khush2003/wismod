@@ -86,6 +86,15 @@ class EventDetailView extends StatelessWidget {
                           Divider(),
                           addVerticalSpace(4),
                           Text(
+                            eventData().description,
+                          ),
+                          addVerticalSpace(20),
+                          Text(
+                            'Event Information',
+                            style: TextStyle(fontWeight: FontWeight.bold),
+                          ),
+                          addVerticalSpace(4),
+                          Text(
                             'Location: ${eventData().location}',
                           ),
                           addVerticalSpace(4),
@@ -101,16 +110,7 @@ class EventDetailView extends StatelessWidget {
                                 style: TextStyle(
                                     fontSize: 16, fontWeight: FontWeight.w400)),
                           addVerticalSpace(10),
-                          Text(
-                            'Description',
-                            style: TextStyle(fontWeight: FontWeight.bold),
-                          ),
-                          addVerticalSpace(),
-                          Text(
-                            eventData().description,
-                          ),
-                          Divider(),
-                          addVerticalSpace(20),
+                          
                           const Text(
                             "Tags",
                             style: TextStyle(fontWeight: FontWeight.bold),
@@ -571,7 +571,7 @@ class ChatBox extends StatelessWidget {
                         softWrap: false,
                         overflow: TextOverflow.ellipsis,
                       ),
-                      addVerticalSpace(5),                
+                      addVerticalSpace(5),
                     ],
                   ),
                 ),

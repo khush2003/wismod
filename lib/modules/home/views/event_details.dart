@@ -545,31 +545,6 @@ class ChatBox extends StatelessWidget {
             Row(
               crossAxisAlignment: CrossAxisAlignment.center,
               children: [
-                Column(
-                  mainAxisAlignment: MainAxisAlignment.start,
-                  crossAxisAlignment: CrossAxisAlignment.center,
-                  mainAxisSize: MainAxisSize.min,
-                  children: [
-                    // ClipRRect(
-                    //   borderRadius: BorderRadius.circular(10),
-                    //   child: Image.network(
-                    //     eventData().eventOwner.userPhotoUrl ??
-                    //         'https://i.imgur.com/cM8lKpP.png',
-                    //     errorBuilder: (context, error, stackTrace) =>
-                    //         Image.network(
-                    //       'https://i.imgur.com/cM8lKpP.png',
-                    //       width: 82,
-                    //       height: 82,
-                    //       fit: BoxFit.cover,
-                    //     ),
-                    //     // Image size adjustment here
-                    //     width: 82,
-                    //     height: 82,
-                    //     fit: BoxFit.cover,
-                    //   ),
-                    // ),
-                  ],
-                ),
                 addHorizontalSpace(10),
                 Expanded(
                   child: Column(
@@ -578,7 +553,7 @@ class ChatBox extends StatelessWidget {
                     mainAxisSize: MainAxisSize.min,
                     children: [
                       Text(
-                        eventData().eventOwner.name,
+                        eventData().title,
                         style: const TextStyle(
                             fontFamily: "Gotham",
                             fontWeight: FontWeight.bold,
@@ -590,20 +565,13 @@ class ChatBox extends StatelessWidget {
                       ),
                       addVerticalSpace(5),
                       Text(
-                        eventData().eventOwner.department,
+                        'Owner: ${eventData().eventOwner.name}',
                         style: Theme.of(context).textTheme.bodyMedium,
                         maxLines: 1,
                         softWrap: false,
                         overflow: TextOverflow.ellipsis,
                       ),
-                      addVerticalSpace(5),
-                      Text(
-                        'Year: ${eventData().eventOwner.year}',
-                        style: Theme.of(context).textTheme.bodyMedium,
-                        maxLines: 1,
-                        softWrap: false,
-                        overflow: TextOverflow.ellipsis,
-                      ),
+                      addVerticalSpace(5),                
                     ],
                   ),
                 ),

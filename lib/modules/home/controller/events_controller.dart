@@ -399,7 +399,7 @@ class EventsController extends GetxController {
         bookmarkedEvents.add(event);
         _auth.appUser.value.bookmarkedEvents?.add(event.id!);
       }
-    }).then((value) => sucessSnackBar("Done"));
+    }).then((value) => sucessSnackBar("Bookmark sucessfully updated!"));
   }
 
   void reportEvent(Event eventData) async {

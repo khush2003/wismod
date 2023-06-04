@@ -240,11 +240,10 @@ class CreateEventView extends StatelessWidget {
                               width: double.infinity,
                               child: PrimaryButtonMedium(
                                 onPressed: () => [
-                                  controller.createEvent(),
-                                  if (notiController.isEventNotification(true))
-                                    {
-                                      controller.sendPushMessage(controller.eventDetailController.text, controller.eventNameController.text)
-                                    }
+                                  controller.createEvent(), 
+                                  //if(notiController.toggleSwitchNotification == true){
+                                  controller.sendPushMessage(controller.eventDetailController.text, controller.eventNameController.text)
+                                  //}
                                 ],
                                 child: const Text('Create Event'),
                               ),

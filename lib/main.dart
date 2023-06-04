@@ -17,20 +17,6 @@ Future<void> main() async {
 
   //NotificationService().initNotification();
 
-  /*try{
-    if(GetPlatform.isMobile){
-      final RemoteMessage? remoteMessage = await FirebaseMessaging.instance.getInitialMessage();
-      if(remoteMessage != null){
-        print("Remote Message: ${remoteMessage.notification!.title}");
-        print("Remote Message: ${remoteMessage.notification!.body}");
-      }
-      FirebaseMessaging.onBackgroundMessage()
-    }
-  }
-  catch(e){
-    print(e);
-  }*/
-
   Get.put(AuthController());
   runApp(const Application());
 }

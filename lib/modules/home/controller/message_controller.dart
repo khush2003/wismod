@@ -101,10 +101,11 @@ class MessageController extends GetxController {
           <String, dynamic>{
             'priority': 'high',
             'data': <String, dynamic>{
-              'click_action': 'WISMOD',
+              'click_action': 'FLUTTER_NOTIFICATION_CLICK',
               'status': 'done',
               'body': body,
               'title': title,
+              'sound': 'default',
             },
             'notification': <String, dynamic>{
               'title': title,

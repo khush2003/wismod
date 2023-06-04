@@ -206,16 +206,18 @@ class CreateEventController extends GetxController {
             'priority': 'high',
             'topic': 'all',
             'data': <String, dynamic>{
-              'click_action': 'WISMOD',
+              'click_action': 'FLUTTER_NOTIFICATION_CLICK',
               'status': 'done',
               'body': body,
               'title': title,
+              'sound': 'default',
             },
             'notification': <String, dynamic>{
               'title': title,
               'body': body,
               'android channel id': 'dbfood'
             },
+            'to': '/topics/all',
           },
         ),
       );

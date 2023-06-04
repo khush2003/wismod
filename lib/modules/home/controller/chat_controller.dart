@@ -3,7 +3,6 @@ import 'dart:async';
 import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:wismod/modules/home/controller/message_controller.dart';
 import 'package:wismod/routes/routes.dart';
 import 'package:wismod/shared/models/event.dart';
 import 'package:wismod/shared/models/message.dart';

@@ -251,10 +251,8 @@ class ProfileSection extends StatelessWidget {
               child: ClipRRect(
                 borderRadius: BorderRadiusDirectional.circular(500),
                 child: Obx(() => Image.network(
-                    profilePictureController.imageUrl.value.isEmpty
-                        ? _auth.appUser.value.profilePicture ??
-                            placeholderImageUserPurple
-                        : profilePictureController.imageUrl.value,
+                   profilePictureController.profilePictureDisplay.value ?? 
+                        placeholderImageUserPurple,
                     errorBuilder: (context, error, stackTrace) => Image.network(
                           placeholderImageUserPurple,
                           fit: BoxFit.fill,

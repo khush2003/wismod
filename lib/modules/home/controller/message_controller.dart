@@ -65,6 +65,7 @@ class MessageController extends GetxController {
 
   void blockChatGroup() async {
     _chat.blockChatGroup(eventData.value);
+    await FirebaseMessaging.instance.unsubscribeFromTopic(eventData.value.id!);
     Get.back();
   }
 
@@ -83,12 +84,16 @@ class MessageController extends GetxController {
       // messages.add(message);
       ChatController.instance.latestMessages
           .addAll({eventData.value.id!: message});
+      /*if(_auth.appUser.value.uid != message.sentBy){
+      sendPushMessage(
+          eventData.value.id!, _auth.appUser.value.getName()+": "+messageTextController.text, eventData.value.title);
+      }*/
     } catch (e) {
       errorSnackBar('Message has not been sent!');
     }
   }
 
-  void sendPushMessage(String token, String body, String title) async {
+  void sendPushMessage(String event, String body, String title) async {
     try {
       await http.post(
         Uri.parse('https://fcm.googleapis.com/fcm/send'),
@@ -103,6 +108,7 @@ class MessageController extends GetxController {
             'data': <String, dynamic>{
               'click_action': 'FLUTTER_NOTIFICATION_CLICK',
               'status': 'done',
+              'topic': event,
               'body': body,
               'title': title,
               'sound': 'default',
@@ -112,7 +118,7 @@ class MessageController extends GetxController {
               'body': body,
               'android channel id': 'dbfood'
             },
-            'to': token,
+            'to': '/topics/$event',
           },
         ),
       );

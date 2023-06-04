@@ -1,3 +1,4 @@
+import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:get/get.dart';
 import 'package:wismod/modules/auth/controllers/auth_controller.dart';
 import 'package:wismod/modules/home/controller/events_controller.dart';
@@ -133,6 +134,7 @@ class EventDetailController extends GetxController {
 
   void chatGroupAdd() async {
     _chat.joinChatGroup(eventData.value);
+    await FirebaseMessaging.instance.subscribeToTopic('${eventData.value.id}');
   }
 
   void setIsMemberLimitReached() {

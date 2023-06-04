@@ -293,7 +293,6 @@ class EventsController extends GetxController {
       errorSnackBar("Event has reached it's member limit! ");
     } else {
       final event = getEventInList(eventData.id!, events);
-      //Firebase.messaging.subscribeToTopic();
       if (event == null) {
         return;
       }

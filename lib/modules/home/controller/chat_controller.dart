@@ -30,7 +30,6 @@ class ChatController extends GetxController {
   final _messageStreams = <StreamSubscription>{};
 
   final Rx<Event> eventData = Event.empty().obs;
-  final _message = MessageController();
 
   @override
   void onInit() async {

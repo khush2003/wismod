@@ -56,13 +56,11 @@ class EditEvent extends StatelessWidget {
                                 () => OutlinedButton.icon(
                                   icon: controller.imageUrl.value == ''
                                       ? const Icon(Icons.image_outlined)
-                                      : Image.network(
-                                          controller.imageUrl.value,
-                                          fit: BoxFit.cover,
-                                          width: MediaQuery.of(context)
-                                                  .size
-                                                  .width *
-                                              0.8,
+                                      : Expanded(
+                                          child: Image.network(
+                                            controller.imageUrl.value,
+                                            fit: BoxFit.fill,
+                                          ),
                                         ),
                                   onPressed: () => controller.uploadImage(),
                                   label: const Text(''),

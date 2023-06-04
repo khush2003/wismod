@@ -161,7 +161,7 @@ class HomeView extends State<HomeScreenView> {
                         behavior: ScrollConfiguration.of(context)
                             .copyWith(scrollbars: false),
                         child: Obx(
-                          () => ListView.builder(
+                          () =>  homeController.filteredEvents.length == 0 ? Text("No Event Found! Try clearing the filters if you have applied them") : ListView.builder(
                             itemCount: homeController.filteredEvents.length,
                             itemBuilder: (context, index) {
                               return EventCard(

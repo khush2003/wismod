@@ -1,3 +1,4 @@
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:wismod/modules/auth/controllers/auth_controller.dart';
@@ -5,6 +6,8 @@ import 'package:wismod/utils/app_utils.dart';
 
 class LogInController extends GetxController {
   final isvisible = false.obs;
+
+  bool buttonclicked = false;
 
   final emailController = TextEditingController();
   final passwordController = TextEditingController();
@@ -29,6 +32,30 @@ class LogInController extends GetxController {
     } else {
       errorSnackBar(
           "Please enter a vaild Email without a domain (no @...) or with @kmutt.ac.th");
+    }
+  }
+
+  Future<void> sendMail() async {
+    bool vaildEmail = checkEmail(emailController.text.trim());
+    if (vaildEmail) {
+      final email = getCorrectEmail(emailController.text.trim());
+      try {
+        await FirebaseAuth.instance.sendPasswordResetEmail(email: email);
+        buttonclicked = true;
+      } catch (error) {
+        errorSnackBar(error.toString());
+      }
+    } else {
+      errorSnackBar(
+          "Please enter a vaild Email without a domain (no @...) or with @kmutt.ac.th");
+    }
+  }
+
+  isButtonClicked() {
+    if (buttonclicked == true) {
+      return true;
+    } else {
+      return false;
     }
   }
 }

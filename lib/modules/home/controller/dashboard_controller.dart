@@ -1,3 +1,5 @@
+import 'dart:developer';
+
 import 'package:get/get.dart';
 import 'package:wismod/utils/app_utils.dart';
 
@@ -11,18 +13,28 @@ import 'events_controller.dart';
 
 class ProfilePictureController extends GetxController {
   final imageUrl = ''.obs;
-
+  final Rx<String?> profilePictureDisplay = ''.obs;
   final dateTime = DateTime.now().obs;
   final _firebaseStorage = FirebaseStorage.instance;
   final _imagePicker = ImagePicker();
   final _auth = AuthController.instance;
 
-  bool setProfilePicture() {
+  @override
+  void onReady() {
+    profilePictureDisplay(_auth.appUser.value.profilePicture);
+    ever(_auth.appUser, (appUser) {
+      profilePictureDisplay(appUser.profilePicture);
+    });
+    super.onReady();
+  }
+
+  Future<bool> setProfilePicture() async {
     bool isPassed = false;
     final firestore = FirebaseService();
     try {
-      firestore.updateProfilePicture(
+      await firestore.updateProfilePicture(
           _auth.firebaseUser.value!.uid, imageUrl.value);
+      profilePictureDisplay(imageUrl.value);
       return !isPassed;
     } catch (e) {
       errorSnackBar(

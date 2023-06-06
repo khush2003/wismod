@@ -1,5 +1,6 @@
 import 'dart:async';
-
+import 'package:firebase_messaging/firebase_messaging.dart';
+import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:wismod/routes/routes.dart';
 import 'package:wismod/shared/models/event.dart';
@@ -12,6 +13,7 @@ import 'events_controller.dart';
 
 class ChatController extends GetxController {
   static ChatController get instance => Get.find();
+  //static ChatController get instance => Get.lazyPut(()=>ChatController();
   final RxList<Event> blockedChatGroups = <Event>[].obs;
   final RxList<Event> joinedChatGroups = <Event>[].obs;
   final RxList<Event> joinedChatGroupsWithoutBlocks = <Event>[].obs;
@@ -21,15 +23,18 @@ class ChatController extends GetxController {
   final _eventController = EventsController.instance;
 
   final _auth = AuthController.instance;
+
   final _firestore = FirebaseService();
   final _messageStreams = <StreamSubscription>{};
 
+  final Rx<Event> eventData = Event.empty().obs;
+
   @override
   void onInit() async {
-    await _eventController.fetchEvents();
     initializeLists();
     await fetchLatestMessages();
     isInitialzed(true);
+
     super.onInit();
   }
 
@@ -149,5 +154,27 @@ class ChatController extends GetxController {
   void onClose() {
     cancelAllSubscriptions();
     super.onClose();
+  }
+
+  Future<void> setupInteractMessage(BuildContext context) async {
+    RemoteMessage? initialMessage =
+        await FirebaseMessaging.instance.getInitialMessage();
+
+    if (initialMessage != null) {
+      handlerMessage(context, initialMessage);
+    }
+
+    FirebaseMessaging.onMessageOpenedApp.listen((event) {
+      handlerMessage(context, event);
+    });
+  }
+
+  void handlerMessage(BuildContext context, RemoteMessage message) {
+    //_initialize();
+    //_message.onInit();
+    //onInit();
+    /*final eventId = Get.parameters['id'] ?? '2l8UVLQgFin3dthssdlI';
+    eventData(_eventController.events.where((event) => event.id == eventId).first);*/
+    Get.toNamed(Routes.chatting, parameters: {'id': eventData.value.id!});
   }
 }

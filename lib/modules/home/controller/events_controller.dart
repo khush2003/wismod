@@ -1,6 +1,8 @@
+import 'dart:async';
 import 'package:get/get.dart';
 import 'package:wismod/modules/auth/controllers/auth_controller.dart';
 import 'package:wismod/modules/home/controller/chat_controller.dart';
+import 'package:wismod/modules/home/controller/home_controller.dart';
 import 'package:wismod/shared/models/event.dart';
 import 'package:wismod/shared/models/user.dart';
 import 'package:wismod/shared/services/firebase_firestore_serivce.dart';
@@ -21,15 +23,16 @@ class EventsController extends GetxController {
   final RxList<Event> reportedEvents = <Event>[].obs;
   final RxList<Event> archivedEvents = <Event>[].obs;
 
+  StreamSubscription<List<Event>>? eventSubscription;
+
   final _firestore = FirebaseService();
   final _auth = AuthController.instance;
 
-  final isInitialized = false.obs;
+  final Rx<bool> isInitialized = false.obs;
 
   @override
   void onInit() async {
-    await fetchEvents();
-    initializeLists();
+    await fetchEventsStream();
     isInitialized(true);
     super.onInit();
   }
@@ -56,24 +59,35 @@ class EventsController extends GetxController {
     return membersData;
   }
 
-  Future<void> fetchEvents() async {
-    try {
-      final eventsTemp = await _firestore.getAllEvents();
+  Future<void> fetchEventsStream() async {
+    eventSubscription = _firestore.getEventsStream().listen((updatedEvents) {
       final archived = <Event>[];
-      archived.addAll(eventsTemp);
-      if (eventsTemp.isNotEmpty) {
+      archived.addAll(updatedEvents);
+      if (updatedEvents.isNotEmpty) {
         // For now removing every event whose deadline has passed, and putting them in archoived list
         final currentDate = DateTime.now();
         final today =
             DateTime(currentDate.year, currentDate.month, currentDate.day);
-        eventsTemp
+        updatedEvents
             .removeWhere((event) => event.eventDate?.isBefore(today) ?? false);
         archived.removeWhere(
             (event) => !(event.eventDate?.isBefore(today) ?? false));
-        events(eventsTemp);
+        events(updatedEvents);
         archivedEvents(archived);
+        initializeLists();
+        try {
+          Get.find<HomeController>().generateSmartFeed();
+          Get.find<ChatController>().initializeLists();
+        } catch (e) {}
       }
-    } finally {}
+    });
+  }
+
+  @override
+  void onClose() {
+    eventSubscription
+        ?.cancel(); // Cancel the subscription when closing the controller
+    super.onClose();
   }
 
   void _setOwnedEvents(AppUser user) {
@@ -216,19 +230,16 @@ class EventsController extends GetxController {
     });
   }
 
-//TODO: Add a check for member limit
-
   void approveJoin(AppUser user, Event event) async {
     if ((event.members?.length ?? 0) < (event.totalCapacity ?? 2)) {
-      //TODO: Subscribe to changes in joined List and requested List
       requestedEvents.removeWhere((e) => e.id == event.id);
       allEventJoinRequests[event]?.removeWhere((u) => u.uid == user.uid);
-      joinedEvents.add(event);
       events[getIndexOfEvent(event, events)].members!.add(user.uid!);
       allEventJoinRequests.update(event, (value) {
         value.remove(user);
         return value;
       });
+
       await _firestore.approveJoin(user, event).catchError((e) {
         errorSnackBar("Error! ${e.toString()}");
       });
@@ -246,6 +257,29 @@ class EventsController extends GetxController {
     });
     await _firestore.denyJoin(user, event).catchError((e) {
       errorSnackBar("Error! ${e.toString()}");
+    });
+  }
+
+  Future<void> requestJoin(Event event) async {
+    var isAdd = true;
+    if (checkEventInList(event.id!, requestedEvents)) {
+      isAdd = false;
+      requestedEvents.removeWhere((e) => e.id == event.id);
+      _auth.appUser.value.requestedEvents?.remove(event.id!);
+    } else {
+      requestedEvents.add(event);
+      _auth.appUser.value.requestedEvents?.add(event.id!);
+    }
+    await _firestore.requestEvent(_auth.user.uid!, event.id!).catchError((e) {
+      errorSnackBar(
+          "Error Connecting to Database, Please check network connection!");
+      if (isAdd) {
+        requestedEvents.removeWhere((e) => e.id == event.id);
+        _auth.appUser.value.requestedEvents?.remove(event.id!);
+      } else {
+        requestedEvents.add(event);
+        _auth.appUser.value.requestedEvents?.add(event.id!);
+      }
     });
   }
 
@@ -289,30 +323,29 @@ class EventsController extends GetxController {
           }
         });
       } else {
-        var isAdd = true;
-        if (checkEventInList(event.id!, requestedEvents)) {
-          isAdd = false;
-          requestedEvents.removeWhere((e) => e.id == event.id);
-          _auth.appUser.value.requestedEvents?.remove(event.id!);
-        } else {
-          requestedEvents.add(event);
-          _auth.appUser.value.requestedEvents?.add(event.id!);
-        }
-        await _firestore
-            .requestEvent(_auth.user.uid!, event.id!)
-            .catchError((e) {
-          errorSnackBar(
-              "Error Connecting to Database, Please check network connection!");
-          if (isAdd) {
-            requestedEvents.removeWhere((e) => e.id == event.id);
-            _auth.appUser.value.requestedEvents?.remove(event.id!);
-          } else {
-            requestedEvents.add(event);
-            _auth.appUser.value.requestedEvents?.add(event.id!);
-          }
-        });
+        await requestJoin(event);
       }
     }
+  }
+
+  List<String> sortTagsByFrequency() {
+    // Count the frequency of each tag
+    final tagFrequency = <String, int>{};
+    for (final event in joinedEvents) {
+      for (final tag in event.tags ?? []) {
+        if (tagFrequency.containsKey(tag)) {
+          tagFrequency[tag] = tagFrequency[tag]! + 1;
+        } else {
+          tagFrequency[tag] = 1;
+        }
+      }
+    }
+
+    // Sort the tags based on frequency in descending order
+    final sortedTags = tagFrequency.keys.toList();
+    sortedTags.sort((a, b) => tagFrequency[b]!.compareTo(tagFrequency[a]!));
+
+    return sortedTags;
   }
 
   void deleteEvent(Event event) async {
@@ -363,7 +396,7 @@ class EventsController extends GetxController {
         bookmarkedEvents.add(event);
         _auth.appUser.value.bookmarkedEvents?.add(event.id!);
       }
-    }).then((value) => sucessSnackBar("Done"));
+    }).then((value) => sucessSnackBar("Bookmark sucessfully updated!"));
   }
 
   void reportEvent(Event eventData) async {

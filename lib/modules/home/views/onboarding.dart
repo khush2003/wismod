@@ -16,63 +16,66 @@ class OnboardingView extends StatelessWidget {
           mainAxisAlignment: MainAxisAlignment.spaceAround,
           crossAxisAlignment: CrossAxisAlignment.center,
           children: [
-            Image.asset(
-              'assets/images/WisModLonger.png',
-              height: 175,
-              fit: BoxFit.fill,
-            ),
-            Column(
-              children: [
-                Text(
-                  'Welcome',
-                  textAlign: TextAlign.center,
-                  style: Theme.of(context).textTheme.titleMedium,
-                ),
-                addVerticalSpace(20),
-                const Text(
-                  'Join the community of KMUTT changemakers with WisMod',
-                  textAlign: TextAlign.center,
-                  style: TextStyle(fontSize: 24),
-                ),
-              ],
-            ),
-            Column(
-              children: [
-                PrimaryButtonMedium(
-                  onPressed: () => Get.toNamed(Routes.login),
-                  child: const Text('Log In'),
-                ),
-                addVerticalSpace(),
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: [
-                    const Text(
-                      "Don't have an account? ",
-                      textAlign: TextAlign.center,
-                      style: TextStyle(fontSize: 16, fontFamily: "Gotham"),
-                    ),
-                    TextButton(
-                      onPressed: () {
-                        Get.toNamed(Routes.signup);
-                      },
-                      child: const Text(
-                        'Create Account',
-                        style: TextStyle(
-                          fontFamily: 'Gotham',
-                          decoration: TextDecoration.underline,
-                          color: Color.fromRGBO(123, 56, 255, 1),
-                          fontSize: 16,
-                          fontWeight: FontWeight.bold,
-                        ),
-                      ),
-                    ),
-                  ],
-                ),
-              ],
-            ),
+            LogoImage(),
+            GetStarted(),
           ],
         ),
       ),
     );
   }
 }
+
+class GetStarted extends StatelessWidget {
+  const GetStarted({
+    super.key,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    return SizedBox(
+      width: double.infinity,
+      child: PrimaryButtonMedium(
+        onPressed: () => Get.toNamed(Routes.login),
+        child: const Text("Let's start"),
+      ),
+    );
+  }
+}
+
+class LogoImage extends StatelessWidget {
+  const LogoImage({
+    super.key,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    return Column(
+      children: [
+        Image.asset(
+          'assets/images/IconWisMod.png',
+          height: 90,
+          fit: BoxFit.fill,
+          color: const Color.fromRGBO(123, 56, 255, 1),
+        ),
+        const Text(
+          'WISMOD',
+          textAlign: TextAlign.center,
+          style: TextStyle(
+              fontWeight: FontWeight.bold,
+              fontSize: 72,
+              color: Color.fromRGBO(123, 56, 255, 1)),
+        ),
+        VerticalSpace(),
+        const Text(
+          'Work like mods',
+          textAlign: TextAlign.center,
+          style: TextStyle(
+              fontWeight: FontWeight.w500,
+              fontSize: 20,
+              color: Colors.black),
+        ),
+      ],
+    );
+  }
+}
+

@@ -1,5 +1,8 @@
+import 'dart:convert';
 import 'dart:io';
+import 'package:http/http.dart' as http;
 import 'package:firebase_storage/firebase_storage.dart';
+import 'package:flutter/foundation.dart';
 import 'package:get/get.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:flutter/material.dart';
@@ -10,6 +13,7 @@ import 'package:wismod/shared/services/firebase_firestore_serivce.dart';
 import 'package:wismod/utils/app_utils.dart';
 
 import '../../../routes/routes.dart';
+import 'home_controller.dart';
 
 class CreateEventController extends GetxController {
   final imageUrl = ''.obs;
@@ -172,11 +176,12 @@ class CreateEventController extends GetxController {
               year: eventOwner.year,
               uid: eventOwner.uid!),
         );
+        /*NotificationService().showNotification(
+            title: eventNameController.text.trim(), body: 'Come and join!');*/
         await FirebaseService().addEvent(event, _auth.appUser.value);
-        sucessSnackBar('Event was created sucessfulyy!');
+        sucessSnackBar('Event was created sucessfully!');
+        // EventsController.instance.events.add(event);
         Get.offAllNamed(Routes.allPagesNav);
-        EventsController.instance.events.add(event);
-        EventsController.instance.initializeLists();
       } catch (e) {
         errorSnackBar(
             'There was a problem creating the event. Please recheck your values and try again!');
@@ -184,6 +189,42 @@ class CreateEventController extends GetxController {
     } else {
       errorSnackBar(
           'Please fill in all the fields correctly to create an event.');
+    }
+  }
+
+  void sendPushMessage(String body, String title) async {
+    try {
+      await http.post(
+        Uri.parse('https://fcm.googleapis.com/fcm/send'),
+        headers: <String, String>{
+          'Content-Type': 'application/json',
+          'Authorization':
+              'key=AAAAq4O_glM:APA91bG_b1Bqqc3nU0SnJ39DZRjvGz_DFOEcrYFUOB6GUtTn7k7ML8EIva60g4ucTaBb_wSzR6CGtOmjCj9eqo4fUidkQuDJMGYyQl5n51zGyQ5X-x5BnTo9blRSRja-cEFpzSTHKU2P'
+        },
+        body: jsonEncode(
+          <String, dynamic>{
+            'priority': 'high',
+            'topic': 'all',
+            'data': <String, dynamic>{
+              'click_action': 'FLUTTER_NOTIFICATION_CLICK',
+              'status': 'done',
+              'body': body,
+              'title': title,
+              'sound': 'default',
+            },
+            'notification': <String, dynamic>{
+              'title': title,
+              'body': body,
+              'android channel id': 'dbfood'
+            },
+            'to': '/topics/all',
+          },
+        ),
+      );
+    } catch (e) {
+      if (kDebugMode) {
+        print("error push notification");
+      }
     }
   }
 }

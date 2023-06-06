@@ -3,6 +3,7 @@ import 'package:get/get.dart';
 import 'package:wismod/modules/auth/controllers/auth_controller.dart';
 import 'package:wismod/modules/home/controller/events_controller.dart';
 import 'package:wismod/shared/models/user.dart';
+import 'package:wismod/theme/theme_data.dart';
 import 'package:wismod/utils/app_utils.dart';
 import 'package:wismod/modules/home/controller/dashboard_controller.dart';
 
@@ -29,20 +30,15 @@ class DashboardView extends StatelessWidget {
                         auth: _auth,
                         profilePictureController: profilePictureController),
                     Padding(
-                      padding: const EdgeInsets.all(sideWidth),
+                      padding:
+                          const EdgeInsets.symmetric(horizontal: sideWidth),
                       child: Column(
                         children: [
-                          Text(
-                            'Dashboard',
-                            textAlign: TextAlign.center,
-                            style: Theme.of(context).textTheme.titleMedium,
-                          ),
-                          addVerticalSpace(),
                           OverviewSection(event: _event),
                           addVerticalSpace(20),
                           Column(
                             children: [
-                              FourButtonsWidget(
+                              ExpandingEvents(
                                 activityType: 'Joined Events',
                                 activityNumber: _event.joinedEvents.length,
                                 onPressed: () => Get.bottomSheet(
@@ -51,7 +47,7 @@ class DashboardView extends StatelessWidget {
                                 ),
                               ),
                               addVerticalSpace(16),
-                              FourButtonsWidget(
+                              ExpandingEvents(
                                   activityType: 'Join Requests',
                                   activityNumber:
                                       _event.getTotaLengthJoinRequests(),
@@ -59,7 +55,7 @@ class DashboardView extends StatelessWidget {
                                       RequestList(event: _event),
                                       isScrollControlled: true)),
                               addVerticalSpace(16),
-                              FourButtonsWidget(
+                              ExpandingEvents(
                                 activityType: 'Bookmarked Events',
                                 activityNumber: _event.bookmarkedEvents.length,
                                 onPressed: () {
@@ -70,7 +66,7 @@ class DashboardView extends StatelessWidget {
                                 },
                               ),
                               addVerticalSpace(16),
-                              FourButtonsWidget(
+                              ExpandingEvents(
                                 activityType: 'Events You Own',
                                 activityNumber: _event.ownedEvents.length,
                                 onPressed: () => Get.bottomSheet(
@@ -78,11 +74,13 @@ class DashboardView extends StatelessWidget {
                                     isScrollControlled: true),
                               ),
                               addVerticalSpace(16),
-                              FourButtonsWidget(
+                              ExpandingEvents(
                                 activityType: 'Archived Events',
                                 activityNumber: _event.archivedEvents.length,
                                 onPressed: () => Get.bottomSheet(
-                                  DisplayList(eventList: _event.archivedEvents),
+                                  DisplayList(
+                                      eventList: _event.archivedEvents,
+                                      isClickable: false),
                                   isScrollControlled: true,
                                 ),
                               ),
@@ -115,7 +113,7 @@ class RequestList extends StatelessWidget {
       child: Container(
           padding: const EdgeInsets.all(20),
           decoration: const BoxDecoration(
-            color: Color(0xffEAF4F4),
+            color: Colors.white,
             borderRadius: BorderRadius.only(
               topLeft: Radius.circular(30),
               topRight: Radius.circular(30),
@@ -152,7 +150,9 @@ class RequestList extends StatelessWidget {
                           );
                         },
                       ))
-                  : const EmptyEventsList()),
+                  : const EmptyEventsList(
+                      message:
+                          'No join requests found for any event you own!')),
             ),
           ])),
     );
@@ -169,35 +169,24 @@ class OverviewSection extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Wrap(
-      direction: Axis.horizontal,
-      alignment: WrapAlignment.spaceEvenly,
-      spacing: 16,
-      runSpacing: 16,
+    return Row(
+      mainAxisAlignment: MainAxisAlignment.spaceAround,
       children: [
         Container(
-          decoration: BoxDecoration(
-            color: Colors.white,
-            borderRadius: BorderRadius.circular(10),
-            border: Border.all(
-              color: const Color.fromRGBO(123, 56, 255, 1),
-              width: 2.0,
-            ),
-          ),
           padding: const EdgeInsets.all(8),
           child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
+            crossAxisAlignment: CrossAxisAlignment.center,
             children: [
-              const Text(
-                'Joined Events',
-                style: TextStyle(
+              Text(
+                '${_event.joinedEvents.length} ',
+                style: const TextStyle(
                   fontWeight: FontWeight.bold,
-                  fontSize: 18,
+                  fontSize: 22,
                 ),
               ),
-              addVerticalSpace(),
+              addVerticalSpace(2),
               Text(
-                '${_event.joinedEvents.length} Events',
+                'Joined Events',
                 style: Theme.of(context).textTheme.bodyMedium,
               ),
             ],
@@ -207,23 +196,21 @@ class OverviewSection extends StatelessWidget {
           decoration: BoxDecoration(
             color: Colors.white,
             borderRadius: BorderRadius.circular(10),
-            border: Border.all(
-              color: const Color.fromRGBO(123, 56, 255, 1),
-              width: 2.0,
-            ),
           ),
           padding: const EdgeInsets.all(8),
           child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
+            crossAxisAlignment: CrossAxisAlignment.center,
             children: [
-              const Text('Upvoted Events',
-                  style: TextStyle(
-                    fontWeight: FontWeight.bold,
-                    fontSize: 18,
-                  )),
-              addVerticalSpace(),
               Text(
-                '${_event.upvotedEvents.length} Upvotes',
+                '${_event.upvotedEvents.length} ',
+                style: const TextStyle(
+                  fontWeight: FontWeight.bold,
+                  fontSize: 22,
+                ),
+              ),
+              addVerticalSpace(2),
+              Text(
+                'Upvoted Events',
                 style: Theme.of(context).textTheme.bodyMedium,
               ),
             ],
@@ -246,128 +233,129 @@ class ProfileSection extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Container(
-      decoration: const BoxDecoration(
-        color: Color(0xFFEAF4F4),
-        borderRadius: BorderRadius.only(
-          bottomLeft: Radius.circular(30),
-          bottomRight: Radius.circular(30),
-        ),
+    return Column(crossAxisAlignment: CrossAxisAlignment.stretch, children: [
+      addVerticalSpace(24),
+      const Text('DASHBOARD',
+          textAlign: TextAlign.center,
+          style: TextStyle(
+              fontSize: 22, color: Colors.black, fontWeight: FontWeight.bold)),
+      addVerticalSpace(16),
+      Row(
+        mainAxisAlignment: MainAxisAlignment.center,
+        children: [
+          Container(
+              height: 200,
+              width: 200,
+              decoration:
+                  BoxDecoration(borderRadius: BorderRadius.circular(200)),
+              child: ClipRRect(
+                borderRadius: BorderRadiusDirectional.circular(500),
+                child: Obx(() => Image.network(
+                   profilePictureController.profilePictureDisplay.value ?? 
+                        placeholderImageUserPurple,
+                    errorBuilder: (context, error, stackTrace) => Image.network(
+                          placeholderImageUserPurple,
+                          fit: BoxFit.fill,
+                        ),
+                    fit: BoxFit.fill)),
+              )),
+        ],
       ),
-      child: Column(crossAxisAlignment: CrossAxisAlignment.stretch, children: [
-        addVerticalSpace(24),
-        const Text('Profile',
+      addVerticalSpace(20),
+      Column(
+        children: [
+          Text(
+            _auth.appUser.value.getName(),
             textAlign: TextAlign.center,
-            style: TextStyle(
-                fontSize: 32,
-                color: Color.fromRGBO(123, 56, 255, 1),
-                fontWeight: FontWeight.bold)),
-        addVerticalSpace(16),
-        CircleAvatar(
-          radius: 90,
-          backgroundImage: Image.network(
-                  _auth.appUser.value.profilePicture ?? placeholderImage,
-                  errorBuilder: (context, error, stackTrace) => Image.network(
-                        placeholderImage,
-                        fit: BoxFit.cover,
-                      ),
-                  fit: BoxFit.cover)
-              .image,
-        ),
-        addVerticalSpace(20),
-        Column(
-          children: [
-            Text(
-              _auth.appUser.value.getName(),
-              textAlign: TextAlign.center,
-              style: Theme.of(context).textTheme.displayLarge,
-            ),
-            addVerticalSpace(),
-            Text(
-              _auth.appUser.value.department,
-              textAlign: TextAlign.center,
-              style: Theme.of(context).textTheme.bodyMedium,
-            ),
-            addVerticalSpace(),
-            Text(
-              'Year ${_auth.appUser.value.year}',
-              textAlign: TextAlign.center,
-              style: Theme.of(context).textTheme.bodyMedium,
-            ),
-            addVerticalSpace(),
-            OutlineButtonMedium(
-              onPressed: () {
-                showDialog(
-                  context: context,
-                  builder: (BuildContext context) {
-                    return AlertDialog(
-                      title: const Text("Choose Profile Picture"),
-                      content: Padding(
-                        padding:
-                            const EdgeInsets.fromLTRB(14.0, 0.0, 14.0, 16.0),
-                        child: SizedBox(
-                          width: double.infinity,
-                          // Button Height Change Here
-                          height: 250,
-                          child: Obx(
-                            () => OutlinedButton.icon(
-                              icon: profilePictureController.imageUrl.value ==
-                                      ''
-                                  ? const Icon(Icons.image_outlined)
-                                  : Image.network(
+            style: const TextStyle(fontSize: 24, fontWeight: FontWeight.bold),
+          ),
+          addVerticalSpace(),
+          Text(
+            _auth.appUser.value.department,
+            textAlign: TextAlign.center,
+            style: const TextStyle(fontSize: 18, fontWeight: FontWeight.w400),
+          ),
+          addVerticalSpace(),
+          Text(
+            'Year ${_auth.appUser.value.year}',
+            textAlign: TextAlign.center,
+            style: const TextStyle(fontSize: 18, fontWeight: FontWeight.w400),
+          ),
+          addVerticalSpace(),
+          OutlineButtonMedium(
+            onPressed: () {
+              showDialog(
+                context: context,
+                builder: (BuildContext context) {
+                  return AlertDialog(
+                    title: const Text("Choose Profile Picture"),
+                    content: Padding(
+                      padding: const EdgeInsets.fromLTRB(14.0, 0.0, 14.0, 16.0),
+                      child: SizedBox(
+                        width: double.infinity,
+                        // Button Height Change Here
+                        height: 250,
+                        child: Obx(
+                          () => OutlinedButton.icon(
+                            icon: profilePictureController.imageUrl.value == ''
+                                ? const Icon(Icons.image_outlined)
+                                : Expanded(
+                                    child: Image.network(
                                       profilePictureController.imageUrl.value,
                                       fit: BoxFit.cover,
                                     ),
-                              onPressed: () =>
-                                  profilePictureController.uploadImage(),
-                              label: const Text(''),
-                              style: ElevatedButton.styleFrom(
-                                side: const BorderSide(
-                                  color: Colors.black, //Set border color
-                                  width: 1, //Set border width
-                                ),
+                                  ),
+                            onPressed: () =>
+                                profilePictureController.uploadImage(),
+                            label: const Text(''),
+                            style: ElevatedButton.styleFrom(
+                              side: const BorderSide(
+                                color: Colors.black, //Set border color
+                                width: 1, //Set border width
                               ),
                             ),
                           ),
                         ),
                       ),
-                      actions: <Widget>[
-                        OutlineButtonMedium(
-                            child: const Text("Cancel"),
-                            onPressed: () {
-                              Navigator.pop(context);
-                            }),
-                        SecondaryButtonMedium(
-                          child: const Text("Save"),
+                    ),
+                    actions: <Widget>[
+                      OutlineButtonMedium(
+                          child: const Text("Cancel"),
                           onPressed: () {
-                            profilePictureController.setProfilePicture();
                             Navigator.pop(context);
-                          },
-                        ),
-                      ],
-                    );
-                  },
-                );
-              },
-              child: const Padding(
-                padding: EdgeInsets.symmetric(horizontal: 38.0),
-                child: Text('Change Profile Picture'),
-                // color: Color(0xFFEAF4F4),
-                // borderRadius: BorderRadius.circular(10),
-              ),
+                          }),
+                      SecondaryButtonMedium(
+                        child: const Text("Save"),
+                        onPressed: () {
+                          profilePictureController.setProfilePicture();
+                          Navigator.pop(context);
+                        },
+                      ),
+                    ],
+                  );
+                },
+              );
+            },
+            child: const Padding(
+              padding: EdgeInsets.symmetric(horizontal: 38.0),
+              child: Text('Change Profile Picture'),
+              // color: Color(0xFFEAF4F4),
+              // borderRadius: BorderRadius.circular(10),
             ),
-            addVerticalSpace(20),
-          ],
-        ),
-      ]),
-    );
+          ),
+          addVerticalSpace(20),
+        ],
+      ),
+    ]);
   }
 }
 
 class DisplayList extends StatelessWidget {
+  final bool isClickable;
   const DisplayList({
     super.key,
     required this.eventList,
+    this.isClickable = true,
   });
   final RxList<Event> eventList;
 
@@ -378,7 +366,7 @@ class DisplayList extends StatelessWidget {
       child: Container(
           padding: const EdgeInsets.all(20),
           decoration: const BoxDecoration(
-            color: Color(0xffEAF4F4),
+            color: Colors.white,
             borderRadius: BorderRadius.only(
               topLeft: Radius.circular(30),
               topRight: Radius.circular(30),
@@ -403,8 +391,10 @@ class DisplayList extends StatelessWidget {
                         final event = eventList[index];
                         return GestureDetector(
                           onTap: () {
-                            Get.toNamed(Routes.eventDetials,
-                                parameters: {'id': event.id!});
+                            if (isClickable) {
+                              Get.toNamed(Routes.eventDetials,
+                                  parameters: {'id': event.id!});
+                            }
                           },
                           child: SizedBox(
                             height: 210,
@@ -423,39 +413,35 @@ class DisplayList extends StatelessWidget {
 }
 
 class EmptyEventsList extends StatelessWidget {
-  const EmptyEventsList({Key? key}) : super(key: key);
+  final String message;
+  const EmptyEventsList(
+      {Key? key, this.message = 'No events found for this list'})
+      : super(key: key);
 
   @override
   Widget build(BuildContext context) {
-    return Flexible(
-      child: ListView.builder(
-        itemCount: 1,
-        itemBuilder: (context, index) {
-          return const Padding(
-            padding: EdgeInsets.only(top: 107.0),
-            child: Center(
-              child: Text(
-                'You do not have any Events.',
-                style: TextStyle(
-                  fontSize: 16,
-                  fontWeight: FontWeight.bold,
-                  color: Colors.red,
-                ),
-              ),
-            ),
-          );
-        },
+    return Padding(
+      padding: EdgeInsets.only(top: 107.0),
+      child: Center(
+        child: Text(
+          message,
+          style: TextStyle(
+            fontSize: 16,
+            fontWeight: FontWeight.bold,
+            color: Colors.red,
+          ),
+        ),
       ),
     );
   }
 }
 
-class FourButtonsWidget extends StatelessWidget {
+class ExpandingEvents extends StatelessWidget {
   final String activityType;
   final int activityNumber;
   final VoidCallback onPressed;
   final fourButtonsController = Get.put(FourButtonsController());
-  FourButtonsWidget({
+  ExpandingEvents({
     Key? key,
     required this.activityType,
     required this.activityNumber,
@@ -464,7 +450,7 @@ class FourButtonsWidget extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final boxDecoration = BoxDecoration(
-      color: const Color(0xFFEAF4F4),
+      color: primary,
       borderRadius: BorderRadius.circular(10),
     );
     return InkWell(
@@ -472,53 +458,50 @@ class FourButtonsWidget extends StatelessWidget {
         child: Container(
           decoration: boxDecoration.copyWith(
             borderRadius: BorderRadius.circular(10),
-            boxShadow: [
-              BoxShadow(
-                color: Colors.grey.withOpacity(0.5),
-                spreadRadius: 1,
-                blurRadius: 1,
-                offset:
-                    const Offset(0, 3), // changes the position of the shadow
-              )
-            ],
           ),
-          child: Row(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: [
-              Padding(
-                padding: const EdgeInsets.all(12.0),
-                child: Text(
+          child: Padding(
+            padding: const EdgeInsets.all(24.0),
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: [
+                Text(
                   activityType,
                   style: const TextStyle(
                     fontSize: 17,
                     fontWeight: FontWeight.bold,
-                    color: Color(0xFF7B38FF),
+                    color: Colors.white,
                   ),
                 ),
-              ),
-              Container(
-                decoration: BoxDecoration(
-                  color: const Color(0xFFFF669F),
-                  borderRadius: BorderRadius.circular(4),
-                ),
-                child: Padding(
-                  padding: const EdgeInsets.fromLTRB(6, 3, 6, 3),
-                  child: Text(
-                    activityNumber.toString(),
-                    style: const TextStyle(
-                      color: Colors.white,
-                      fontSize: 17,
-                      fontWeight: FontWeight.normal,
+                Row(
+                  children: [
+                    Container(
+                      decoration: BoxDecoration(
+                        color: const Color(0xFFFF669F),
+                        borderRadius: BorderRadius.circular(500),
+                      ),
+                      child: Padding(
+                        padding: const EdgeInsets.symmetric(
+                            horizontal: 15, vertical: 10),
+                        child: Text(
+                          activityNumber.toString(),
+                          style: const TextStyle(
+                            color: Colors.white,
+                            fontSize: 17,
+                            fontWeight: FontWeight.normal,
+                          ),
+                        ),
+                      ),
                     ),
-                  ),
+                    addHorizontalSpace(),
+                    const Icon(
+                      Icons.arrow_forward_ios,
+                      size: 20,
+                      color: Colors.white,
+                    ),
+                  ],
                 ),
-              ),
-              const Icon(
-                Icons.arrow_drop_down,
-                size: 40,
-                color: Color(0xFF7B38FF),
-              ),
-            ],
+              ],
+            ),
           ),
         ));
   }
@@ -535,15 +518,8 @@ class OtherActivityBox extends StatelessWidget {
       child: Container(
         padding: const EdgeInsets.all(sideWidth),
         decoration: BoxDecoration(
-          color: Colors.white,
-          borderRadius: BorderRadius.circular(5),
-          boxShadow: const [
-            BoxShadow(
-              color: Color(0xFFFF669F),
-              offset: Offset(0, 4),
-              blurRadius: 3,
-            ),
-          ],
+          color: primary,
+          borderRadius: BorderRadius.circular(20),
         ),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
@@ -557,7 +533,7 @@ class OtherActivityBox extends StatelessWidget {
                   style: const TextStyle(
                     fontSize: 16,
                     fontWeight: FontWeight.bold,
-                    color: Color(0xFFFF669F),
+                    color: Colors.white,
                   ),
                 ),
               ],
@@ -569,6 +545,7 @@ class OtherActivityBox extends StatelessWidget {
                 overflow: TextOverflow.ellipsis,
                 style: const TextStyle(
                   fontSize: 24,
+                  color: Colors.white,
                   fontWeight: FontWeight.w500,
                 ),
               ),
@@ -579,10 +556,9 @@ class OtherActivityBox extends StatelessWidget {
                 event.location,
                 overflow: TextOverflow.ellipsis,
                 style: const TextStyle(
-                  fontSize: 16,
-                  fontWeight: FontWeight.normal,
-                  color: Color(0xFFFF669F),
-                ),
+                    fontSize: 16,
+                    fontWeight: FontWeight.normal,
+                    color: Colors.white),
               ),
             ),
             addVerticalSpace(20),
@@ -594,7 +570,7 @@ class OtherActivityBox extends StatelessWidget {
                   style: const TextStyle(
                     fontSize: 16,
                     fontWeight: FontWeight.bold,
-                    color: Color(0xFFFF669F),
+                    color: Colors.white,
                   ),
                 ),
               ],
@@ -612,22 +588,16 @@ Widget _requestedActivityBox(int index, Event event, List<AppUser> users) {
     crossAxisAlignment: CrossAxisAlignment.start,
     children: [
       Container(
-        padding: const EdgeInsets.all(8),
+        padding: const EdgeInsets.all(18),
         width: Size.infinite.width,
         decoration: BoxDecoration(
-          color: Colors.white,
-          borderRadius: BorderRadius.circular(5),
-          boxShadow: const [
-            BoxShadow(
-              color: Color(0xFFFF669F),
-              offset: Offset(0, 4),
-              blurRadius: 3,
-            ),
-          ],
+          color: primary,
+          borderRadius: BorderRadius.circular(20),
         ),
         child: Text(
           'Event: ${event.title}',
-          style: const TextStyle(fontSize: 18, fontWeight: FontWeight.w500),
+          style: const TextStyle(
+              fontSize: 18, fontWeight: FontWeight.w500, color: Colors.white),
         ),
       ),
       addVerticalSpace(20),
@@ -661,15 +631,8 @@ class UserApproveBox extends StatelessWidget {
     return Container(
       margin: const EdgeInsets.only(bottom: 20),
       decoration: BoxDecoration(
-        color: Colors.white,
-        borderRadius: BorderRadius.circular(5),
-        boxShadow: const [
-          BoxShadow(
-            color: Color(0xFFFF669F),
-            offset: Offset(0, 4),
-            blurRadius: 3,
-          ),
-        ],
+        color: primary,
+        borderRadius: BorderRadius.circular(20),
       ),
       child: Padding(
         padding: const EdgeInsets.all(sideWidth),
@@ -679,17 +642,17 @@ class UserApproveBox extends StatelessWidget {
             Text(
               'Request from: ${user.getName()}',
               style: const TextStyle(
-                fontSize: 24,
-                fontWeight: FontWeight.w500,
-              ),
+                  fontSize: 24,
+                  fontWeight: FontWeight.w500,
+                  color: Colors.white),
             ),
             addVerticalSpace(),
             Text(
               'Department: ${user.department}',
               style: const TextStyle(
-                fontSize: 16,
-                fontWeight: FontWeight.w400,
-              ),
+                  fontSize: 16,
+                  fontWeight: FontWeight.w400,
+                  color: Colors.white),
             ),
             addVerticalSpace(),
             Row(
@@ -698,9 +661,9 @@ class UserApproveBox extends StatelessWidget {
                   'Year: ${user.year}',
                   textAlign: TextAlign.start,
                   style: const TextStyle(
-                    fontSize: 16,
-                    fontWeight: FontWeight.w400,
-                  ),
+                      fontSize: 16,
+                      fontWeight: FontWeight.w400,
+                      color: Colors.white),
                 ),
               ],
             ),
@@ -709,7 +672,8 @@ class UserApproveBox extends StatelessWidget {
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
                 addHorizontalSpace(15),
-                OutlineButtonMedium(
+                PrimaryButtonMedium(
+                  color: Colors.green,
                   onPressed: () {
                     controller.approveJoin(user, event);
                     requestedUsers?.remove(user);

@@ -146,8 +146,7 @@ class AccountController extends GetxController {
   }
 
   Future<void> updateAllData() async {
-    await EventsController.instance.fetchEvents();
-    EventsController.instance.initializeLists();
+    await EventsController.instance.fetchEventsStream();
     ChatController.instance.initializeLists();
     await ChatController.instance.fetchLatestMessages();
   }

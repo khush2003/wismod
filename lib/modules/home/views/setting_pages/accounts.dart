@@ -209,7 +209,7 @@ class DepartmentSections extends StatelessWidget {
             child: DropDownCustom(controller: controller)),
         SizedBox(
           width: double.infinity,
-          child: OutlineButtonLarge(
+          child: OutlineButtonMedium(
             child: trailingWidget,
             onPressed: () {
               controller.updateDepartment();

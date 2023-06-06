@@ -1,3 +1,5 @@
+import 'dart:developer';
+
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:wismod/modules/home/controller/event_detail_controller.dart';
@@ -8,12 +10,13 @@ import 'package:wismod/utils/app_utils.dart';
 import 'package:wismod/modules/auth/controllers/auth_controller.dart';
 import '../../../shared/models/event.dart';
 import '../../../shared/models/user.dart';
-import '../../../shared/services/firebase_firestore_serivce.dart';
 import '../../../theme/theme_data.dart';
+import '../controller/dashboard_controller.dart';
 import 'dashboard.dart';
 
 class EventDetailView extends StatelessWidget {
   EventDetailView({super.key});
+  final profilePictureController = Get.put(ProfilePictureController());
   final controller = Get.put(EventDetailController());
   final auth = AuthController.instance;
   Event eventData() => controller.eventData.value;
@@ -24,7 +27,9 @@ class EventDetailView extends StatelessWidget {
     return Scaffold(
         appBar: AppBar(
           actions: [
-            AlertReport(controller: controller),
+            if (eventData().eventOwner.uid != auth.user.uid &&
+                auth.user.isAdmin == false)
+              AlertReport(controller: controller),
             IconButton(
                 onPressed: () {
                   controller.bookmarkEvent();
@@ -41,7 +46,7 @@ class EventDetailView extends StatelessWidget {
                   ? const Center(child: CircularProgressIndicator())
                   : SingleChildScrollView(
                       child: Padding(
-                      padding: const EdgeInsets.all(sideWidth),
+                      padding: const EdgeInsets.all(8),
                       child: Column(
                         crossAxisAlignment: CrossAxisAlignment.stretch,
                         children: [
@@ -51,41 +56,61 @@ class EventDetailView extends StatelessWidget {
                           ClipRRect(
                               borderRadius: BorderRadius.circular(5),
                               child: Image.network(
-                                  eventData().imageUrl ??
-                                      'https://perspectives.agf.com/wp-content/plugins/accelerated-mobile-pages/images/SD-default-image.png',
+                                  eventData().imageUrl ?? placeholderImageEvent,
                                   errorBuilder: (context, error, stackTrace) =>
                                       Image.network(
-                                        'https://perspectives.agf.com/wp-content/plugins/accelerated-mobile-pages/images/SD-default-image.png',
+                                        placeholderImageEvent,
                                         fit: BoxFit.cover,
                                       ),
                                   fit: BoxFit.cover)),
                           addVerticalSpace(20),
-                          Wrap(
-                            direction: Axis.horizontal,
-                            alignment: WrapAlignment.spaceBetween,
-                            runAlignment: WrapAlignment.spaceBetween,
-                            runSpacing: 10,
-                            spacing: 10,
+                          Row(
+                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
                             children: [
-                              Text(eventData().title,
+                              Text(eventData().category.toUpperCase(),
                                   style: const TextStyle(
-                                      fontSize: 20,
-                                      fontWeight: FontWeight.w500)),
-                              if (eventData().members != null &&
-                                  eventData().totalCapacity != null)
-                                Text(
-                                    'Members: ${eventData().members!.length}/${eventData().totalCapacity}',
-                                    style: Theme.of(context)
-                                        .textTheme
-                                        .displayMedium)
+                                      fontSize: 16,
+                                      fontWeight: FontWeight.w500,
+                                      color: Colors.grey)),
+                              Obx(() => Text('${controller.upvotes} ▲',
+                                  style: const TextStyle(
+                                      fontSize: 16,
+                                      fontWeight: FontWeight.w500,
+                                      color: Colors.grey)))
                             ],
+                          ),
+                          addVerticalSpace(),
+                          Text(eventData().title,
+                              style: const TextStyle(
+                                  fontSize: 22, fontWeight: FontWeight.w500)),
+                          Divider(),
+                          addVerticalSpace(4),
+                          Text(
+                            eventData().description,
                           ),
                           addVerticalSpace(20),
                           Text(
-                            "Category: ${eventData().category}",
-                            style: const TextStyle(fontWeight: FontWeight.bold),
+                            'Event Information',
+                            style: TextStyle(fontWeight: FontWeight.bold),
                           ),
-                          addVerticalSpace(20),
+                          addVerticalSpace(4),
+                          Text(
+                            'Location: ${eventData().location}',
+                          ),
+                          addVerticalSpace(4),
+                          if (eventData().eventDate != null)
+                            Text(
+                              'Date: ${formatDate(eventData().eventDate!)}',
+                            ),
+                          addVerticalSpace(4),
+                          if (eventData().members != null &&
+                              eventData().totalCapacity != null)
+                            Text(
+                                'Members: ${eventData().members!.length}/${eventData().totalCapacity}',
+                                style: TextStyle(
+                                    fontSize: 16, fontWeight: FontWeight.w400)),
+                          addVerticalSpace(10),
+                          
                           const Text(
                             "Tags",
                             style: TextStyle(fontWeight: FontWeight.bold),
@@ -95,23 +120,6 @@ class EventDetailView extends StatelessWidget {
                               eventData().tags!.isEmpty)
                             const Text("No Tags Found"),
                           createTags(controller),
-                          addVerticalSpace(20),
-                          Obx(() => Text("${eventData().upvotes} upvotes")),
-                          addVerticalSpace(20),
-                          if (eventData().eventDate != null)
-                            Text(
-                              'Date: ${formatDate(eventData().eventDate!)}',
-                              style:
-                                  const TextStyle(fontWeight: FontWeight.bold),
-                            ),
-                          addVerticalSpace(20),
-                          Text(
-                            'Location: ${eventData().location}',
-                          ),
-                          addVerticalSpace(20),
-                          Text(
-                            eventData().description,
-                          ),
                           addVerticalSpace(20),
                           Row(
                             mainAxisAlignment: MainAxisAlignment.spaceEvenly,
@@ -155,6 +163,8 @@ class EventDetailView extends StatelessWidget {
 }
 
 class MemberBox extends StatelessWidget {
+  final profilePictureController = Get.put(ProfilePictureController());
+  final _auth = AuthController.instance;
   final controller = Get.put(EventDetailController());
   MemberBox({super.key});
   Event eventData() => controller.eventData.value;
@@ -231,6 +241,9 @@ class MemberBox extends StatelessWidget {
                                 itemCount: controller.memberList.length,
                                 itemBuilder: (context, index) {
                                   return UserRowWidget(
+                                      auth: _auth,
+                                      profilePictureController:
+                                          profilePictureController,
                                       user: controller.memberList[index]);
                                 },
                               ),
@@ -268,9 +281,17 @@ class MemberBox extends StatelessWidget {
 }
 
 class UserRowWidget extends StatelessWidget {
+  UserRowWidget(
+      {super.key,
+      required this.user,
+      required AuthController auth,
+      required this.profilePictureController})
+      : _auth = auth;
   final AppUser user;
   final controller = Get.put(EventDetailController());
-  UserRowWidget({super.key, required this.user});
+  final AuthController _auth;
+  final ProfilePictureController profilePictureController;
+
   // final UserData userData;
   // final auth = AuthController.instance;
   // final controller = Get.put(EventDetailController());
@@ -299,10 +320,10 @@ class UserRowWidget extends StatelessWidget {
               ClipRRect(
                 borderRadius: BorderRadius.circular(20),
                 child: Image.network(
-                  user.profilePicture ??
-                      'https://perspectives.agf.com/wp-content/plugins/accelerated-mobile-pages/images/SD-default-image.png',
+                  _auth.appUser.value.profilePicture ??
+                      placeholderImageUserPurple,
                   errorBuilder: (context, error, stackTrace) => Image.network(
-                    'https://perspectives.agf.com/wp-content/plugins/accelerated-mobile-pages/images/SD-default-image.png',
+                    placeholderImageUserPurple,
                     width: 40,
                     height: 40,
                     fit: BoxFit.cover,
@@ -524,31 +545,6 @@ class ChatBox extends StatelessWidget {
             Row(
               crossAxisAlignment: CrossAxisAlignment.center,
               children: [
-                Column(
-                  mainAxisAlignment: MainAxisAlignment.start,
-                  crossAxisAlignment: CrossAxisAlignment.center,
-                  mainAxisSize: MainAxisSize.min,
-                  children: [
-                    ClipRRect(
-                      borderRadius: BorderRadius.circular(10),
-                      child: Image.network(
-                        eventData().eventOwner.userPhotoUrl ??
-                            'https://perspectives.agf.com/wp-content/plugins/accelerated-mobile-pages/images/SD-default-image.png',
-                        errorBuilder: (context, error, stackTrace) =>
-                            Image.network(
-                          'https://perspectives.agf.com/wp-content/plugins/accelerated-mobile-pages/images/SD-default-image.png',
-                          width: 82,
-                          height: 82,
-                          fit: BoxFit.cover,
-                        ),
-                        // Image size adjustment here
-                        width: 82,
-                        height: 82,
-                        fit: BoxFit.cover,
-                      ),
-                    ),
-                  ],
-                ),
                 addHorizontalSpace(10),
                 Expanded(
                   child: Column(
@@ -557,7 +553,7 @@ class ChatBox extends StatelessWidget {
                     mainAxisSize: MainAxisSize.min,
                     children: [
                       Text(
-                        eventData().eventOwner.name,
+                        eventData().title,
                         style: const TextStyle(
                             fontFamily: "Gotham",
                             fontWeight: FontWeight.bold,
@@ -569,20 +565,13 @@ class ChatBox extends StatelessWidget {
                       ),
                       addVerticalSpace(5),
                       Text(
-                        eventData().eventOwner.department,
+                        'Owner: ${eventData().eventOwner.name}',
                         style: Theme.of(context).textTheme.bodyMedium,
                         maxLines: 1,
                         softWrap: false,
                         overflow: TextOverflow.ellipsis,
                       ),
                       addVerticalSpace(5),
-                      Text(
-                        'Year: ${eventData().eventOwner.year}',
-                        style: Theme.of(context).textTheme.bodyMedium,
-                        maxLines: 1,
-                        softWrap: false,
-                        overflow: TextOverflow.ellipsis,
-                      ),
                     ],
                   ),
                 ),
@@ -608,13 +597,23 @@ class ChatBox extends StatelessWidget {
 Widget createTags(EventDetailController controller) {
   final tagsWidgets = <Widget>[];
   for (int i = 0; i < controller.tags.length; i++) {
-    tagsWidgets.add(Container(
-      decoration: BoxDecoration(
-          border: Border.all(
-              color: AppThemeData.themedata.colorScheme.primary, width: 2),
-          borderRadius: BorderRadius.circular(5)),
-      child: Text(controller.tags[i]),
-    ));
+    tagsWidgets.add(
+      Container(
+          decoration: BoxDecoration(
+              border: Border.all(
+                  color: AppThemeData.themedata.colorScheme.primary, width: 0),
+              borderRadius: BorderRadius.circular(50),
+              color: AppThemeData.themedata.colorScheme.secondary),
+          child: Row(mainAxisSize: MainAxisSize.min, children: [
+            addHorizontalSpace(),
+            Text(
+              controller.tags[i],
+              style: const TextStyle(
+                  color: Colors.white, fontWeight: FontWeight.bold),
+            ),
+            addHorizontalSpace()
+          ])),
+    );
   }
   return Wrap(
     direction: Axis.horizontal,

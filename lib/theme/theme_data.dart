@@ -4,6 +4,10 @@ import 'package:flutter/material.dart';
 // Text("..", style: Theme.of(context).textTheme.displayLarge) DisplayLarge or any other of your choice defined below
 // To get primary color of app or any color in the colorScheme: Theme.of(context).colorScheme.primary
 // Predefined Compoenets in global_widgets.dart
+
+const primary = Color.fromRGBO(123, 56, 255, 1);
+const secondary = Color.fromARGB(255, 255, 77, 143);
+
 class AppThemeData {
   static ThemeData themedata = ThemeData(
     // Scaffold Background Color
@@ -31,7 +35,7 @@ class AppThemeData {
       displayLarge: TextStyle(
           fontFamily: "Gotham",
           fontWeight: FontWeight.w500,
-          fontSize: 20,
+          fontSize: 18,
           color: Colors.black),
       displayMedium: TextStyle(
           fontFamily: "Gotham",
@@ -41,7 +45,7 @@ class AppThemeData {
       titleMedium: TextStyle(
           fontFamily: "Gotham",
           fontWeight: FontWeight.bold,
-          fontSize: 32,
+          fontSize: 24,
           color: Colors.black),
       bodyMedium: TextStyle(
           fontFamily: "Gotham",
@@ -64,13 +68,6 @@ class AppThemeData {
             minimumSize: const Size(136, 53),
             shape: const RoundedRectangleBorder(
                 borderRadius: BorderRadius.all(Radius.circular(5))))),
-    // Bottom Nav Theme
-    navigationBarTheme: const NavigationBarThemeData(
-        backgroundColor: Color.fromRGBO(236, 228, 252, 1),
-        indicatorColor: Color.fromARGB(255, 254, 163, 196),
-        height: 90,
-        labelTextStyle: MaterialStatePropertyAll(TextStyle(
-            fontFamily: "Gotham", fontSize: 10, fontWeight: FontWeight.bold))),
 
     // AppBar Theme (Make it Transparent)
     appBarTheme: const AppBarTheme(

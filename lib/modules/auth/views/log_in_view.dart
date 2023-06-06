@@ -4,6 +4,7 @@ import 'package:wismod/modules/auth/controllers/log_in_controller.dart';
 import 'package:wismod/theme/global_widgets.dart';
 import 'package:wismod/utils/app_utils.dart';
 import '../../../routes/routes.dart';
+
 class LogInView extends StatelessWidget {
   LogInView({super.key});
   final logInController = Get.put(LogInController());
@@ -36,12 +37,23 @@ class LogInView extends StatelessWidget {
                   ],
                 ),
                 addVerticalSpace(20),
-                const Text("Password",
-                    style: TextStyle(
-                        fontFamily: "Gotham",
-                        fontSize: 20,
-                        fontWeight: FontWeight.w500)),
-                addVerticalSpace(),
+                Row(children: [
+                  Text("Password",
+                      style: TextStyle(
+                          fontFamily: "Gotham",
+                          fontSize: 20,
+                          fontWeight: FontWeight.w500)),
+                  TextButton(
+                      onPressed: () {
+                        Get.toNamed(Routes.forgot);
+                      },
+                      child: Text("Forgot password?",
+                          style: TextStyle(
+                              fontFamily: "Gotham",
+                              fontSize: 15,
+                              fontWeight: FontWeight.w500)))
+                ]),
+                // addVerticalSpace(),
                 Obx(
                   () => SizedBox(
                     child: TextFormFeildThemed(
@@ -62,21 +74,38 @@ class LogInView extends StatelessWidget {
                 addVerticalSpace(20),
                 Center(
                   child: SizedBox(
+                    width: double.infinity,
                     child: PrimaryButtonMedium(
-                      onPressed:  () async => await logInController.loginUser(),
+                      onPressed: () async => await logInController.loginUser(),
                       child: const Text("Log In"),
                     ),
                   ),
                 ),
                 addVerticalSpace(10),
                 Center(
-                  child: SizedBox(
-                    child: OutlineButtonMedium(
-                      child: const Text("Register"),
-                      onPressed: () {
-                        Get.offNamed(Routes.signup);
-                      },
-                    ),
+                  child: Column(
+                    children: [
+                      const Text(
+                        "Didn't have an account? ",
+                        textAlign: TextAlign.center,
+                        style: TextStyle(fontSize: 16, fontFamily: "Gotham"),
+                      ),
+                      TextButton(
+                        onPressed: () {
+                          Get.toNamed(Routes.signup);
+                        },
+                        child: const Text(
+                          'Create Account',
+                          style: TextStyle(
+                            fontFamily: 'Gotham',
+                            decoration: TextDecoration.underline,
+                            color: Color.fromRGBO(123, 56, 255, 1),
+                            fontSize: 16,
+                            fontWeight: FontWeight.bold,
+                          ),
+                        ),
+                      ),
+                    ],
                   ),
                 ),
               ],

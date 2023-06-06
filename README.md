@@ -4,7 +4,7 @@ WisMod is an event app designed for KMUTT students. With WisMod, students can ea
 ## How to Use
 To install and help build the WisMod app, follow these steps:
 1. run `flutter pub get` in terminal
-2. Run the application on ==IOS or android only!!==, do not use web! (F5 if you are using visual studio code)
+2. Run the application on **IOS or android only!!**, do not use web! (F5 if you are using visual studio code)
 3. Sign in and use it.
 4. If you want to see an admin account, use these credentails:
 - Email: admin

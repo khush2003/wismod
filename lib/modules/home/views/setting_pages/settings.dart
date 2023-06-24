@@ -27,10 +27,10 @@ class SettingsView extends StatelessWidget {
                   onPressed: () => Get.toNamed(Routes.accounts),
                   text: 'Account',
                 ),
-                TileButton(
-                  onPressed: () => Get.toNamed(Routes.notficaition),
-                  text: 'Notification',
-                ),
+                // TileButton(
+                //   onPressed: () => Get.toNamed(Routes.notficaition),
+                //   text: 'Notification',
+                // ),
                 TileButton(
                   onPressed: () => Get.toNamed(Routes.help),
                   text: 'Help',

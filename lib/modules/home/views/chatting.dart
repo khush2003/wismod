@@ -1,6 +1,7 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:wismod/modules/auth/controllers/auth_controller.dart';
+import 'package:wismod/modules/home/controller/event_detail_controller.dart';
 import 'package:wismod/shared/models/message.dart';
 import 'package:wismod/theme/global_widgets.dart';
 import 'package:wismod/theme/theme_data.dart';
@@ -8,9 +9,13 @@ import 'package:wismod/utils/app_utils.dart';
 import 'package:get/get.dart';
 import 'package:wismod/modules/home/controller/message_controller.dart';
 
+import '../controller/chat_controller.dart';
+
 const double textTimeMargin = 30;
 
 final _auth = AuthController.instance;
+final _event = EventDetailController.instance;
+final _chat = ChatController.instance;
 
 /*final DocumentSnapshot snap = FirebaseFirestore.instance
     .collection('Users')
@@ -200,10 +205,17 @@ class EnterMessageBar extends StatelessWidget {
                 onPressed: () {
                   if (controller.messageTextController.text.isNotEmpty) {
                     controller.createMessage();
-                    //for()
+                    // Send notification using FCM tokens to user in the joinedChatGroups list
+                    /*final DocumentSnapshot snap = FirebaseFirestore.instance
+                        .collection('Users')
+                        .doc(_auth.firebaseUser.value!.uid)
+                        .get() as DocumentSnapshot<Map<String, dynamic>>;
+                    String token = snap['Token'];
+                    print(token);*/
+ 
                     controller.sendPushMessage(
                         // change this token to people who subscribe to the event
-                        _auth.appUser.value.token.toString(),
+                        _event.eventData.value.id!,
                         _auth.appUser.value.getName() +
                             ": " +
                             controller.messageTextController.text,

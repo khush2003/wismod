@@ -1,5 +1,4 @@
 import 'dart:async';
-
 import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
@@ -32,10 +31,10 @@ class ChatController extends GetxController {
 
   @override
   void onInit() async {
-    await _eventController.fetchEventsStream();
     initializeLists();
     await fetchLatestMessages();
     isInitialzed(true);
+
     super.onInit();
   }
 

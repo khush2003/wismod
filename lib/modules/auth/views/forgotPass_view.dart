@@ -3,7 +3,6 @@ import 'package:get/get.dart';
 import 'package:wismod/modules/auth/controllers/log_in_controller.dart';
 import 'package:wismod/theme/global_widgets.dart';
 import 'package:wismod/utils/app_utils.dart';
-import '../../../routes/routes.dart';
 
 class ForgotView extends StatelessWidget {
   ForgotView({super.key});

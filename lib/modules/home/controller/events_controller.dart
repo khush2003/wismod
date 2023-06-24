@@ -1,7 +1,4 @@
 import 'dart:async';
-
-import 'package:firebase_core/firebase_core.dart';
-import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:get/get.dart';
 import 'package:wismod/modules/auth/controllers/auth_controller.dart';
 import 'package:wismod/modules/home/controller/chat_controller.dart';
@@ -31,7 +28,7 @@ class EventsController extends GetxController {
   final _firestore = FirebaseService();
   final _auth = AuthController.instance;
 
-  final isInitialized = false.obs;
+  final Rx<bool> isInitialized = false.obs;
 
   @override
   void onInit() async {
@@ -80,6 +77,7 @@ class EventsController extends GetxController {
         initializeLists();
         try {
           Get.find<HomeController>().generateSmartFeed();
+          Get.find<ChatController>().initializeLists();
         } catch (e) {}
       }
     });
@@ -242,7 +240,6 @@ class EventsController extends GetxController {
         return value;
       });
 
-
       await _firestore.approveJoin(user, event).catchError((e) {
         errorSnackBar("Error! ${e.toString()}");
       });
@@ -262,7 +259,7 @@ class EventsController extends GetxController {
       errorSnackBar("Error! ${e.toString()}");
     });
   }
-  
+
   Future<void> requestJoin(Event event) async {
     var isAdd = true;
     if (checkEventInList(event.id!, requestedEvents)) {
@@ -273,9 +270,7 @@ class EventsController extends GetxController {
       requestedEvents.add(event);
       _auth.appUser.value.requestedEvents?.add(event.id!);
     }
-    await _firestore
-        .requestEvent(_auth.user.uid!, event.id!)
-        .catchError((e) {
+    await _firestore.requestEvent(_auth.user.uid!, event.id!).catchError((e) {
       errorSnackBar(
           "Error Connecting to Database, Please check network connection!");
       if (isAdd) {
@@ -293,7 +288,6 @@ class EventsController extends GetxController {
       errorSnackBar("Event has reached it's member limit! ");
     } else {
       final event = getEventInList(eventData.id!, events);
-      //Firebase.messaging.subscribeToTopic();
       if (event == null) {
         return;
       }
@@ -333,7 +327,6 @@ class EventsController extends GetxController {
       }
     }
   }
-
 
   List<String> sortTagsByFrequency() {
     // Count the frequency of each tag

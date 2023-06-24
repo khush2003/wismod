@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:get/get.dart';
+import 'package:wismod/modules/auth/controllers/auth_controller.dart';
 import 'package:wismod/modules/home/controller/create_event_controller.dart';
 import 'package:wismod/modules/home/controller/notification_controller.dart';
 import 'package:wismod/theme/theme_data.dart';
@@ -13,6 +14,7 @@ class CreateEventView extends StatelessWidget {
   CreateEventView({super.key});
   final controller = Get.put(CreateEventController());
   final notiController = Get.put(NotificationController());
+  final _auth = AuthController.instance;
 
   @override
   Widget build(BuildContext context) {
@@ -242,7 +244,7 @@ class CreateEventView extends StatelessWidget {
                                 onPressed: () => [
                                   controller.createEvent(), 
                                   //if(notiController.toggleSwitchNotification == true){
-                                  controller.sendPushMessage(controller.eventDetailController.text, controller.eventNameController.text)
+                                  controller.sendPushMessage(controller.eventNameController.text+': '+controller.eventDetailController.text, 'New Event from ' + _auth.appUser.value.getName())
                                   //}
                                 ],
                                 child: const Text('Create Event'),
